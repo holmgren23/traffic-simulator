@@ -19,7 +19,7 @@ public class Test {
             JOptionPane.showMessageDialog(frame, "Hello: " + input);
         });
 
-        frame.add(message);
+        
         frame.add(textbox);
         frame.add(button);
         frame.setVisible(true);
