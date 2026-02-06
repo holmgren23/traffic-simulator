@@ -11,7 +11,6 @@ public class Test {
         
         JLabel message = new JLabel("What is your name?");
         JTextField textbox = new JTextField(10);
-
         JButton button = new JButton("Click me!");
 
         button.addActionListener(e -> {
@@ -29,3 +28,4 @@ public class Test {
     }
     
 }
+
