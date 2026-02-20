@@ -13,12 +13,8 @@ package model #FFADAD {
   class TrafficSimulator {
   - map : Map
   + <<create>> TrafficSimulator() : TrafficSimulator
-<<<<<<< HEAD
   + tickUpdate() : void
   - gap(i : int) : int
-=======
-  ~ update() 
->>>>>>> 34f8f07319109b2bd174eeae1a5aa1a438905193
   }
 
   class Vehicle {
