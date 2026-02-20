@@ -44,8 +44,8 @@ package model #FFADAD {
   }
 
   class Road {
-    - vhID : int
-    - obsID : int
+    - vehicles : Vehicle[]
+    - obstacles : Obstacle[]
     ~ <<create>> Road() : Road
   }
 
