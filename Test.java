@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 
+// Looks good, Release -Kevin
+
 public class Test {
     public Test(){
         JFrame frame = new JFrame("Tjenare mannen!..");
