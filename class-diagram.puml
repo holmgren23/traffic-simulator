@@ -1,131 +1,145 @@
 @startuml TrafficSimulator
 skinparam classAttributeIconSize 0
-skinparam linetype ortho
 
-' Färgschema
-skinparam package {
-    BackgroundColor<<model>> #FFADAD
-    BackgroundColor<<controller>> #FFD6A5
-    BackgroundColor<<view>> #FDFFB6
-    BackgroundColor<<utility>> #D9EDF8
-    BackgroundColor<<startup>> #DEDAF4
+/'colors
+#FFADAD
+#FFD6A5
+#FDFFB6
+#E4F1EE
+#D9EDF8
+#DEDAF4'/
+
+package model #FFADAD {
+  class TrafficSimulator {
+  - map : Map
+  + <<create>> TrafficSimulator() : TrafficSimulator
+  }
+
+  class Vehicle {
+    - id : int
+    - length : int
+    - maxSpeed : int
+    - currentSpeed : int
+    - acceleration : int
+    - deceleration : int
+    - randomization : int
+    - postition : int
+    ~ <<create>> Vehicle() : Vehicle
+    ~ getCurrentSpeed() : int
+    ~ setCurrentSpeed() : void
+  }
+
+  class Car {
+    ~ <<create>> Car() : Car
+  }
+
+  class Map {
+    - roads : Road[]
+    ~ <<create>> Map() : Map
+  }
+
+  class Road {
+    - length : int
+    - cells : Vehicle[]
+    ~ <<create>> Road() : Road
+  }
+
+  class Obstacle {
+    - interval : int
+    - type : ObstacleType
+    ~ <<create>> Obstacle() : Obstacle
+  }
+
+  class Statistics {
+    + <<create>> Statistics() : Statistics
+  }
+
+  TrafficSimulator --> Map
+  TrafficSimulator --> Vehicle
+  TrafficSimulator --> Obstacle
+  Map --> Road
+  Road --> Obstacle
+  Road --> Vehicle
+  Vehicle <|-- Car
+  Statistics --> TrafficSimulator
 }
 
-package "startup" <<startup>> {
-    class Main {
-        + {static} main(args : String[]) : void
-    }
+package controller #FFD6A5 {
+  class Controller {
+    + <<create>> Controller() : Controller
+    + startSimulation(noCars : int, maxSpeed : int) : boolean
+  }
+
+  Controller --> Statistics
+  Controller --> TrafficSimulator
 }
 
-package "model" <<model>> {
-    class TrafficSimulator {
-        - map : Map
-        + <<create>> TrafficSimulator()
-    }
+package view #FDFFB6 {
+  class MainView {
+    + <<create>> MainView() : MainView
+  }
+  class UserInputView {
+    - parameters : InputParameter[]
+    + <<create>> UserInputView() : UserInputView
+  }
 
-    class Vehicle {
-        - id : int
-        - position : int
-        - length : int
-        - idealSpeed : int
-        - currentSpeed : int
-        ~ <<create>> Vehicle()
-        ~ getCurrentSpeed() : int
-        ~ setCurrentSpeed(speed : int) : void
-    }
+  class InputParameter {
+    - minValue : int
+    - maxValue : int
+    - currentValue : int 
+    + <<create>> InputParameter() : InputParameter
+  }
 
-    class Car {
-        ~ <<create>> Car()
-    }
+  class StatisticsView {
+    + <<create>> StatisticsView() : StatisticsView
+  }
 
-    class Map {
-        - roads : Road[]
-        ~ <<create>> Map()
-    }
+  class SimulationView {
+    + <<create>> SimulationView() : SimulationView
+  }
 
-    class Road {
-        - length : int
-        - cells : Vehicle[]
-        ~ <<create>> Road()
-    }
-
-    class Obstacle {
-        - interval : int
-        - type : ObstacleType
-        ~ <<create>> Obstacle()
-    }
-
-    class Statistics {
-        + <<create>> Statistics()
-    }
+  MainView --> UserInputView
+  MainView --> StatisticsView
+  MainView --> SimulationView
+  UserInputView --> InputParameter
+  
+  UserInputView --> Controller
+  StatisticsView --> Statistics
+  SimulationView --> TrafficSimulator
 }
 
-package "controller" <<controller>> {
-    class Controller {
-        + <<create>> Controller()
-        + startSimulation(noCars : int, maxSpeed : int) : boolean
-    }
+package utility #D9EDF8 {
+  enum ObstacleType {
+    TrafficLight
+    RoadBlock
+  }
+
+  class HelperMethods {
+    + static getRandomValue(min : int, max : int) : int
+  }
+
+
+  Obstacle --> ObstacleType
+  Vehicle --> HelperMethods
 }
 
-package "view" <<view>> {
-    class MainView {
-        + <<create>> MainView()
-    }
-    class UserInputView {
-        - parameters : InputParameter[]
-        + <<create>> UserInputView()
-    }
-    class InputParameter {
-        - minValue : int
-        - maxValue : int
-        - currentValue : int 
-        + <<create>> InputParameter()
-    }
-    class StatisticsView {
-        + <<create>> StatisticsView()
-    }
-    class SimulationView {
-        + <<create>> SimulationView()
-    }
+package startup #DEDAF4 {
+  class Main {
+  + main(args : String[]) : void
+}
+  Main --> Controller
+  Main --> MainView
 }
 
-package "utility" <<utility>> {
-    enum ObstacleType {
-        TrafficLight
-        RoadBlock
-    }
-    class HelperMethods {
-        + {static} getRandomValue(min : int, max : int) : int
-    }
-}
+/'startup'/
 
-' Relationer
-Main -down-> Controller
-Main -down-> MainView
 
-Controller -down-> TrafficSimulator
-Controller -right-> Statistics
+/'model'/
 
-TrafficSimulator *-- Map
-TrafficSimulator o-- Vehicle
-TrafficSimulator o-- Obstacle
+/'utility'/
 
-Map *-- Road
-Road o-- Vehicle
-Road o-- Obstacle
 
-Vehicle <|-- Car
-Vehicle .right.> HelperMethods
-Obstacle -- ObstacleType
 
-MainView *-- UserInputView
-MainView *-- StatisticsView
-MainView *-- SimulationView
-UserInputView *-- InputParameter
-
-UserInputView -left-> Controller
-StatisticsView --> Statistics
-SimulationView --> TrafficSimulator
-Statistics --> TrafficSimulator
+/'view'
 
 @enduml
