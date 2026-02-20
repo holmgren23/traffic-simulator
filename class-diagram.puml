@@ -19,14 +19,17 @@ package model #FFADAD {
     - id : int
     - length : int
     - maxSpeed : int
-    - currentSpeed : int
     - acceleration : int
-    - deceleration : int
-    - randomization : int
     - postition : int
     ~ <<create>> Vehicle() : Vehicle
-    ~ getCurrentSpeed() : int
-    ~ setCurrentSpeed() : void
+    ~ setMaxSpeed()
+    ~ getMaxSpeed()
+    ~ setAcceleration()
+    ~ getAcceleration()
+    ~ setPosition()
+    ~ getPosition()
+
+
   }
 
   class Car {
