@@ -24,6 +24,7 @@ package model #FFADAD {
     - currentSpeed : int
     - position : int
     ~ <<create>> Vehicle() : Vehicle
+    ~ getID()
     ~ setMaxSpeed()
     ~ getMaxSpeed()
     ~ setCurrentSpeed()
