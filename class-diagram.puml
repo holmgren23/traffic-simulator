@@ -1,0 +1,131 @@
+@startuml TrafficSimulator
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+' Färgschema
+skinparam package {
+    BackgroundColor<<model>> #FFADAD
+    BackgroundColor<<controller>> #FFD6A5
+    BackgroundColor<<view>> #FDFFB6
+    BackgroundColor<<utility>> #D9EDF8
+    BackgroundColor<<startup>> #DEDAF4
+}
+
+package "startup" <<startup>> {
+    class Main {
+        + {static} main(args : String[]) : void
+    }
+}
+
+package "model" <<model>> {
+    class TrafficSimulator {
+        - map : Map
+        + <<create>> TrafficSimulator()
+    }
+
+    class Vehicle {
+        - id : int
+        - position : int
+        - length : int
+        - idealSpeed : int
+        - currentSpeed : int
+        ~ <<create>> Vehicle()
+        ~ getCurrentSpeed() : int
+        ~ setCurrentSpeed(speed : int) : void
+    }
+
+    class Car {
+        ~ <<create>> Car()
+    }
+
+    class Map {
+        - roads : Road[]
+        ~ <<create>> Map()
+    }
+
+    class Road {
+        - length : int
+        - cells : Vehicle[]
+        ~ <<create>> Road()
+    }
+
+    class Obstacle {
+        - interval : int
+        - type : ObstacleType
+        ~ <<create>> Obstacle()
+    }
+
+    class Statistics {
+        + <<create>> Statistics()
+    }
+}
+
+package "controller" <<controller>> {
+    class Controller {
+        + <<create>> Controller()
+        + startSimulation(noCars : int, maxSpeed : int) : boolean
+    }
+}
+
+package "view" <<view>> {
+    class MainView {
+        + <<create>> MainView()
+    }
+    class UserInputView {
+        - parameters : InputParameter[]
+        + <<create>> UserInputView()
+    }
+    class InputParameter {
+        - minValue : int
+        - maxValue : int
+        - currentValue : int 
+        + <<create>> InputParameter()
+    }
+    class StatisticsView {
+        + <<create>> StatisticsView()
+    }
+    class SimulationView {
+        + <<create>> SimulationView()
+    }
+}
+
+package "utility" <<utility>> {
+    enum ObstacleType {
+        TrafficLight
+        RoadBlock
+    }
+    class HelperMethods {
+        + {static} getRandomValue(min : int, max : int) : int
+    }
+}
+
+' Relationer
+Main -down-> Controller
+Main -down-> MainView
+
+Controller -down-> TrafficSimulator
+Controller -right-> Statistics
+
+TrafficSimulator *-- Map
+TrafficSimulator o-- Vehicle
+TrafficSimulator o-- Obstacle
+
+Map *-- Road
+Road o-- Vehicle
+Road o-- Obstacle
+
+Vehicle <|-- Car
+Vehicle .right.> HelperMethods
+Obstacle -- ObstacleType
+
+MainView *-- UserInputView
+MainView *-- StatisticsView
+MainView *-- SimulationView
+UserInputView *-- InputParameter
+
+UserInputView -left-> Controller
+StatisticsView --> Statistics
+SimulationView --> TrafficSimulator
+Statistics --> TrafficSimulator
+
+@enduml
