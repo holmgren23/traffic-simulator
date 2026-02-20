@@ -12,13 +12,18 @@ public class Test {
         JLabel message = new JLabel("What is your name?");
         JTextField textbox = new JTextField(10);
         JButton button = new JButton("Click me!");
-
+        
         button.addActionListener(e -> {
             String input = textbox.getText();
             JOptionPane.showMessageDialog(frame, "Hello: " + input);
         });
-
-  
+        
+                frame.add(message);
+                frame.add(textbox);
+                frame.add(button);
+                frame.setVisible(true);
+                
+        
     }
     public static void main(String[] args) {
         new Test();
