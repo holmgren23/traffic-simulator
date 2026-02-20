@@ -13,21 +13,22 @@ package model #FFADAD {
   class TrafficSimulator {
   - map : Map
   + <<create>> TrafficSimulator() : TrafficSimulator
+  ~ update() 
   }
 
   class Vehicle {
     - id : int
     - length : int
-    - maxSpeed : int
-    - acceleration : int
-    - postition : int
+    - vMax : int
+    - v : int
+    - pos : int
     ~ <<create>> Vehicle() : Vehicle
-    ~ setMaxSpeed()
-    ~ getMaxSpeed()
-    ~ setAcceleration()
-    ~ getAcceleration()
-    ~ setPosition()
-    ~ getPosition()
+    ~ setVMax()
+    ~ getVMAx()
+    ~ setV()
+    ~ getV()
+    ~ setPos()
+    ~ getPos()
 
 
   }
@@ -42,8 +43,8 @@ package model #FFADAD {
   }
 
   class Road {
-    - length : int
-    - cells : Vehicle[]
+    - vhID : int
+    - obsID : int
     ~ <<create>> Road() : Road
   }
 
