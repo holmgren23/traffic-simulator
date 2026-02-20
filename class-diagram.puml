@@ -13,22 +13,29 @@ package model #FFADAD {
   class TrafficSimulator {
   - map : Map
   + <<create>> TrafficSimulator() : TrafficSimulator
+<<<<<<< HEAD
   + tickUpdate() : void
   - gap(i : int) : int
+=======
+  ~ update() 
+>>>>>>> 34f8f07319109b2bd174eeae1a5aa1a438905193
   }
 
   class Vehicle {
     - id : int
     - length : int
-    - maxSpeed : int
-    - currentSpeed : int
-    - acceleration : int
-    - deceleration : int
-    - randomization : int
-    - postition : int
+    - vMax : int
+    - v : int
+    - pos : int
     ~ <<create>> Vehicle() : Vehicle
-    ~ getCurrentSpeed() : int
-    ~ setCurrentSpeed() : void
+    ~ setVMax()
+    ~ getVMAx()
+    ~ setV()
+    ~ getV()
+    ~ setPos()
+    ~ getPos()
+
+
   }
 
   class Car {
@@ -41,8 +48,8 @@ package model #FFADAD {
   }
 
   class Road {
-    - length : int
-    - cells : Vehicle[]
+    - vhID : int
+    - obsID : int
     ~ <<create>> Road() : Road
   }
 
