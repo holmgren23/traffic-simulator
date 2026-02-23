@@ -13,7 +13,7 @@ public class Vehicle implements RoadObject {
         this.id = id;
         this.position = startPosition;
         this.length = 1;
-        this.maxSpeed = 7;
+        this.maxSpeed = 1;
         this.currentSpeed = maxSpeed;
     }
 
