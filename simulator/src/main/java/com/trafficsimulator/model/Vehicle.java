@@ -12,12 +12,17 @@ public class Vehicle {
     public Vehicle(int id, int startPosition) {
         this.id = id;
         this.position = startPosition;
+        this.length = 1;
         this.maxSpeed = 7;
         this.currentSpeed = maxSpeed;
     }
 
     public int getID() {
         return id;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public int getMaxSpeed() {
