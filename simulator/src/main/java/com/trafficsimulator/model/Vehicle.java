@@ -1,6 +1,6 @@
 package com.trafficsimulator.model;
 
-public class Vehicle {
+public class Vehicle implements RoadObject {
     private int id;
     private int length;
     private int maxSpeed;
