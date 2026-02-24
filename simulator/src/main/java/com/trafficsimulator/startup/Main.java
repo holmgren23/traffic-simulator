@@ -1,6 +1,7 @@
 package com.trafficsimulator.startup;
 import com.trafficsimulator.view.*;
 import com.trafficsimulator.model.TrafficSimulator;
+import com.trafficsimulator.controller.Controller;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,10 +13,12 @@ public class Main {
 
         System.out.println("Testing main method");
         TrafficSimulator ts = new TrafficSimulator();
-        for(int i = 0; i < 200; i++){
-            ts.tickUpdate();
-            ts.printRoad();
-        }
+        Controller controller = new Controller(ts);
+        controller.loop();
+        //for(int i = 0; i < 200; i++){
+        //    ts.tickUpdate();
+        //    ts.printRoad();
+        //}
 
         // Here we need to create Model object
         // Model model = new Model();

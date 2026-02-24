@@ -2,7 +2,6 @@ package com.trafficsimulator.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.lang.Math;
 import java.util.Random;
 
 public class TrafficSimulator {
@@ -14,7 +13,7 @@ public class TrafficSimulator {
     private Random rand;
 
     public TrafficSimulator() {
-        road = new Road(50);
+        road = new Road(90);
         cars = new ArrayList<>();
         tickCount = 0;
         spawnRate = 5;
@@ -111,5 +110,6 @@ public class TrafficSimulator {
         tickCount++;
         spawnCar();
         moveCars(updateSpeeds());
+        this.printRoad();
     }
 }
