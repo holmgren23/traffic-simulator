@@ -48,14 +48,12 @@ public class TrafficSimulator {
             int speed = car.getCurrentSpeed();
             int maxSpeed = car.getMaxSpeed();
 
-
-
             //New Speed calculation
             speed = Math.min(speed + 1, maxSpeed); //Speed up
             speed = Math.min(speed, gap(car)); //Break
-            if (speed > 0 && rand.nextDouble() < slowProbability) {
+            /** if (speed > 0 && rand.nextDouble() < slowProbability) {
                 speed -= 1; //Random speed change
-            }
+            } */
             newSpeeds.put(car, speed); //New final speed
         }
 
@@ -93,6 +91,19 @@ public class TrafficSimulator {
             nextID++;
         }
     }
+
+    public void printRoad() {
+        System.out.print("Tick " + tickCount + ": ");
+        for (int i = 0; i < road.getLength(); i++) {
+            Car car = (Car) road.getCell(i);
+            if (car == null) {
+                System.out.print("."); // empty cell
+            } else {
+                System.out.print(car.getCurrentSpeed()); // car shows its speed
+            }
+        }
+    System.out.println(); // new line for next tick
+}
 
     public void tickUpdate() {
         tickCount++;
