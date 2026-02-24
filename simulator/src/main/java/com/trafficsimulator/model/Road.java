@@ -7,6 +7,10 @@ public class Road {
         road = new RoadObject[length];
     }
 
+    public int getLength() {
+        return road.length;
+    }
+
     public RoadObject getCell(int index) {
         return road[index];
     }
