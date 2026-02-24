@@ -21,38 +21,35 @@ public class TrafficSimulator {
         rand = new Random();
     }
 
-    //Finds gap from car to the car ahead, only checks up to the cars max speed
-    public int gap(Car currentCar) {
-            int gap = 0;
-            int position = currentCar.getPosition();
-            int maxSpeed = currentCar.getMaxSpeed();
-
-            int upperBound = Math.min(road.getLength(), position + 1 + maxSpeed);
-
-            for (int i = position + 1; i < upperBound; i++) {
-                if (road.getCell(i) == null) {
-                    gap++;
-                } else {
-                    break;
-                }
-            }
-        return gap;
+    //Finds gap from car to the car ahead
+    public int gap(int position) {
+        int i = position + 1;
+        //Find gap to the next car
+        while (i < road.getLength() && road.getCell(i) == null) {
+            i++;
+        }
+        //If end of road, just go
+        if (i >= road.getLength()) {
+            return Integer.MAX_VALUE;
+        }
+        return i - position - 1;
     }
 
     //Update Positions for cars, Does not move
     private HashMap<Car, Integer> updateSpeeds() {
         HashMap<Car, Integer> newSpeeds = new HashMap<>();
-       // double slowProbability = 0.1;
+        double slowProbability = 0.1;
         for (Car car : cars) {
             int speed = car.getCurrentSpeed();
             int maxSpeed = car.getMaxSpeed();
+            int position = car.getPosition();
 
             //New Speed calculation
             speed = Math.min(speed + 1, maxSpeed); //Speed up
-            speed = Math.min(speed, gap(car)); //Break
-         /*     if (speed > 1 && rand.nextDouble() < slowProbability) {
+            speed = Math.min(speed, gap(position)); //Break
+            if (speed > 0 && rand.nextDouble() < slowProbability) {
                 speed -= 1; //Random speed change
-            } */
+            }
             newSpeeds.put(car, speed); //New final speed
         }
 
@@ -60,39 +57,39 @@ public class TrafficSimulator {
     }
 
     private void moveCars(HashMap<Car, Integer> newSpeeds) {
-    //Moves cars to new positions
-    for (Car car:cars) {
-        int oldPos = car.getPosition();
-        int newSpeed = newSpeeds.get(car);
-        int newPos = oldPos + newSpeed;
+        ArrayList<Car> carsToRemove = new ArrayList<>();
+        //Moves cars to new positions
+        for (Car car:cars) {
+            int oldPos = car.getPosition();
+            int newSpeed = newSpeeds.get(car);
+            int newPos = oldPos + newSpeed;
 
-        //Remove from old cell
-        road.setCell(oldPos, null);
-
-        //If car exits road - Currently removes, can be changed to loop
-        if (newPos >= road.getLength()) {
-            cars.remove(car); //Should possibly collect all cars that are to be removed before removal
-            continue;
-        }
-        if (newPos < road.getLength() - 1) {
+            //Remove from old cell
+            road.setCell(oldPos, null);
+            //If car exits road - Currently removes, can be changed to loop
+            if (newPos >= road.getLength()) {
+                carsToRemove.add(car); //Collects all cars that should be removed
+                continue;
+            }
             //Place in new cell
             car.setPosition(newPos);
             car.setCurrentSpeed(newSpeed);
             road.setCell(newPos, car);
-            
         }
-        }
+        cars.removeAll(carsToRemove); //Removes cars outside road
     }
 
+    //Function spawns cars based on spawnrate per tick.
     private void spawnCar() {
         if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
-            Car newCar = new Car(nextID, 0, rand.nextInt(2,5));
+            Car newCar = new Car(nextID, 0, rand.nextInt(1,5));
             cars.add(newCar);
             road.setCell(0, newCar);
             nextID++;
         }
     }
 
+    //Terminal road printer
     public void printRoad() {
         System.out.print("Tick " + tickCount + ": ");
         for (int i = 0; i < road.getLength(); i++) {
@@ -103,13 +100,14 @@ public class TrafficSimulator {
                 System.out.print(car.getCurrentSpeed()); // car shows its speed
             }
         }
-    System.out.println(); // new line for next tick
-}
+        System.out.println(); // new line for next tick
+    }
 
+    //Tick update
     public void tickUpdate() {
         tickCount++;
-        spawnCar();
         moveCars(updateSpeeds());
+        spawnCar();
         this.printRoad();
     }
 }
