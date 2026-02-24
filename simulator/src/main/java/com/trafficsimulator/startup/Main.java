@@ -1,5 +1,6 @@
 package com.trafficsimulator.startup;
-import com.trafficsimulator.view.MainView;
+import com.trafficsimulator.view.*;
+import com.trafficsimulator.model.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,8 +25,5 @@ public class Main {
         if (view != null) {
             view.startWindow();
         }
-
-        
     }
-
 }

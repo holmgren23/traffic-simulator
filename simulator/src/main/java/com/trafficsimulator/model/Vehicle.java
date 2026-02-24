@@ -1,6 +1,6 @@
 package com.trafficsimulator.model;
 
-public class Vehicle {
+public class Vehicle implements RoadObject {
     private int id;
     private int length;
     private int maxSpeed;
@@ -12,12 +12,17 @@ public class Vehicle {
     public Vehicle(int id, int startPosition) {
         this.id = id;
         this.position = startPosition;
+        this.length = 1;
         this.maxSpeed = 7;
         this.currentSpeed = maxSpeed;
     }
 
     public int getID() {
         return id;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public int getMaxSpeed() {
