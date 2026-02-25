@@ -21,6 +21,10 @@ public class TrafficSimulator {
         rand = new Random();
     }
 
+    public Road getRoad() {
+        return road;
+    }
+
     //Finds gap from car to the car ahead
     public int gap(int position) {
         int i = position + 1;
@@ -90,6 +94,7 @@ public class TrafficSimulator {
     }
 
     //Terminal road printer
+    /* 
     public void printRoad() {
         System.out.print("Tick " + tickCount + ": ");
         for (int i = 0; i < road.getLength(); i++) {
@@ -101,13 +106,13 @@ public class TrafficSimulator {
             }
         }
         System.out.println(); // new line for next tick
-    }
+    }*/
 
     //Tick update
     public void tickUpdate() {
         tickCount++;
         moveCars(updateSpeeds());
         spawnCar();
-        this.printRoad();
+       // this.printRoad();
     }
 }

@@ -8,24 +8,19 @@ public class Main {
         // Confirming that the main method has started
         System.out.println("Main method started");
         
-        // Here we need to create Controller object
-        // Controller controller = new Controller();
+
 
         System.out.println("Testing main method");
         TrafficSimulator ts = new TrafficSimulator();
-        Controller controller = new Controller(ts);
-        controller.loop();
-        //for(int i = 0; i < 200; i++){
-        //    ts.tickUpdate();
-        //    ts.printRoad();
-        //}
+        MainView.setSimulator(ts);
+       // Controller controller = new Controller(ts);
+      //  controller.loop();
+  
 
-        // Here we need to create Model object
-        // Model model = new Model();
+        MainView view = new MainView();
+        view.startWindow();
 
-        MainView view = null;
-
-        try {
+      /*   try {
             view = new MainView();
         } catch (Exception e) {
             System.err.println("MainView object could not be initialized");
@@ -33,6 +28,6 @@ public class Main {
         
         if (view != null) {
             view.startWindow();
-        }
+        }*/
     }
 }
