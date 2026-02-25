@@ -6,7 +6,7 @@ import com.trafficsimulator.view.MainView;
 import java.lang.Thread;
 
 public class Controller {
-  private final int TICK_LENGTH = 20;
+  private final int TICK_LENGTH = 100;
   private TrafficSimulator ts;
   private long nextTick;
 

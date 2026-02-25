@@ -47,7 +47,7 @@ public class TrafficSimulator {
             //New Speed calculation
             speed = Math.min(speed + 1, maxSpeed); //Speed up
             speed = Math.min(speed, gap(position)); //Break
-            if (speed > 0 && rand.nextDouble() < slowProbability) {
+            if (speed > 1 && rand.nextDouble() < slowProbability) {
                 speed -= 1; //Random speed change
             }
             newSpeeds.put(car, speed); //New final speed
