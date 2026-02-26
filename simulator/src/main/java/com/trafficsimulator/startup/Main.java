@@ -16,16 +16,5 @@ public class Main {
         MainView view = new MainView();
         view.startWindow();
 
-        /*
-         * try {
-         * view = new MainView();
-         * } catch (Exception e) {
-         * System.err.println("MainView object could not be initialized");
-         * }
-         * 
-         * if (view != null) {
-         * view.startWindow();
-         * }
-         */
     }
 }
