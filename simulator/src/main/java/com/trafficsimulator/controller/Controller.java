@@ -16,26 +16,25 @@ public class Controller {
     this.roadView = roadView;
     this.nextTick = System.currentTimeMillis() + TICK_LENGTH;
   }
-  
+
   public void loop() {
     while (true) {
       this.tick();
     }
   }
-  
+
   private void tick() {
     long currentTime;
     do {
       try {
         Thread.sleep(10);
-      }
-      catch (InterruptedException e) {
+      } catch (InterruptedException e) {
         System.err.println("Exception: " + e.getMessage());
         return;
       }
       currentTime = System.currentTimeMillis();
     } while (currentTime < this.nextTick);
-    
+
     this.nextTick = currentTime + TICK_LENGTH;
     this.ts.tickUpdate();
     Platform.runLater(() -> roadView.render());

@@ -24,12 +24,12 @@ public class RoadView extends Canvas {
         gc.fillRect(0, 0, width, height);
         gc.setFill(Color.WHITE);
         for (int i = 0; i < cells; i+=3){
-            gc.fillRect(i * cellWidth * 3, 20, cellWidth, 5);
+            gc.fillRect(i * cellWidth, 20, cellWidth, 5);
         }
         gc.setFill(Color.RED);
         for (int i = 0; i < cells; i++) {
             if (road.getCell(i) != null) {
-                gc.fillRect(i * cellWidth + 1, 7, cellWidth - 2, height / 4);
+                gc.fillRect(i * cellWidth + 1, 7, cellWidth, height / 4);
             }
         }
     }
