@@ -12,6 +12,7 @@ public class TrafficSimulator {
     private int nextID;
     private Random rand;
 
+    //Constructor for testing, Should make a new one for controller/view in future
     public TrafficSimulator() {
         road = new Road(200);
         cars = new ArrayList<>();
@@ -97,7 +98,7 @@ public class TrafficSimulator {
         }
     }
 
-    // Tick update
+    // Tick update. Should be callable by controller
     public void tickUpdate() {
         tickCount++;
         moveCars(updateSpeeds());

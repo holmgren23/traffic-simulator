@@ -44,4 +44,6 @@ class TrafficSimulatorTest {
 
         assertEquals(Integer.MAX_VALUE, simulator.gap(lastcell));
     }
+
+    
 }
