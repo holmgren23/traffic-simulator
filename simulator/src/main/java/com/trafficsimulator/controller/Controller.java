@@ -11,10 +11,13 @@ public class Controller {
   private RoadView roadView;
   private long nextTick;
 
-  public Controller(TrafficSimulator ts, RoadView roadView) {
+  public Controller(TrafficSimulator ts) {
     this.ts = ts;
-    this.roadView = roadView;
     this.nextTick = System.currentTimeMillis() + TICK_LENGTH;
+  }
+  
+  public void setRoadView(RoadView roadView) {
+    this.roadView = roadView;
   }
 
   public void loop() {

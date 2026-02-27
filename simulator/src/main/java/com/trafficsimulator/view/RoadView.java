@@ -32,7 +32,7 @@ public class RoadView extends Canvas {
         gc.setFill(Color.RED);
         for (int i = 0; i < cells; i++) {
             if (road.getCell(i) != null) {
-                gc.fillRect(i * cellWidth + 1, 7, cellWidth, height / 4);
+                gc.fillRect(i * cellWidth + 1, 28, cellWidth, height / 4);
             }
         }
     }
