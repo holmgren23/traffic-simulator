@@ -25,6 +25,10 @@ public class TrafficSimulator {
         return road;
     }
 
+    //getCars()?
+    //getTickCount()?
+    //getSpawnRate()?
+
     // Finds gap from car to the car ahead
     public int gap(int position) {
         int i = position + 1;
