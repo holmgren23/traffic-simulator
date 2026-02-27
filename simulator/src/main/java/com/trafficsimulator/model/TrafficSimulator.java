@@ -26,9 +26,17 @@ public class TrafficSimulator {
         return road;
     }
 
-    //getCars()?
-    //getTickCount()?
-    //getSpawnRate()?
+    public ArrayList<Car> getCars() {
+        return cars;
+    }
+
+    public int getCurrentTick() {
+        return tickCount;
+    }
+
+    public int getSpawnRate() {
+        return spawnRate;
+    }
 
     // Finds gap from car to the car ahead
     public int gap(int position) {
