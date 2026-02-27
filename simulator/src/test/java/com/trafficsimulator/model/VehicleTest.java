@@ -38,4 +38,21 @@ public class VehicleTest {
         vehicle.setCurrentSpeed(5);
         assertEquals(5, vehicle.getCurrentSpeed());
     }
+
+    @Test
+    public void testSetMaxSpeed(){
+        vehicle.setMaxSpeed(6);
+        assertEquals(6, vehicle.getMaxSpeed());
+    }
+
+    @Test
+    public void testSetPosition(){
+        vehicle.setPosition(4);
+        assertEquals(4, vehicle.getPosition());
+    }
+
+    @Test
+    public void testgetLength(){
+        assertEquals(1, vehicle.getLength());
+    }
 }
