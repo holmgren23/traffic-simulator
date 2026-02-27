@@ -11,11 +11,31 @@ public class VehicleTest {
 
     @BeforeEach
     public void setUp() {
-        vehicle = new Vehicle(1, 1, 1);
+        vehicle = new Vehicle(1, 2, 3);
+    }
+    
+    @AfterEach void cleanUp() {
+        vehicle = null;
     }
     
     @Test
     public void testGetID() {
         assertEquals(1, vehicle.getID());
+    }
+    
+    @Test
+    public void testGetPosition() {
+        assertEquals(2, vehicle.getPosition());
+    }
+    
+    @Test
+    public void testGetCurrentSpeed() {
+        assertEquals(3, vehicle.getCurrentSpeed());
+    }
+    
+    @Test
+    public void testSetCurrentSpeed() {
+        vehicle.setCurrentSpeed(5);
+        assertEquals(5, vehicle.getCurrentSpeed());
     }
 }
