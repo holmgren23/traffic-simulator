@@ -12,14 +12,19 @@ public class TrafficSimulator {
     private int nextID;
     private Random rand;
 
-    //Constructor for testing, Should make a new one for controller/view in future
+    //Deterministic random constructor for testing of random functions. Calls constructor below
     public TrafficSimulator() {
+        this(new Random());
+    }
+
+    //Constructor for testing, Should make a new one for controller/view in future
+    public TrafficSimulator(Random rand) {
         road = new Road(200);
         cars = new ArrayList<>();
         tickCount = 0;
         spawnRate = 5;
         nextID = 0;
-        rand = new Random();
+        this.rand = rand;
     }
 
     public Road getRoad() {
