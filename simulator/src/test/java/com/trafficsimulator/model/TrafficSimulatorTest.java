@@ -1,6 +1,8 @@
 package com.trafficsimulator.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +45,22 @@ class TrafficSimulatorTest {
         simulator.getRoad().setCell(lastcell, new Car(0, lastcell, 5));
 
         assertEquals(Integer.MAX_VALUE, simulator.gap(lastcell));
+    }
+
+    @Test
+    void testSpawnCar_spawnDoNotWrongTick() {
+        simulator.tickUpdate();
+
+        assertNull(simulator.getRoad().getCell(0));
+    }
+
+    @Test
+    void testSpawnCar_spawnOnCorrectTick() {
+        for (int i = 0; i < simulator.getSpawnRate(); i++) {
+            simulator.tickUpdate();
+        }
+
+        assertNotNull(simulator.getRoad().getCell(0));
     }
 
     
