@@ -11,9 +11,10 @@ public class Main {
 
         System.out.println("Testing main method");
         TrafficSimulator ts = new TrafficSimulator();
-        MainView.setSimulator(ts);
-
+        Controller controller = new Controller(ts);
         MainView view = new MainView();
+        MainView.setController(controller);
+        MainView.setModel(ts);
         view.startWindow();
 
     }
