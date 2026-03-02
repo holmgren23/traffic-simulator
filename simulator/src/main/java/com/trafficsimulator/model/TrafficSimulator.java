@@ -108,9 +108,9 @@ public class TrafficSimulator {
     }
 
     // Function spawns cars based on spawnrate per tick.
-    private void spawnCar() {
+    private void spawnCar(Road road) {
         if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
-            Car newCar = new Car(nextID, 0, rand.nextInt(5, 10));
+            Car newCar = new Car(nextID, 0, rand.nextInt(4, 6));
             cars.add(newCar);
             road.setCell(0, newCar);
             nextID++;
@@ -122,8 +122,8 @@ public class TrafficSimulator {
     public void tickUpdate() {
         tickCount++;
         moveCars(updateSpeeds());
-        spawnCar();
         stats.update(cars);
+        spawnCar(road);
     }
 
     public Statistics getStats() {
