@@ -1,5 +1,9 @@
 package com.trafficsimulator.view;
+import com.trafficsimulator.model.Obstacle;
+import com.trafficsimulator.model.ObstacleType;
 import com.trafficsimulator.model.Road;
+import com.trafficsimulator.model.RoadObject;
+import com.trafficsimulator.model.Car;
 import com.trafficsimulator.model.TrafficSimulator;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
@@ -28,11 +32,17 @@ public class RoadView extends Canvas implements SubView {
         for (int i = 0; i < cells; i+=3){
             gc.fillRect(i * cellWidth, 20, cellWidth, 5);
         }
-        //Draw the Cars
-        gc.setFill(Color.RED);
+        //Draw the road object
         for (int i = 0; i < cells; i++) {
-            if (road.getCell(i) != null) {
+            RoadObject obj = road.getCell(i);
+            if (obj instanceof Car) {
+                gc.setFill(Color.RED);
                 gc.fillRect(i * cellWidth + 1, 28, cellWidth, height / 4);
+            } else if (obj instanceof Obstacle obs) {
+                if (obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
+                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                    gc.fillRect(i * cellWidth + 1, 0, cellWidth, height);
+                }
             }
         }
     }

@@ -11,14 +11,17 @@ public class TrafficSimulator {
     private int spawnRate;
     private int nextID;
     private Random rand;
-    private Statistics stats = new Statistics();
+    private Statistics stats;
+    private ArrayList<Obstacle> obstacles;
+    private double slowProbability = 0.2;
+    private double speedupProbability = 0.3;
 
-    //Deterministic random constructor for testing of random functions. Calls constructor below
+    // Deterministic random constructor for testing of random functions. Calls constructor below
     public TrafficSimulator() {
         this(new Random());
     }
 
-    //Constructor for testing, Should make a new one for controller/view in future
+    // Constructor for testing, Should make a new one for controller/view in future
     public TrafficSimulator(Random rand) {
         road = new Road(200);
         cars = new ArrayList<>();
@@ -26,9 +29,12 @@ public class TrafficSimulator {
         spawnRate = 5;
         nextID = 0;
         this.rand = rand;
+        stats = new Statistics();
+        obstacles = new ArrayList<>();
     
     }
 
+    //Getters
     public Road getRoad() {
         return road;
     }
@@ -45,11 +51,21 @@ public class TrafficSimulator {
         return spawnRate;
     }
 
-    // Finds gap from car to the car ahead
+    // Adds an obbstacle to the list of obstacles. Should maybe be moved somewhere else
+    public void addObstacle(Obstacle obstacle) {
+        obstacles.add(obstacle);
+        road.setCell(obstacle.getPosition(), obstacle);
+    }
+
+    // HELPER: Finds gap from car to the car ahead
     public int gap(int position) {
         int i = position + 1;
         // Find gap to the next car
-        while (i < road.getLength() && road.getCell(i) == null) {
+        while (i < road.getLength()) {
+            RoadObject obj = road.getCell(i);
+            if (obj != null && !(obj instanceof Obstacle obs && obs.isOpen())) {
+                break;
+            }
             i++;
         }
         // If end of road, just go
@@ -59,11 +75,19 @@ public class TrafficSimulator {
         return i - position - 1;
     }
 
-    // Update Positions for cars, Does not move
+    // HELPER: gets the object that is ahead
+    private RoadObject getObjectAhead(int position) {
+        int gapAhead = gap(position);
+        if (gapAhead == Integer.MAX_VALUE) {
+            return null;
+        }
+        return road.getCell(position + gapAhead + 1);
+    }
+
+    // Calculates Positions for cars, Does not move
     private HashMap<Car, Integer> updateSpeeds() {
         HashMap<Car, Integer> newSpeeds = new HashMap<>();
-        double slowProbability = 0.2;
-        double speedupProbability = 0.3;
+
         for (Car car : cars) {
             int speed = car.getCurrentSpeed();
             int maxSpeed = car.getMaxSpeed();
@@ -71,19 +95,28 @@ public class TrafficSimulator {
 
             // New Speed calculation
             speed = Math.min(speed + 1, maxSpeed); // Speed up
+
             if (speed > 0 && rand.nextDouble() < slowProbability) {
                 speed -= 1; // Random speed change
             }
             else if (speed < maxSpeed && rand.nextDouble() < speedupProbability) {
                 speed = Math.min(speed + 1, maxSpeed); // Random speed change
             }
+
             speed = Math.min(speed, gap(position)); // Break
+
+            RoadObject ahead = getObjectAhead(position);
+            if (ahead instanceof Obstacle obs && !obs.isOpen() && gap(position) == 0) {
+                speed = 0;
+            }
+
             newSpeeds.put(car, speed); // New final speed
         }
 
         return newSpeeds;
     }
 
+    //Moves all the cars to their new positons and removes cars that leave the road
     private void moveCars(HashMap<Car, Integer> newSpeeds) {
         ArrayList<Car> carsToRemove = new ArrayList<>();
         // Moves cars to new positions
@@ -93,7 +126,9 @@ public class TrafficSimulator {
             int newPos = oldPos + newSpeed;
 
             // Remove from old cell
-            road.setCell(oldPos, null);
+            if (road.getCell(oldPos) == car) {
+                road.setCell(oldPos, null);
+            }
             // If car exits road - Currently removes, can be changed to loop
             if (newPos >= road.getLength()) {
                 carsToRemove.add(car); // Collects all cars that should be removed
@@ -118,13 +153,22 @@ public class TrafficSimulator {
         }
     }
 
+    // Updates all the states for all obstacles
+    private void updateObstacles() {
+        for (Obstacle obstacle : obstacles) {
+            obstacle.claculatePriority(tickCount);
+        }
+    }
+
     // Tick update. Should be callable by controller
     public void tickUpdate() {
         tickCount++;
+        updateObstacles();
         moveCars(updateSpeeds());
         stats.update(cars);
         spawnCar(road);
     }
+
 
     public Statistics getStats() {
         return stats;
