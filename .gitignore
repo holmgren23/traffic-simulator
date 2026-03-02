@@ -1,1 +1,3 @@
 simulator/target/
+simulator/mktestfiles.sh
+.vscode/settings.json
