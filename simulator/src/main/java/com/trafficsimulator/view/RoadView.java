@@ -5,7 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 
-public class RoadView extends Canvas {
+public class RoadView extends Canvas implements SubView {
     private final Road road;
 
     public RoadView(TrafficSimulator simulator, int width) {
@@ -13,7 +13,7 @@ public class RoadView extends Canvas {
         this.road = simulator.getRoad();
     }
 
-    public void render(){
+    public void update(){
         GraphicsContext gc = getGraphicsContext2D();
         double width = getWidth();
         double height = getHeight();

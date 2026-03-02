@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class StatisticsView extends VBox {
+public class StatisticsView extends VBox implements SubView {
     private final TrafficSimulator simulator;
     private final Label totalCarsLabel = new Label();
     private final Label avgSpeedLabel = new Label();

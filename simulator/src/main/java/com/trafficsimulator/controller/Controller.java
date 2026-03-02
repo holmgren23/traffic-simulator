@@ -1,16 +1,14 @@
 package com.trafficsimulator.controller;
 
 import com.trafficsimulator.model.TrafficSimulator;
-import com.trafficsimulator.view.RoadView;
-import com.trafficsimulator.view.StatisticsView;
+import com.trafficsimulator.view.SubView;
 import javafx.application.Platform;
 import java.lang.Thread;
 
 public class Controller {
   private final int TICK_LENGTH = 100;
   private TrafficSimulator ts;
-  private RoadView roadView;
-  private StatisticsView statsView;
+  private SubView[] views;
   private long nextTick;
 
   public Controller(TrafficSimulator ts) {
@@ -18,17 +16,20 @@ public class Controller {
     this.nextTick = System.currentTimeMillis() + TICK_LENGTH; 
   }
   
-  public void setRoadView(RoadView roadView) {
-    this.roadView = roadView;
+  public void setSubViews(SubView... subViews) {
+    this.views = subViews;
   }
   
-  public void setStatsView(StatisticsView statsView) {
-    this.statsView = statsView;
-  }
-
   public void loop() {
     while (true) {
       this.tick();
+    }
+  }
+  
+  private void updateViews() {
+    if (this.views.length <= 0) { return; }
+    for (SubView sv : this.views) {
+      sv.update();
     }
   }
 
@@ -47,8 +48,7 @@ public class Controller {
     this.nextTick = currentTime + TICK_LENGTH;
     this.ts.tickUpdate();
     Platform.runLater(() -> {
-    roadView.render();
-    statsView.update();
+      this.updateViews();
     });
   }
 
