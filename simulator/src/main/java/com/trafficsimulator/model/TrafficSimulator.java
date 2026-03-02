@@ -71,13 +71,13 @@ public class TrafficSimulator {
 
             // New Speed calculation
             speed = Math.min(speed + 1, maxSpeed); // Speed up
-            speed = Math.min(speed, gap(position)); // Break
             if (speed > 0 && rand.nextDouble() < slowProbability) {
                 speed -= 1; // Random speed change
             }
-            if (speed < maxSpeed && rand.nextDouble() < speedupProbability) {
-                speed += 1; // Random speed change
+            else if (speed < maxSpeed && rand.nextDouble() < speedupProbability) {
+                speed = Math.min(speed + 1, maxSpeed); // Random speed change
             }
+            speed = Math.min(speed, gap(position)); // Break
             newSpeeds.put(car, speed); // New final speed
         }
 
@@ -110,7 +110,7 @@ public class TrafficSimulator {
     // Function spawns cars based on spawnrate per tick.
     private void spawnCar() {
         if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
-            Car newCar = new Car(nextID, 0, rand.nextInt(1, 10));
+            Car newCar = new Car(nextID, 0, rand.nextInt(5, 10));
             cars.add(newCar);
             road.setCell(0, newCar);
             nextID++;

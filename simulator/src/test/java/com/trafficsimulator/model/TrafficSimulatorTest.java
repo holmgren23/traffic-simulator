@@ -2,6 +2,7 @@ package com.trafficsimulator.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -99,6 +100,34 @@ class TrafficSimulatorTest {
         simulator.tickUpdate();
 
         assertEquals(1, car1.getPosition());
+    }
+
+    @Test
+    void updateSpeeds_speedCannotExceedMaxSpeed() {
+        Car car = new Car(0, 0, 3);
+        car.setCurrentSpeed(3); // already at max
+        simulator.getRoad().setCell(0, car);
+        simulator.getCars().add(car);
+
+        for (int i = 0; i < 20; i++) {
+            simulator.tickUpdate();
+            assertTrue(car.getCurrentSpeed() <= car.getMaxSpeed());
+        }
+    }
+
+    @Test
+    void updateSpeeds_speedCannotExceedGap() {
+        Car car1 = new Car(0, 0, 5);
+        Car car2 = new Car(1, 3, 5); // gap of 2
+        simulator.getRoad().setCell(0, car1);
+        simulator.getRoad().setCell(3, car2);
+        simulator.getCars().add(car1);
+        simulator.getCars().add(car2);
+
+        simulator.tickUpdate();
+
+        // car1 should never have moved past car2
+        assertTrue(car1.getPosition() < car2.getPosition());
     }
 
     @Test
