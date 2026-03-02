@@ -11,6 +11,7 @@ public class TrafficSimulator {
     private int spawnRate;
     private int nextID;
     private Random rand;
+    private Statistics stats = new Statistics();
 
     //Deterministic random constructor for testing of random functions. Calls constructor below
     public TrafficSimulator() {
@@ -24,7 +25,8 @@ public class TrafficSimulator {
         tickCount = 0;
         spawnRate = 5;
         nextID = 0;
-        this.rand = rand;
+        rand = new Random();
+    
     }
 
     public Road getRoad() {
@@ -60,7 +62,8 @@ public class TrafficSimulator {
     // Update Positions for cars, Does not move
     private HashMap<Car, Integer> updateSpeeds() {
         HashMap<Car, Integer> newSpeeds = new HashMap<>();
-        double slowProbability = 0.1;
+        double slowProbability = 0.2;
+        double speedupProbability = 0.3;
         for (Car car : cars) {
             int speed = car.getCurrentSpeed();
             int maxSpeed = car.getMaxSpeed();
@@ -69,8 +72,11 @@ public class TrafficSimulator {
             // New Speed calculation
             speed = Math.min(speed + 1, maxSpeed); // Speed up
             speed = Math.min(speed, gap(position)); // Break
-            if (speed > 1 && rand.nextDouble() < slowProbability) {
+            if (speed > 0 && rand.nextDouble() < slowProbability) {
                 speed -= 1; // Random speed change
+            }
+            if (speed < maxSpeed && rand.nextDouble() < speedupProbability) {
+                speed += 1; // Random speed change
             }
             newSpeeds.put(car, speed); // New final speed
         }
@@ -104,10 +110,11 @@ public class TrafficSimulator {
     // Function spawns cars based on spawnrate per tick.
     private void spawnCar() {
         if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
-            Car newCar = new Car(nextID, 0, rand.nextInt(1, 5));
+            Car newCar = new Car(nextID, 0, rand.nextInt(1, 10));
             cars.add(newCar);
             road.setCell(0, newCar);
             nextID++;
+            stats.incrementTotalCarsSpawned();
         }
     }
 
@@ -116,5 +123,11 @@ public class TrafficSimulator {
         tickCount++;
         moveCars(updateSpeeds());
         spawnCar();
+        stats.update(cars);
     }
+
+    public Statistics getStats() {
+        return stats;
+    }
+
 }

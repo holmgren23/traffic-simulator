@@ -56,8 +56,8 @@ public class MainView extends Application {
         simThread.setDaemon(true);
         simThread.start();
 
-        StackPane root = new StackPane(roadView);
-        root.setStyle("-fx-background-color: green;");
+        StackPane root = new StackPane(roadView, statsView);
+        root.setStyle("-fx-background-color: rgb(15, 54, 22);");
         Scene window = new Scene(root, windowWidth, windowHeight);
         primaryStage.setScene(window);
         primaryStage.show();
