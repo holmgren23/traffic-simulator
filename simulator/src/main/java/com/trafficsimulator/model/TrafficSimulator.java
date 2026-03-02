@@ -128,6 +128,7 @@ public class TrafficSimulator {
             // Remove from old cell
             if (road.getCell(oldPos) == car) {
                 road.setCell(oldPos, null);
+
             }
             // If car exits road - Currently removes, can be changed to loop
             if (newPos >= road.getLength()) {
@@ -135,6 +136,9 @@ public class TrafficSimulator {
                 continue;
             }
             // Place in new cell
+            if (road.getCell(newPos) instanceof Obstacle) {
+                newPos++;
+            }
             car.setPosition(newPos);
             car.setCurrentSpeed(newSpeed);
             road.setCell(newPos, car);
@@ -145,7 +149,7 @@ public class TrafficSimulator {
     // Function spawns cars based on spawnrate per tick.
     private void spawnCar(Road road) {
         if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
-            Car newCar = new Car(nextID, 0, rand.nextInt(4, 6));
+            Car newCar = new Car(nextID, 0, rand.nextInt(2, 6));
             cars.add(newCar);
             road.setCell(0, newCar);
             nextID++;
