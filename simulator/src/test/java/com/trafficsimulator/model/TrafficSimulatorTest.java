@@ -6,15 +6,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import java.util.Random;
 
 
 class TrafficSimulatorTest {
     private TrafficSimulator simulator;
     
+    //Randommizer seed, Triggers on 4096;
+    int seed = 4095;
+
     @BeforeEach
     void setUp() {
-        simulator = new TrafficSimulator();
+        //Seed 4096 triggers the random probability of slowdown on the first tick
+        //Any seed before 4096 won't trigger it
+        
+        simulator = new TrafficSimulator(new Random(seed));
     }
 
     @Test
@@ -84,7 +90,12 @@ class TrafficSimulatorTest {
 
         simulator.tickUpdate();
 
-        assertEquals(5, car.getPosition());
+        if (seed == 4096) {
+            //Slowdown triggered
+            assertEquals(4, car.getPosition());
+        }else{
+            assertEquals(5, car.getPosition());
+        }
     }
 
     @Test
