@@ -19,6 +19,10 @@ public class Controller {
     this.statsView = statsView;
     this.nextTick = System.currentTimeMillis() + TICK_LENGTH; 
   }
+  
+  public void setRoadView(RoadView roadView) {
+    this.roadView = roadView;
+  }
 
   public void loop() {
     while (true) {

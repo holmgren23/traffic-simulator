@@ -13,8 +13,13 @@ public class TrafficSimulator {
     private Random rand;
     private Statistics stats = new Statistics();
 
-    //Constructor for testing, Should make a new one for controller/view in future
+    //Deterministic random constructor for testing of random functions. Calls constructor below
     public TrafficSimulator() {
+        this(new Random());
+    }
+
+    //Constructor for testing, Should make a new one for controller/view in future
+    public TrafficSimulator(Random rand) {
         road = new Road(200);
         cars = new ArrayList<>();
         tickCount = 0;
@@ -28,9 +33,17 @@ public class TrafficSimulator {
         return road;
     }
 
-    //getCars()?
-    //getTickCount()?
-    //getSpawnRate()?
+    public ArrayList<Car> getCars() {
+        return cars;
+    }
+
+    public int getCurrentTick() {
+        return tickCount;
+    }
+
+    public int getSpawnRate() {
+        return spawnRate;
+    }
 
     // Finds gap from car to the car ahead
     public int gap(int position) {
