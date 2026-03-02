@@ -51,9 +51,9 @@ public class MainView extends Application {
         System.out.println(ts);
         RoadView roadView = new RoadView(ts, windowWidth);
         StatisticsView statsView = new StatisticsView(ts);
+        SubView[] subViews = new SubView[] {roadView, statsView};
 
-        controller.setRoadView(roadView);
-        controller.setStatsView(statsView);
+        controller.setSubViews(subViews);
         Thread simThread = new Thread(() -> controller.loop());
         simThread.setDaemon(true);
         simThread.start();
