@@ -25,7 +25,7 @@ public class TrafficSimulator {
         tickCount = 0;
         spawnRate = 5;
         nextID = 0;
-        rand = new Random();
+        this.rand = rand;
     
     }
 

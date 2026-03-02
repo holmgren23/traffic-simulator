@@ -50,8 +50,10 @@ public class MainView extends Application {
 
         System.out.println(ts);
         RoadView roadView = new RoadView(ts, windowWidth);
+        StatisticsView statsView = new StatisticsView(ts);
 
         controller.setRoadView(roadView);
+        controller.setStatsView(statsView);
         Thread simThread = new Thread(() -> controller.loop());
         simThread.setDaemon(true);
         simThread.start();

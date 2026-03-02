@@ -13,15 +13,17 @@ public class Controller {
   private StatisticsView statsView;
   private long nextTick;
 
-  public Controller(TrafficSimulator ts, RoadView roadView, StatisticsView statsView) {
+  public Controller(TrafficSimulator ts) {
     this.ts = ts;
-    this.roadView = roadView;
-    this.statsView = statsView;
     this.nextTick = System.currentTimeMillis() + TICK_LENGTH; 
   }
   
   public void setRoadView(RoadView roadView) {
     this.roadView = roadView;
+  }
+  
+  public void setStatsView(StatisticsView statsView) {
+    this.statsView = statsView;
   }
 
   public void loop() {
