@@ -10,6 +10,8 @@ public class Controller {
   private TrafficSimulator ts;
   private SubView[] views;
   private long nextTick;
+  private boolean running;
+  private boolean stopped;
 
   public Controller(TrafficSimulator ts) {
     this.ts = ts;
@@ -21,8 +23,22 @@ public class Controller {
   }
   
   public void loop() {
-    while (true) {
-      this.tick();
+    this.stopped = false;
+    this.running = true;
+
+    while (! this.stopped) {
+      if (this.running) {
+        this.tick();
+      }
+      else {
+        try {
+          Thread.sleep(10);
+        }
+        catch (InterruptedException e) {
+          System.err.println("Exception: " + e.getMessage());
+          return;
+        }
+      }
     }
   }
   
@@ -52,4 +68,15 @@ public class Controller {
     });
   }
 
+  public void toggleRunning() {
+    this.running = this.running ? false : true;
+  }
+  
+  public boolean isRunning() {
+    return this.running;
+  }
+  
+  public void stopSimulation() {
+    this.stopped = true;
+  }
 }

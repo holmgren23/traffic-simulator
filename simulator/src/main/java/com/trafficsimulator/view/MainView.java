@@ -4,6 +4,7 @@ import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.controller.Controller;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -51,14 +52,16 @@ public class MainView extends Application {
         System.out.println(ts);
         RoadView roadView = new RoadView(ts, windowWidth);
         StatisticsView statsView = new StatisticsView(ts);
-        SubView[] subViews = new SubView[] {roadView, statsView};
+        TransportView transportView = new TransportView(controller);
+        SubView[] subViews = new SubView[] {roadView, statsView, transportView};
 
         controller.setSubViews(subViews);
         Thread simThread = new Thread(() -> controller.loop());
         simThread.setDaemon(true);
         simThread.start();
 
-        StackPane root = new StackPane(roadView, statsView);
+        StackPane root = new StackPane(roadView, statsView, transportView);
+        StackPane.setAlignment(transportView, Pos.BOTTOM_CENTER);
         root.setStyle("-fx-background-color: rgb(15, 54, 22);");
         Scene window = new Scene(root, windowWidth, windowHeight);
         primaryStage.setScene(window);
