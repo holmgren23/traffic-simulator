@@ -35,7 +35,7 @@ public class Obstacle implements RoadObject {
 
     private void calculateTrafficLight(int tickCount) {
         int greenDuration = 20;
-        int redDuration = 0;
+        int redDuration = 20;
         //This is maths out to a boolean that is true and false equal to greens/reds duration
         int cycleLength = greenDuration + redDuration;
         open = (tickCount % cycleLength) < greenDuration;

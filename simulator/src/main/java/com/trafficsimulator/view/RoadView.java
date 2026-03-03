@@ -36,8 +36,9 @@ public class RoadView extends Canvas implements SubView {
         // Draw the road object
         for (int i = 0; i < cells; i++) {
             RoadObject obj = road.getCell(i);
-            if (obj instanceof Car) {
-                gc.setFill(Color.RED);
+            if (obj instanceof Car car) {
+                gc.setFill(car.getColor());
+                gc.fillRect(width -  (i * cellWidth) - cellWidth, 20, cellWidth, height / 8);
                 gc.fillRect(i * cellWidth + 1, getHeight() - 20, cellWidth, height / 8);
             } else if (obj instanceof Obstacle obs) {
                 if (obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
