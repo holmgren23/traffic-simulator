@@ -34,15 +34,19 @@ public class RoadView extends Canvas implements SubView {
         }
         //Draw the road object
         for (int i = 0; i < cells; i++) {
-            RoadObject obj = road.getCell(i);
-            if (obj instanceof Car) {
-                gc.setFill(Color.RED);
-                gc.fillRect(i * cellWidth + 1, 28, cellWidth, height / 4);
-            } else if (obj instanceof Obstacle obs) {
+            RoadObject obstacle = road.getObstacle(i);
+            RoadObject vehicle = road.getCell(i);
+
+            if (obstacle instanceof Obstacle obs) {
                 if (obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
                     gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
                     gc.fillRect(i * cellWidth + 1, 0, cellWidth, height);
                 }
+            }
+
+            if (vehicle instanceof Car) {
+                gc.setFill(Color.RED);
+                gc.fillRect(i * cellWidth + 1, 28, cellWidth, height / 4);
             }
         }
     }
