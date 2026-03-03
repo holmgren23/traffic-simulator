@@ -38,7 +38,7 @@ public class RoadView extends Canvas implements SubView {
             RoadObject obj = road.getCell(i);
             if (obj instanceof Car car) {
                 gc.setFill(car.getColor());
-                gc.fillRect(width -  (i * cellWidth) - cellWidth, 20, cellWidth, height / 8);
+                gc.fillRect(width - (i * cellWidth) - cellWidth, 20, cellWidth, height / 8);
                 gc.fillRect(i * cellWidth + 1, getHeight() - 20, cellWidth, height / 8);
             } else if (obj instanceof Obstacle obs) {
                 if (obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
@@ -46,17 +46,13 @@ public class RoadView extends Canvas implements SubView {
                     double centerX = i * cellWidth + cellWidth / 2;
 
                     gc.setFill(Color.GRAY);
-                    gc.fillRect(centerX-2, 55, cellWidth, roadMiddle - 15);
+                    gc.fillRect(centerX - 2, 55, cellWidth, roadMiddle - 15);
 
                     gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
-                    gc.fillOval(centerX-6, 45, 14, 14);
+                    gc.fillOval(centerX - 6, 45, 14, 14);
                 }
             }
 
-            if (vehicle instanceof Car) {
-                gc.setFill(Color.RED);
-                gc.fillRect(i * cellWidth + 1, 28, cellWidth, height / 4);
-            }
         }
     }
 }
