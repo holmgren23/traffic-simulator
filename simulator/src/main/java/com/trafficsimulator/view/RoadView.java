@@ -1,5 +1,10 @@
 package com.trafficsimulator.view;
+
+import com.trafficsimulator.model.Obstacle;
+import com.trafficsimulator.model.ObstacleType;
 import com.trafficsimulator.model.Road;
+import com.trafficsimulator.model.RoadObject;
+import com.trafficsimulator.model.Car;
 import com.trafficsimulator.model.TrafficSimulator;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
@@ -9,30 +14,46 @@ public class RoadView extends Canvas implements SubView {
     private final Road road;
 
     public RoadView(TrafficSimulator simulator, int width) {
-        super(width, 40);
+        super(width, 80);
         this.road = simulator.getRoad();
     }
 
-    public void update(){
+    public void update() {
         GraphicsContext gc = getGraphicsContext2D();
         double width = getWidth();
         double height = getHeight();
         int cells = road.getLength();
-        double cellWidth = width/cells;
+        double cellWidth = width / cells;
 
-        //Draw the road
+        // Draw the road
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, width, height);
-       //Draw the lines on the road
+        // Draw the lines on the road
         gc.setFill(Color.WHITE);
-        for (int i = 0; i < cells; i+=3){
-            gc.fillRect(i * cellWidth, 20, cellWidth, 5);
+        for (int i = 0; i < cells; i += 3) {
+            gc.fillRect(i * cellWidth, getHeight() / 2, cellWidth, getHeight() / 20);
         }
-        //Draw the Cars
-        gc.setFill(Color.RED);
+        // Draw the road object
         for (int i = 0; i < cells; i++) {
-            if (road.getCell(i) != null) {
-                gc.fillRect(i * cellWidth + 1, 28, cellWidth, height / 4);
+            RoadObject obstacle = road.getObstacle(i);
+            RoadObject vehicle = road.getCell(i);
+
+            if (obstacle instanceof Obstacle obs) {
+                if (obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
+                    double centerX = i * cellWidth + cellWidth / 2;
+                    double roadMiddle = height / 2;
+
+                    gc.setFill(Color.GRAY);
+                    gc.fillRect(centerX - 2, 55, cellWidth, roadMiddle - 15);
+
+                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                    gc.fillOval(centerX - 6, 45, 14, 14);
+                }
+            }
+
+            if (vehicle instanceof Car car) {
+                gc.setFill(car.getColor());
+                gc.fillRect(i * cellWidth + 1, getHeight() - 20, cellWidth, height / 8);
             }
         }
     }
