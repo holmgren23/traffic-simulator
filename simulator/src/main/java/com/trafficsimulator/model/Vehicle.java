@@ -1,5 +1,6 @@
 package com.trafficsimulator.model;
 
+import javafx.scene.paint.Color;
 
 public class Vehicle implements RoadObject {
     private int id;
@@ -9,6 +10,14 @@ public class Vehicle implements RoadObject {
     private int acceleration;
     private int deceleration;
     private int position;
+    private Color color;
+    private static final Color[] CAR_COLORS = {
+            Color.RED,
+            Color.BLUE,
+            Color.GREEN,
+            Color.YELLOW,
+            Color.ORANGE
+    };
 
     public Vehicle(int id, int startPosition, int maxSpeed) {
         this.id = id;
@@ -16,6 +25,7 @@ public class Vehicle implements RoadObject {
         this.length = 1;
         this.maxSpeed = maxSpeed;
         this.currentSpeed = maxSpeed;
+        this.color = CAR_COLORS[id % CAR_COLORS.length];
     }
 
     public int getID() {
@@ -49,4 +59,9 @@ public class Vehicle implements RoadObject {
     public void setPosition(int newPosition) {
         position = newPosition;
     }
+
+    public Color getColor(){
+        return color;
+    }
+
 }
