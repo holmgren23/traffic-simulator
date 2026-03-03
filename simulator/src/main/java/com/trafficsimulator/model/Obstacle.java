@@ -27,7 +27,7 @@ public class Obstacle implements RoadObject {
         return open;
     }
 
-    public void claculatePriority(int tickCount) {
+    public void calculatePriority(int tickCount) {
         switch (type) {
             case TRAFFIC_LIGHT -> calculateTrafficLight(tickCount);
         }

@@ -54,7 +54,7 @@ public class TrafficSimulator {
     // Adds an obbstacle to the list of obstacles. Should maybe be moved somewhere else
     public void addObstacle(Obstacle obstacle) {
         obstacles.add(obstacle);
-        road.setCell(obstacle.getPosition(), obstacle);
+        road.setObstacle(obstacle.getPosition(), obstacle);
     }
 
     // HELPER: Finds gap from car to the car ahead
@@ -62,8 +62,13 @@ public class TrafficSimulator {
         int i = position + 1;
         // Find gap to the next car
         while (i < road.getLength()) {
-            RoadObject obj = road.getCell(i);
-            if (obj != null && !(obj instanceof Obstacle obs && obs.isOpen())) {
+            RoadObject vehicle = road.getCell(i);
+            RoadObject obstacle = road.getObstacle(i);
+        
+            if (vehicle != null) {
+                break;
+            }
+            if (obstacle instanceof Obstacle obs && !obs.isOpen()) {
                 break;
             }
             i++;
@@ -160,7 +165,7 @@ public class TrafficSimulator {
     // Updates all the states for all obstacles
     private void updateObstacles() {
         for (Obstacle obstacle : obstacles) {
-            obstacle.claculatePriority(tickCount);
+            obstacle.calculatePriority(tickCount);
         }
     }
 

@@ -52,6 +52,11 @@ public class RoadView extends Canvas implements SubView {
                     gc.fillOval(centerX-6, 45, 14, 14);
                 }
             }
+
+            if (vehicle instanceof Car) {
+                gc.setFill(Color.RED);
+                gc.fillRect(i * cellWidth + 1, 28, cellWidth, height / 4);
+            }
         }
     }
 }

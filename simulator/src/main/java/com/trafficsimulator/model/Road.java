@@ -1,21 +1,33 @@
 package com.trafficsimulator.model;
 
 public class Road {
-    private RoadObject[] road;
+    private RoadObject[] vehicles;
+    private RoadObject[] obstacles;
 
     public Road(int length) {
-        road = new RoadObject[length];
+        vehicles = new RoadObject[length];
+        obstacles = new RoadObject[length];
     }
 
     public int getLength() {
-        return road.length;
+        return vehicles.length;
     }
 
+    // Vehicle layer
     public RoadObject getCell(int index) {
-        return road[index];
+        return vehicles[index];
     }
 
-    public void setCell(int index, RoadObject roadObject) {
-        road[index] = roadObject;
+    public void setCell(int index, RoadObject obj) {
+        vehicles[index] = obj;
+    }
+
+    // Obstacle layer
+    public RoadObject getObstacle(int index) {
+        return obstacles[index];
+    }
+
+    public void setObstacle(int index, RoadObject obj) {
+        obstacles[index] = obj;
     }
 }
