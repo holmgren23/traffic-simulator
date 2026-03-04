@@ -14,8 +14,12 @@ public class TransportView extends HBox implements SubView {
   private final String[] BUTTON_LABELS = new String[] {"Pause", "Reset", "Stop"};
   private final ArrayList<EventHandler<ActionEvent>> eventHandlers = new ArrayList<>(
     Arrays.asList(
-      e -> this.controller.toggleRunning(),
-      e -> System.out.println("ReeeSet"),
+      e -> {
+        this.controller.toggleRunning();
+        boolean isRunning = this.controller.isRunning();
+        this.buttons[0].setText(isRunning ? " Pause " : "Resume");
+      },
+      e -> this.controller.resetSimulation(),
       e -> this.controller.stopSimulation()
     )
   );
@@ -39,7 +43,5 @@ public class TransportView extends HBox implements SubView {
   }
 
   public void update() {
-    boolean isRunning = this.controller.isRunning();
-    this.buttons[0].setText(isRunning ? "Pause" : "Resume");
   };
 }

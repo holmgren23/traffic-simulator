@@ -2,8 +2,8 @@ package com.trafficsimulator.controller;
 
 import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.view.SubView;
+
 import javafx.application.Platform;
-import java.lang.Thread;
 
 public class Controller {
   private final int TICK_LENGTH = 100;
@@ -78,5 +78,28 @@ public class Controller {
   
   public void stopSimulation() {
     this.stopped = true;
+    Platform.exit();
+  }
+  
+  public void resetSimulation() {
+    this.running = false;
+
+    try {
+      Thread.sleep(15);
+    } catch (InterruptedException e) {
+      System.err.println("Exception: " + e.getMessage());
+      return;
+    }
+
+    this.ts.resetSimulation();
+
+    try {
+      Thread.sleep(10);
+    } catch (InterruptedException e) {
+      System.err.println("Exception: " + e.getMessage());
+      return;
+    }
+
+    this.running = true;
   }
 }

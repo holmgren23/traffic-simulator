@@ -11,7 +11,7 @@ public class TrafficSimulator {
     private int spawnRate;
     private int nextID;
     private Random rand;
-    private Statistics stats = new Statistics();
+    private Statistics stats;
 
     //Deterministic random constructor for testing of random functions. Calls constructor below
     public TrafficSimulator() {
@@ -20,13 +20,17 @@ public class TrafficSimulator {
 
     //Constructor for testing, Should make a new one for controller/view in future
     public TrafficSimulator(Random rand) {
+        spawnRate = 5;
+        this.rand = rand;
+        this.initializeSimulation();
+    }
+    
+    private void initializeSimulation() {
         road = new Road(200);
         cars = new ArrayList<>();
         tickCount = 0;
-        spawnRate = 5;
         nextID = 0;
-        this.rand = rand;
-    
+        stats = new Statistics();
     }
 
     public Road getRoad() {
@@ -130,4 +134,9 @@ public class TrafficSimulator {
         return stats;
     }
 
+    public void resetSimulation() {
+        road = null;
+        cars = null;
+        this.initializeSimulation();
+    }
 }
