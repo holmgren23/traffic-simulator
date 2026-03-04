@@ -3,49 +3,82 @@ package com.trafficsimulator.controller;
 import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.execution.Timeout;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 
 import com.trafficsimulator.model.TrafficSimulator;
-import com.trafficsimulator.view.RoadView;
 
 public class ControllerTest {
   Controller controller;
   TrafficSimulator ts;
-  RoadView rv;
+  Thread t;
 
-  @BeforeAll
+  @BeforeEach
   public void setUp() {
     ts = new TrafficSimulator();
-    rv = new RoadView(ts, 1280);
     controller = new Controller(ts);
-    controller.setRoadView(rv);
+    t = new Thread(() -> controller.loop());
   }
   
-  @AfterAll
+  @AfterEach
   public void cleanUp() {
     ts = null;
-    rv = null;
     controller = null;
+    t = null;
   }
-
+  
   @Test
-  public void testTick() {
-    long start = System.currentTimeMillis();
-    //controller.tick();
+  public void testStartAndStopSimulation() {
+    int activeThreads = Thread.activeCount();
+    t.start();
+    assertEquals(activeThreads + 1, Thread.activeCount());
+    controller.stopSimulation();
+    try {
+      t.join();
+    }
+    catch(Exception e) {
+      System.out.println("Failed to join controller thread");
+      System.out.println(e);
+    }
+    assertEquals(activeThreads, Thread.activeCount());
   }
+  
+  @Nested
+  public class TestsWithMoreSetup {
+    @BeforeEach
+    public void setUp() {
+      ts = new TrafficSimulator();
+      controller = new Controller(ts);
+      t = new Thread(() -> controller.loop());
+      t.start();
+    }
+    
+    @AfterEach
+    public void cleanUp() throws InterruptedException {
+      t.join();
+      ts = null;
+      controller = null;
+      t = null;
+    }
 
-  @Test
-  //@Timeout(5) // Poll at most 5 seconds
-  void pollUntil() throws InterruptedException {
-  	//while (asynchronousResultNotAvailable()) {
-  		//Thread.sleep(250); // custom poll interval
-  	//}
-  	// Obtain the asynchronous result and perform assertions
+    @Test
+    public void testIsRunning() {
+      assertEquals(true, controller.isRunning());
+      controller.stopSimulation();
+    }
+    
+    @Test
+    public void testToggleRunning() {
+      assertEquals(true, controller.isRunning());
+      controller.toggleRunning();
+      assertEquals(false, controller.isRunning());
+      controller.toggleRunning();
+      assertEquals(true, controller.isRunning());
+    }
   }
 }
