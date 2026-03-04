@@ -4,6 +4,8 @@ import javafx.scene.layout.HBox;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +41,33 @@ public class TransportView extends HBox implements SubView {
       this.buttons[i] = new Button(this.BUTTON_LABELS[i]);
       this.buttons[i].setOnAction(this.eventHandlers.get(i));
     }
+    this.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
+      if (e.getCode() != KeyCode.ENTER) { e.consume(); }
+    });
+    this.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+      System.out.println("Key pressed: " + e.getCode());
+      switch (e.getCode()) {
+        case KeyCode.SPACE:
+        case KeyCode.K:
+          System.out.println("Pause/Resume");
+          this.buttons[0].fire();
+          e.consume();
+          break;
+        case KeyCode.BACK_SPACE:
+          System.out.println("Reset");
+          this.buttons[1].fire();
+          e.consume();
+          break;
+        case KeyCode.ESCAPE:
+          System.out.println("Stop");
+          this.buttons[2].fire();
+          e.consume();
+          break;
+      
+        default:
+          break;
+      }
+    });
     this.getChildren().addAll(buttons);
   }
 
