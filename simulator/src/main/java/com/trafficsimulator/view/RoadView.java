@@ -12,10 +12,12 @@ import javafx.scene.paint.Color;
 
 public class RoadView extends Canvas implements SubView {
     private final Road road;
+    private final Road road2;
 
-    public RoadView(TrafficSimulator simulator, int width) {
+    public RoadView(TrafficSimulator ts, TrafficSimulator ts2, int width) {
         super(width, 80);
-        this.road = simulator.getRoad();
+        this.road = ts.getRoad();
+        this.road2 = ts2.getRoad();
     }
 
     public void update() {
@@ -54,6 +56,29 @@ public class RoadView extends Canvas implements SubView {
             if (vehicle instanceof Car car) {
                 gc.setFill(car.getColor());
                 gc.fillRect(i * cellWidth + 1, getHeight() - 20, cellWidth, height / 8);
+            }
+        }
+        //road2
+        for (int i = 0; i < cells; i++) {
+            RoadObject vehicle2 = road2.getCell(i);
+            RoadObject obstacle2 = road2.getObstacle(i);
+
+            if (obstacle2 instanceof Obstacle obs) {
+                if (obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
+                    double centerX = i * cellWidth + cellWidth / 2 - 1; 
+                    double roadMiddle = height / 2;
+
+                    gc.setFill(Color.GRAY);
+                    gc.fillRect(centerX - 2, 15, cellWidth, roadMiddle - 15);
+
+                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                    gc.fillOval(centerX - 6, 5, 14, 14);
+                }
+            }
+
+            if (vehicle2 instanceof Car car) {
+                gc.setFill(car.getColor());
+                gc.fillRect(width - (i * cellWidth) - cellWidth + 1, 10, cellWidth, height / 8);
             }
         }
     }

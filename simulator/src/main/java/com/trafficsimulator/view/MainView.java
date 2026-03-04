@@ -14,7 +14,7 @@ public class MainView extends Application {
     private static int windowHeight = 0;
     private static Controller controller;
     private static TrafficSimulator ts;
-
+    private static TrafficSimulator ts2;
 
     // Constructor that allows setting custom window size
     public MainView(int width, int height) {
@@ -35,8 +35,9 @@ public class MainView extends Application {
         MainView.controller = controller;
     }
     
-    public static void setModel(TrafficSimulator ts) {
+    public static void setModel(TrafficSimulator ts, TrafficSimulator ts2) {
         MainView.ts = ts;
+        MainView.ts2 = ts2;
     }
 
     // Launches the JavaFX application
@@ -49,7 +50,7 @@ public class MainView extends Application {
         primaryStage.setTitle("Traffic Simulator");
 
         System.out.println(ts);
-        RoadView roadView = new RoadView(ts, windowWidth);
+        RoadView roadView = new RoadView(ts, ts2, windowWidth);
         StatisticsView statsView = new StatisticsView(ts);
         SubView[] subViews = new SubView[] {roadView, statsView};
 

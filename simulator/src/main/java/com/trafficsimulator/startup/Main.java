@@ -13,12 +13,14 @@ public class Main {
 
         System.out.println("Testing main method");
         TrafficSimulator ts = new TrafficSimulator();
+        TrafficSimulator ts2 = new TrafficSimulator();
         Obstacle trafficLight = new Obstacle(ObstacleType.TRAFFIC_LIGHT, 100);
         ts.addObstacle(trafficLight);
-        Controller controller = new Controller(ts);
+        ts2.addObstacle(trafficLight);
+        Controller controller = new Controller(ts, ts2);
         MainView view = new MainView();
         MainView.setController(controller);
-        MainView.setModel(ts);
+        MainView.setModel(ts, ts2);
         view.startWindow();
 
     }
