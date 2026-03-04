@@ -11,14 +11,15 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 
 public class RoadView extends Canvas implements SubView {
-    private final Road road;
+    private final TrafficSimulator ts;
 
     public RoadView(TrafficSimulator simulator, int width) {
-        super(width, 80);
-        this.road = simulator.getRoad();
+        super(width, 40);
+        this.ts = simulator;
     }
 
-    public void update() {
+    public void update(){
+        Road road = this.ts.getRoad();
         GraphicsContext gc = getGraphicsContext2D();
         double width = getWidth();
         double height = getHeight();
