@@ -3,6 +3,7 @@ package com.trafficsimulator.model;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -55,4 +56,14 @@ public class CarTest {
     public void testgetLength(){
         assertEquals(1, car.getLength());
     }
+
+    @Test
+public void testCarIsVehicle() {
+    assertTrue(car instanceof Vehicle);
+}
+
+@Test
+public void testCarIsRoadObject() {
+    assertTrue(car instanceof RoadObject);
+}
 }
