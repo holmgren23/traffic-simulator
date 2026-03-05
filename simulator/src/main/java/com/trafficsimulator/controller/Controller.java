@@ -1,6 +1,7 @@
 package com.trafficsimulator.controller;
 
 import com.trafficsimulator.model.TrafficSimulator;
+import com.trafficsimulator.utility.InputParametersDTO;
 import com.trafficsimulator.view.SubView;
 
 import javafx.application.Platform;
@@ -16,6 +17,14 @@ public class Controller {
   public Controller(TrafficSimulator ts) {
     this.ts = ts;
     this.nextTick = System.currentTimeMillis() + TICK_LENGTH; 
+  }
+  
+  public void setInputParameters(InputParametersDTO params) {
+    System.out.println("Spawn rate before: ");
+    System.out.println(this.ts.getSpawnRate());
+    this.ts.setSpawnRate(params.getSpawnRate());
+    System.out.println("Spawn rate after: ");
+    System.out.println(this.ts.getSpawnRate());
   }
   
   public void setSubViews(SubView... subViews) {

@@ -33,7 +33,6 @@ public class TrafficSimulator {
         cars = new ArrayList<>();
         tickCount = 0;
         nextID = 0;
-        this.rand = rand;
         stats = new Statistics();
         obstacles = new ArrayList<>();
     
@@ -54,6 +53,10 @@ public class TrafficSimulator {
 
     public int getSpawnRate() {
         return spawnRate;
+    }
+    
+    public void setSpawnRate(int spawnRate) {
+        this.spawnRate = spawnRate;
     }
 
     // Adds an obbstacle to the list of obstacles. Should maybe be moved somewhere else
