@@ -21,7 +21,7 @@ public class RoadView extends Canvas implements SubView {
     }
 
     public void update(){
-        Road road = this.ts.getRoad();
+        //Road road = this.ts.getRoad();
         GraphicsContext gc = getGraphicsContext2D();
         double width = getWidth();
         double height = getHeight();
