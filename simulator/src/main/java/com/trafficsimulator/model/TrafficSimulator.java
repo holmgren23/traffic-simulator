@@ -6,13 +6,12 @@ import java.util.Random;
 
 public class TrafficSimulator {
     private ArrayList<Car> cars;
-    private Road road;
+    private Map map;
     private int tickCount;
     private int spawnRate;
     private int nextID;
     private Random rand;
     private Statistics stats;
-    private ArrayList<Obstacle> obstacles;
     private double slowProbability = 0.2;
     private double speedupProbability = 0.3;
 
@@ -23,22 +22,16 @@ public class TrafficSimulator {
 
     // Constructor for testing, Should make a new one for controller/view in future
     public TrafficSimulator(Random rand) {
-        road = new Road(200);
+        map = new Map();
         cars = new ArrayList<>();
         tickCount = 0;
         spawnRate = 5;
         nextID = 0;
         this.rand = rand;
         stats = new Statistics();
-        obstacles = new ArrayList<>();
-    
     }
 
     //Getters
-    public Road getRoad() {
-        return road;
-    }
-
     public ArrayList<Car> getCars() {
         return cars;
     }
@@ -51,48 +44,14 @@ public class TrafficSimulator {
         return spawnRate;
     }
 
-    // Adds an obbstacle to the list of obstacles. Should maybe be moved somewhere else
-    public void addObstacle(Obstacle obstacle) {
-        obstacles.add(obstacle);
-        road.setObstacle(obstacle.getPosition(), obstacle);
-    }
-
-    // HELPER: Finds gap from car to the car ahead
-    public int gap(int position) {
-        int i = position + 1;
-        // Find gap to the next car
-        while (i < road.getLength()) {
-            RoadObject vehicle = road.getCell(i);
-            RoadObject obstacle = road.getObstacle(i);
-        
-            if (vehicle != null) {
-                break;
-            }
-            if (obstacle instanceof Obstacle obs && !obs.isOpen()) {
-                break;
-            }
-            i++;
-        }
-        // If end of road, just go
-        if (i >= road.getLength()) {
-            return Integer.MAX_VALUE;
-        }
-        return i - position - 1;
-    }
-
-    // HELPER: gets the object that is ahead
-    private RoadObject getObjectAhead(int position) {
-        int gapAhead = gap(position);
-        if (gapAhead == Integer.MAX_VALUE) {
-            return null;
-        }
-        return road.getCell(position + gapAhead + 1);
+    public Map getMap() {
+        return map;
     }
 
     // Calculates Positions for cars, Does not move
     private HashMap<Car, Integer> updateSpeeds() {
         HashMap<Car, Integer> newSpeeds = new HashMap<>();
-
+        Road road = map.getRoads().get(0);
         for (Car car : cars) {
             int speed = car.getCurrentSpeed();
             int maxSpeed = car.getMaxSpeed();
@@ -108,10 +67,10 @@ public class TrafficSimulator {
                 speed = Math.min(speed + 1, maxSpeed); // Random speed change
             }
 
-            speed = Math.min(speed, gap(position)); // Break
+            speed = Math.min(speed, map.gap(road, position)); // Break
 
-            RoadObject ahead = getObjectAhead(position);
-            if (ahead instanceof Obstacle obs && !obs.isOpen() && gap(position) == 0) {
+            RoadObject ahead = map.getObjectAhead(road, position);
+            if (ahead instanceof Obstacle obs && !obs.isOpen() && map.gap(road, position) == 0) {
                 speed = 0;
             }
 
@@ -124,6 +83,7 @@ public class TrafficSimulator {
     //Moves all the cars to their new positons and removes cars that leave the road
     private void moveCars(HashMap<Car, Integer> newSpeeds) {
         ArrayList<Car> carsToRemove = new ArrayList<>();
+        Road road = map.getRoads().get(0);
         // Moves cars to new positions
         for (Car car : cars) {
             int oldPos = car.getPosition();
@@ -152,7 +112,8 @@ public class TrafficSimulator {
     }
 
     // Function spawns cars based on spawnrate per tick.
-    private void spawnCar(Road road) {
+    private void spawnCar() {
+        Road road = map.getRoads().get(0);
         if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
             Car newCar = new Car(nextID, 0, rand.nextInt(2, 6));
             cars.add(newCar);
@@ -162,20 +123,13 @@ public class TrafficSimulator {
         }
     }
 
-    // Updates all the states for all obstacles
-    private void updateObstacles() {
-        for (Obstacle obstacle : obstacles) {
-            obstacle.calculatePriority(tickCount);
-        }
-    }
-
     // Tick update. Should be callable by controller
     public void tickUpdate() {
         tickCount++;
-        updateObstacles();
+        map.updateObstacles(tickCount);
         moveCars(updateSpeeds());
         stats.update(cars);
-        spawnCar(road);
+        spawnCar();
     }
 
 
