@@ -8,13 +8,15 @@ import javafx.application.Platform;
 public class Controller {
   private final int TICK_LENGTH = 100;
   private TrafficSimulator ts;
+  private TrafficSimulator ts2;
   private SubView[] views;
   private long nextTick;
   private boolean running;
   private boolean stopped;
 
-  public Controller(TrafficSimulator ts) {
+  public Controller(TrafficSimulator ts, TrafficSimulator ts2) {
     this.ts = ts;
+    this.ts2 = ts2;
     this.nextTick = System.currentTimeMillis() + TICK_LENGTH; 
   }
   
@@ -63,6 +65,7 @@ public class Controller {
 
     this.nextTick = currentTime + TICK_LENGTH;
     this.ts.tickUpdate();
+    this.ts2.tickUpdate();
     Platform.runLater(() -> {
       this.updateViews();
     });
