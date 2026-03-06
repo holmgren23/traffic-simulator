@@ -3,11 +3,17 @@ package com.trafficsimulator.model;
 public class Road {
     private RoadObject[] vehicles;
     private RoadObject[] obstacles;
+    private boolean reversed;
 
     //Road that can take a vehicle and obstacle in the same cell but different layers(arrays)
-    public Road(int length) {
+    public Road(int length, boolean reversed) {
         vehicles = new RoadObject[length];
         obstacles = new RoadObject[length];
+        this.reversed = reversed;
+    }
+
+    public boolean isReversed(){
+        return reversed;
     }
 
     //Gets road length

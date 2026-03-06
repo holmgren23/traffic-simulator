@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 public class Map {
     private ArrayList<Road> roads;
+    private MapType type;
 
     //initialize a new map that can hold roads
-    public Map() {
+    public Map(MapType type) {
+        this.type = type;
         roads = new ArrayList<>();
     }
     //Add a road to a map
@@ -20,6 +22,10 @@ public class Map {
     //add an obstacle to a road based on the obstacles position
     public void addObstacle(Obstacle obstacle, Road road) {
         road.setObstacle(obstacle.getPosition(), obstacle);
+    }
+
+    public MapType getType(){
+        return type;
     }
 
     //Update all obstacles for all roads.
@@ -76,9 +82,9 @@ public class Map {
     }
 
     public static Map Highway() {
-        Map map = new Map();
-        Road road1 = new Road(200);
-        Road road2 = new Road(200);
+        Map map = new Map(MapType.HIGHWAY);
+        Road road1 = new Road(200, false);
+        Road road2 = new Road(200, true);
         map.addRoad(road1);
         map.addRoad(road2);
         map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, 100), road1);
