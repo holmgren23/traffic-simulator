@@ -1,6 +1,8 @@
 package com.trafficsimulator.controller;
 
 import com.trafficsimulator.model.TrafficSimulator;
+import com.trafficsimulator.utility.InputParametersDTO;
+import com.trafficsimulator.view.MainView;
 import com.trafficsimulator.view.SubView;
 
 import javafx.application.Platform;
@@ -12,10 +14,22 @@ public class Controller {
   private long nextTick;
   private boolean running;
   private boolean stopped;
+  
+  public Controller() {
+    this.nextTick = System.currentTimeMillis() + TICK_LENGTH; 
+  }
 
   public Controller(TrafficSimulator ts) {
     this.ts = ts;
     this.nextTick = System.currentTimeMillis() + TICK_LENGTH; 
+  }
+  
+  public void createSimulation(InputParametersDTO params) {
+    ts = new TrafficSimulator(
+      (int)params.getSpawnRate(),
+      (int)params.getRoadLength()
+    );
+    MainView.setModel(ts);
   }
   
   public void setSubViews(SubView... subViews) {

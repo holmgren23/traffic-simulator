@@ -13,12 +13,16 @@ public class Main {
         System.out.println("Main method started");
 
         System.out.println("Testing main method");
+<<<<<<< HEAD
         TrafficSimulator ts = new TrafficSimulator(new Random(), Map.createHighway(200));
 
         Controller controller = new Controller(ts);
+=======
+
+        Controller controller = new Controller();
+>>>>>>> 26c81dc5396405ff5e25ab802ece2ecef9e23a23
         MainView view = new MainView();
         MainView.setController(controller);
-        MainView.setModel(ts);
         view.startWindow();
 
     }
