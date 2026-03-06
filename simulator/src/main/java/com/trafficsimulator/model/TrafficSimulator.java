@@ -28,11 +28,10 @@ public class TrafficSimulator {
     }
     
     private void initializeSimulation() {
-        road = new Road(200);
+        map = new Map();
         cars = new ArrayList<>();
         tickCount = 0;
         nextID = 0;
-        this.rand = rand;
         stats = new Statistics();
     }
 
@@ -56,8 +55,9 @@ public class TrafficSimulator {
     // Calculates Positions for cars, Does not move
     private HashMap<Car, Integer> updateSpeeds() {
         HashMap<Car, Integer> newSpeeds = new HashMap<>();
-        Road road = map.getRoads().get(0);
+
         for (Car car : cars) {
+            Road road = car.getRoad();
             int speed = car.getCurrentSpeed();
             int maxSpeed = car.getMaxSpeed();
             int position = car.getPosition();
@@ -88,9 +88,10 @@ public class TrafficSimulator {
     //Moves all the cars to their new positons and removes cars that leave the road
     private void moveCars(HashMap<Car, Integer> newSpeeds) {
         ArrayList<Car> carsToRemove = new ArrayList<>();
-        Road road = map.getRoads().get(0);
+        
         // Moves cars to new positions
         for (Car car : cars) {
+            Road road = car.getRoad();
             int oldPos = car.getPosition();
             int newSpeed = newSpeeds.get(car);
             int newPos = oldPos + newSpeed;
@@ -106,9 +107,6 @@ public class TrafficSimulator {
                 continue;
             }
             // Place in new cell
-            if (road.getCell(newPos) instanceof Obstacle) {
-                newPos++;
-            }
             car.setPosition(newPos);
             car.setCurrentSpeed(newSpeed);
             road.setCell(newPos, car);
@@ -118,13 +116,15 @@ public class TrafficSimulator {
 
     // Function spawns cars based on spawnrate per tick.
     private void spawnCar() {
-        Road road = map.getRoads().get(0);
-        if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
-            Car newCar = new Car(nextID, 0, rand.nextInt(2, 6));
-            cars.add(newCar);
-            road.setCell(0, newCar);
-            nextID++;
-            stats.incrementTotalCarsSpawned();
+        for (Road road : map.getRoads()) {
+            if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
+                Car newCar = new Car(nextID, 0, rand.nextInt(2, 6));
+                newCar.setRoad(road);
+                cars.add(newCar);
+                road.setCell(0, newCar);
+                nextID++;
+                stats.incrementTotalCarsSpawned();
+            }
         }
     }
 
@@ -137,14 +137,15 @@ public class TrafficSimulator {
         spawnCar();
     }
 
-
     public Statistics getStats() {
         return stats;
     }
 
     public void resetSimulation() {
-        road = null;
-        cars = null;
-        this.initializeSimulation();
+        map.clearVehicle();
+        cars = new ArrayList<>();
+        tickCount = 0;
+        nextID = 0;
+        stats = new Statistics();
     }
 }

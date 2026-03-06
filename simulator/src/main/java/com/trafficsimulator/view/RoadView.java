@@ -1,109 +1,77 @@
 package com.trafficsimulator.view;
 
-import com.trafficsimulator.model.Obstacle;
-import com.trafficsimulator.model.ObstacleType;
-import com.trafficsimulator.model.Road;
-import com.trafficsimulator.model.RoadObject;
-import com.trafficsimulator.model.Car;
+import com.trafficsimulator.model.*;
+import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 
 public class RoadView extends Canvas implements SubView {
-    private final Road road;
-    private final Road road2;
+    private final Map map;
 
-<<<<<<< HEAD
-    public RoadView(TrafficSimulator ts, TrafficSimulator ts2, int width) {
+    public RoadView(TrafficSimulator ts, int width) {
         super(width, 80);
-        this.road = ts.getRoad();
-        this.road2 = ts2.getRoad();
-=======
-    public RoadView(Road road, int width) {
-        super(width, 80);
-        this.road = road;
->>>>>>> feature/intersection
+        this.map = ts.getMap();
     }
 
     public void update(){
-        //Road road = this.ts.getRoad();
         GraphicsContext gc = getGraphicsContext2D();
         double width = getWidth();
         double height = getHeight();
-        int cells = road.getLength();
+        List<Road> roads = map.getRoads();
+        int cells = roads.get(0).getLength();
         double cellWidth = width / cells;
 
-        // Draw the road
+        //Draw the road
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, width, height);
-        // Draw the lines on the road
+
+        //Draw the lines on the road
         gc.setFill(Color.WHITE);
         for (int i = 0; i < cells; i += 3) {
             gc.fillRect(i * cellWidth, getHeight() / 2, cellWidth, getHeight() / 20);
         }
+
+        for (int r = 0; r < roads.size(); r++) {
+            boolean reversed = r % 2 != 0;
+            double yOffset = reversed ? 5 : height - 20;
+            drawRoad(gc, roads.get(r), width, height, cellWidth, yOffset, reversed);
+        }        
+    }
+
+    //Draw the road object
+    private void drawRoad(GraphicsContext gc, Road road, double width, double height, double cellWidth, double yOffset, boolean reversed) {
+        int cells = road.getLength();
+
         for (int i = 0; i < cells; i++) {
-<<<<<<< HEAD
-            RoadObject obstacle = road.getObstacle(i);
-            RoadObject vehicle = road.getCell(i);
+            int cellIndex = reversed ? cells - 1 - i : i;
+            double x = i * cellWidth;
 
-            if (obstacle instanceof Obstacle obs) {
-                if (obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
-                    double centerX = i * cellWidth + cellWidth / 2;
-                    double roadMiddle = height / 2;
-
-=======
-            // Draw vehicles
-            RoadObject obj = road.getCell(i);
-            if (obj instanceof Car car) {
-                gc.setFill(car.getColor());
-                gc.fillRect(width - (i * cellWidth) - cellWidth, 20, cellWidth, height / 8);
-                gc.fillRect(i * cellWidth + 1, getHeight() - 20, cellWidth, height / 8);
-            }
-
-            // Draw obstacles
-            RoadObject obs = road.getObstacle(i);
-            if (obs instanceof Obstacle obstacle) {
-                if (obstacle.getType() == ObstacleType.TRAFFIC_LIGHT) {
-                    double roadMiddle = height / 2;
-                    double centerX = i * cellWidth + cellWidth / 2;
->>>>>>> feature/intersection
+            //Draw obstacles
+            RoadObject obstacle = road.getObstacle(cellIndex);
+            if (obstacle instanceof Obstacle obs && obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
+                double centerX = x + cellWidth / 2;
+                if (reversed) {
+                    //top road - draw light below the cars
                     gc.setFill(Color.GRAY);
-                    gc.fillRect(centerX - 2, 55, cellWidth, roadMiddle - 15);
-                    gc.setFill(obstacle.isOpen() ? Color.GREEN : Color.RED);
-                    gc.fillOval(centerX - 6, 45, 14, 14);
+                    gc.fillRect(centerX - 2, yOffset + 10, cellWidth, 10);
+                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                    gc.fillOval(centerX - 6, yOffset + 20, 14, 14);
+                } else {
+                    //bottom road - draw light above the cars
+                    gc.setFill(Color.GRAY);
+                    gc.fillRect(centerX - 2, yOffset - 10, cellWidth, 10);
+                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                    gc.fillOval(centerX - 6, yOffset - 20, 14, 14);
                 }
             }
-<<<<<<< HEAD
 
+            // Draw vehicles
+            RoadObject vehicle = road.getCell(cellIndex);
             if (vehicle instanceof Car car) {
                 gc.setFill(car.getColor());
-                gc.fillRect(i * cellWidth + 1, getHeight() - 20, cellWidth, height / 8);
+                gc.fillRect(x + 1, yOffset, cellWidth, height / 8);
             }
-        }
-        //road2
-        for (int i = 0; i < cells; i++) {
-            RoadObject vehicle2 = road2.getCell(i);
-            RoadObject obstacle2 = road2.getObstacle(i);
-
-            if (obstacle2 instanceof Obstacle obs) {
-                if (obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
-                    double centerX = i * cellWidth + cellWidth / 2 - 1; 
-                    double roadMiddle = height / 2;
-
-                    gc.setFill(Color.GRAY);
-                    gc.fillRect(centerX - 2, 15, cellWidth, roadMiddle - 15);
-
-                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
-                    gc.fillOval(centerX - 6, 5, 14, 14);
-                }
-            }
-
-            if (vehicle2 instanceof Car car) {
-                gc.setFill(car.getColor());
-                gc.fillRect(width - (i * cellWidth) - cellWidth + 1, 10, cellWidth, height / 8);
-            }
-=======
->>>>>>> feature/intersection
         }
     }
 }

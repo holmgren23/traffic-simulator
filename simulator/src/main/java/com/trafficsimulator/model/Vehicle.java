@@ -11,6 +11,7 @@ public class Vehicle implements RoadObject {
     private int deceleration;
     private int position;
     private Color color;
+    private Road road;
     private static final Color[] CAR_COLORS = {
             Color.RED,
             Color.BLUE,
@@ -62,6 +63,14 @@ public class Vehicle implements RoadObject {
 
     public Color getColor(){
         return color;
+    }
+
+    public Road getRoad() {
+        return road;
+    }
+
+    public void setRoad(Road road) {
+        this.road = road;
     }
 
 }

@@ -65,4 +65,13 @@ public class Map {
         }
         return road.getCell(position + gapAhead + 1);
     }
+
+    //Clears all vehicles from the map
+    public void clearVehicle() {
+        for (Road road : roads) {
+            for (int i = 0; i < road.getLength(); i++) {
+                road.setCell(i, null);
+            }
+        }
+    }
 }
