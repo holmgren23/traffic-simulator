@@ -77,6 +77,7 @@ public class Map {
         }
     }
 
+    //Two way road constructor with traffic light on each side
     public static Map Highway() {
         Map map = new Map();
         Road road1 = new Road(200);
@@ -84,7 +85,7 @@ public class Map {
         map.addRoad(road1);
         map.addRoad(road2);
         map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, 100), road1);
-        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, 100), road2);
+        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, 99), road2);
         return map;
     }
 }

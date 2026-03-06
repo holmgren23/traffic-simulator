@@ -54,15 +54,15 @@ public class RoadView extends Canvas implements SubView {
                 if (reversed) {
                     //top road - draw light below the cars
                     gc.setFill(Color.GRAY);
-                    gc.fillRect(centerX - 2, yOffset + 10, cellWidth, 10);
+                    gc.fillRect(centerX - 2, yOffset - 5, cellWidth, 25);
                     gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
-                    gc.fillOval(centerX - 6, yOffset + 20, 14, 14);
+                    gc.fillOval(centerX - 6, yOffset + 10, 14, 14);
                 } else {
                     //bottom road - draw light above the cars
                     gc.setFill(Color.GRAY);
-                    gc.fillRect(centerX - 2, yOffset - 10, cellWidth, 10);
+                    gc.fillRect(centerX - 2, yOffset - 10, cellWidth, 30);
                     gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
-                    gc.fillOval(centerX - 6, yOffset - 20, 14, 14);
+                    gc.fillOval(centerX - 6, yOffset - 10, 14, 14);
                 }
             }
 

@@ -15,6 +15,7 @@ public class Road {
         this.direction = direction;
     }
 
+    //Default contructor
     public Road(int length) {
         this(length, Direction.EAST);
     }
@@ -32,7 +33,6 @@ public class Road {
     public RoadObject getCell(int index) {
         return vehicles[index];
     }
-
     public void setCell(int index, RoadObject obj) {
         vehicles[index] = obj;
     }
@@ -41,7 +41,6 @@ public class Road {
     public RoadObject getObstacle(int index) {
         return obstacles[index];
     }
-
     public void setObstacle(int index, RoadObject obj) {
         obstacles[index] = obj;
     }

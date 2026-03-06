@@ -20,6 +20,7 @@ public class Vehicle implements RoadObject {
             Color.ORANGE
     };
 
+    //Standard vehicle contructor
     public Vehicle(int id, int startPosition, int maxSpeed) {
         this.id = id;
         this.position = startPosition;
@@ -29,6 +30,7 @@ public class Vehicle implements RoadObject {
         this.color = CAR_COLORS[id % CAR_COLORS.length];
     }
 
+    //Setters and Getters
     public int getID() {
         return id;
     }
