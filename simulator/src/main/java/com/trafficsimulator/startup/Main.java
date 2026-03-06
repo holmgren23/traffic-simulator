@@ -1,9 +1,7 @@
 package com.trafficsimulator.startup;
 
 import com.trafficsimulator.view.*;
-import com.trafficsimulator.model.Obstacle;
-import com.trafficsimulator.model.ObstacleType;
-import com.trafficsimulator.model.TrafficSimulator;
+import com.trafficsimulator.model.*;
 import com.trafficsimulator.controller.Controller;
 
 public class Main {
@@ -13,14 +11,21 @@ public class Main {
 
         System.out.println("Testing main method");
         TrafficSimulator ts = new TrafficSimulator();
-        TrafficSimulator ts2 = new TrafficSimulator();
+
+        Road road1 = new Road(200);
+        Road road2 = new Road(200);
+        ts.getMap().addRoad(road1);
+        ts.getMap().addRoad(road2);
+
         Obstacle trafficLight = new Obstacle(ObstacleType.TRAFFIC_LIGHT, 100);
-        ts.addObstacle(trafficLight);
-        ts2.addObstacle(trafficLight);
-        Controller controller = new Controller(ts, ts2);
+        Obstacle trafficLight2 = new Obstacle(ObstacleType.TRAFFIC_LIGHT, 100);
+        ts.getMap().addObstacle(trafficLight, road1);
+        ts.getMap().addObstacle(trafficLight2, road2);
+
+        Controller controller = new Controller(ts);
         MainView view = new MainView();
         MainView.setController(controller);
-        MainView.setModel(ts, ts2);
+        MainView.setModel(ts);
         view.startWindow();
 
     }
