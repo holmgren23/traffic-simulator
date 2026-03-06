@@ -8,31 +8,28 @@ public class TrafficSimulator {
     private ArrayList<Car> cars;
     private Map map;
     private int tickCount;
-    private int spawnRate,roadLength, minSpeed, maxSpeed;
+    private int spawnRate, minSpeed, maxSpeed;
     private int nextID;
     private Random rand;
     private Statistics stats;
     private double slowProbability = 0.2;
     private double speedupProbability = 0.3;
 
-    // Deterministic random constructor for testing of random functions. Calls constructor below
-/*     public TrafficSimulator() {
-        this(new Random());
-    } */
-    
+    //Main constructor   
     public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed) {
         this.rand = new Random();
         this.spawnRate = spawnRate;
-        this.roadLength = roadLength;
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
 
         this.initializeSimulation(Map.createHighway(roadLength));
     }
 
-    // Constructor for testing, Should make a new one for controller/view in future
+    //Deterministic random constructor for testing of random functions.
     public TrafficSimulator(Random rand, Map map) {
-        spawnRate = 5;
+        this.spawnRate = 5;
+        this.minSpeed = 2;
+        this.maxSpeed = 6;
         this.rand = rand;
         this.initializeSimulation(map);
     }

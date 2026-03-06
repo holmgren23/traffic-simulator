@@ -5,11 +5,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.AfterAll;
+
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import com.trafficsimulator.model.Map;
+import com.trafficsimulator.model.MapType;
+import com.trafficsimulator.model.Road;
+import java.util.Random;
 
 import com.trafficsimulator.model.TrafficSimulator;
 
@@ -17,10 +20,13 @@ public class ControllerTest {
   Controller controller;
   TrafficSimulator ts;
   Thread t;
+  Map map;
 
   @BeforeEach
   public void setUp() {
-    ts = new TrafficSimulator();
+    map = new Map(MapType.ONE_WAY);
+    map.addRoad(new Road(200));
+    ts = new TrafficSimulator(new Random(), map);
     controller = new Controller(ts);
     t = new Thread(() -> controller.loop());
   }
@@ -52,10 +58,14 @@ public class ControllerTest {
   public class TestsWithMoreSetup {
     @BeforeEach
     public void setUp() {
-      ts = new TrafficSimulator();
+      Map map = new Map(MapType.ONE_WAY);
+      map.addRoad(new Road(200));
+      ts = new TrafficSimulator(new Random(), map);
       controller = new Controller(ts);
       t = new Thread(() -> controller.loop());
       t.start();
+      try { Thread.sleep(50); } //Give loop() Time to run
+      catch (InterruptedException e) { }
     }
     
     @AfterEach

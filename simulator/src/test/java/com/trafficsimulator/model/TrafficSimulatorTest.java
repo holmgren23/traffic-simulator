@@ -21,9 +21,10 @@ class TrafficSimulatorTest {
         //Seed 4096 triggers the random probability of slowdown on the first tick
         //Any seed before 4096 won't trigger it
         
-        simulator = new TrafficSimulator(new Random(seed));
         mainRoad = new Road(200);
-        simulator.getMap().addRoad(mainRoad);
+        Map map = new Map(MapType.ONE_WAY);
+        map.addRoad(mainRoad);
+        simulator = new TrafficSimulator(new Random(seed), map);
     }
 
     @Test

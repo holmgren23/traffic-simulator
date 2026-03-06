@@ -12,7 +12,7 @@ class MapTest {
 
     @BeforeEach
     void setUp() {
-        map = new Map();
+        map = new Map(MapType.ONE_WAY);
         road = new Road(200);
         map.addRoad(road);
     }
