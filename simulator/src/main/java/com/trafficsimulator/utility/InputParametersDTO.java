@@ -1,13 +1,19 @@
 package com.trafficsimulator.utility;
 
 public class InputParametersDTO {
-  private int spawnRate;
+  private double spawnRate;
+  private Integer roadLength;
 
-  public InputParametersDTO(int spawnRate) {
+  public InputParametersDTO(double spawnRate, Integer roadLength) {
     this.spawnRate = spawnRate;
+    this.roadLength = roadLength;
   }
   
-  public int getSpawnRate() {
+  public double getSpawnRate() {
     return this.spawnRate;
+  }
+  
+  public Integer getRoadLength() {
+    return this.getRoadLength();
   }
 }

@@ -20,11 +20,7 @@ public class Controller {
   }
   
   public void setInputParameters(InputParametersDTO params) {
-    System.out.println("Spawn rate before: ");
-    System.out.println(this.ts.getSpawnRate());
-    this.ts.setSpawnRate(params.getSpawnRate());
-    System.out.println("Spawn rate after: ");
-    System.out.println(this.ts.getSpawnRate());
+    this.ts.setSpawnRate((int)params.getSpawnRate());
   }
   
   public void setSubViews(SubView... subViews) {

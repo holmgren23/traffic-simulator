@@ -1,20 +1,21 @@
 package com.trafficsimulator.utility;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.AfterAll;
 
 public class InputParametersDTOTest {
   private InputParametersDTO dto;
 
-  @BeforeEach
+  @BeforeAll
   public void setUp() {
     dto = new InputParametersDTO(3);
   }
   
-  @AfterEach
+  @AfterAll
   public void cleanUp() {
     dto = null;
   }
