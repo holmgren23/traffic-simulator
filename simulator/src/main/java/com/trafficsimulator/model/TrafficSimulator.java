@@ -8,8 +8,7 @@ public class TrafficSimulator {
     private ArrayList<Car> cars;
     private Map map;
     private int tickCount;
-    private int spawnRate;
-    private int roadLength;
+    private int spawnRate,roadLength, minSpeed, maxSpeed;
     private int nextID;
     private Random rand;
     private Statistics stats;
@@ -21,11 +20,14 @@ public class TrafficSimulator {
         this(new Random());
     } */
     
-    public TrafficSimulator(int spawnRate, int roadLength) {
-        this(new Random(), Map.createHighway(roadLength));
+    public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed) {
+        this.rand = new Random();
         this.spawnRate = spawnRate;
         this.roadLength = roadLength;
+        this.minSpeed = minSpeed;
+        this.maxSpeed = maxSpeed;
 
+        this.initializeSimulation(Map.createHighway(roadLength));
     }
 
     // Constructor for testing, Should make a new one for controller/view in future
@@ -134,7 +136,7 @@ public class TrafficSimulator {
     private void spawnCar() {
         for (Road road : map.getRoads()) {
             if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
-                Car newCar = new Car(nextID, 0, rand.nextInt(2, 6));
+                Car newCar = new Car(nextID, 0, rand.nextInt(this.minSpeed, this.maxSpeed + 1));
                 newCar.setRoad(road);
                 cars.add(newCar);
                 road.setCell(0, newCar);

@@ -27,7 +27,9 @@ public class Controller {
   public void createSimulation(InputParametersDTO params) {
     ts = new TrafficSimulator(
       (int)params.getSpawnRate(),
-      (int)params.getRoadLength()
+      (int)params.getRoadLength(),
+      (int)params.getMinSpeed(),
+      (int)params.getMaxSpeed()
     );
     MainView.setModel(ts);
   }
