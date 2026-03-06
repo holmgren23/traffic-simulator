@@ -35,7 +35,7 @@ public class MenuView extends GridPane {
     
     this.startSimButton = new Button("Start");
     this.startSimButton.setOnAction(e -> {
-      this.controller.setInputParameters(this.getInputValues());
+      this.controller.createSimulation(this.getInputValues());
       mainView.showSimulation();
     });
     //this.getChildren().add(startSimButton);

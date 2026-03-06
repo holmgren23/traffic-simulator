@@ -10,14 +10,10 @@ public class Main {
         System.out.println("Main method started");
 
         System.out.println("Testing main method");
-        TrafficSimulator ts = new TrafficSimulator();
 
-        ts.setMap(Map.Highway());
-
-        Controller controller = new Controller(ts);
+        Controller controller = new Controller();
         MainView view = new MainView();
         MainView.setController(controller);
-        MainView.setModel(ts);
         view.startWindow();
 
     }

@@ -14,6 +14,6 @@ public class InputParametersDTO {
   }
   
   public Integer getRoadLength() {
-    return this.getRoadLength();
+    return this.roadLength;
   }
 }
