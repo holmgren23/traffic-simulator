@@ -17,7 +17,7 @@ public class TrafficSimulator {
 
     // Deterministic random constructor for testing of random functions. Calls constructor below
     public TrafficSimulator() {
-        this(new Random(), Map.Highway());
+        this(new Random(), Map.createHighway());
     }
 
     // Constructor for testing, Should make a new one for controller/view in future
