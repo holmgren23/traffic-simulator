@@ -48,6 +48,10 @@ public class TrafficSimulator {
         return spawnRate;
     }
 
+    public void setMap(Map map) {
+        this.map = map;
+    }
+
     public Map getMap() {
         return map;
     }
