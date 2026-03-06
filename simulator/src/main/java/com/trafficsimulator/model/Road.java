@@ -3,16 +3,29 @@ package com.trafficsimulator.model;
 public class Road {
     private RoadObject[] vehicles;
     private RoadObject[] obstacles;
+    private Direction direction;
+    public enum Direction {
+        EAST, WEST, NORTH, SOUTH
+    }
 
     //Road that can take a vehicle and obstacle in the same cell but different layers(arrays)
-    public Road(int length) {
+    public Road(int length, Direction direction) {
         vehicles = new RoadObject[length];
         obstacles = new RoadObject[length];
+        this.direction = direction;
+    }
+
+    public Road(int length) {
+        this(length, Direction.EAST);
     }
 
     //Gets road length
     public int getLength() {
         return vehicles.length;
+    }
+    //Get road direction
+    public Direction getDirection() {
+        return direction;
     }
 
     // Vehicle layer
