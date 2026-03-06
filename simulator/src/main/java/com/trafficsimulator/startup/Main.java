@@ -1,9 +1,7 @@
 package com.trafficsimulator.startup;
 
 import com.trafficsimulator.view.*;
-import com.trafficsimulator.model.Obstacle;
-import com.trafficsimulator.model.ObstacleType;
-import com.trafficsimulator.model.TrafficSimulator;
+import com.trafficsimulator.model.*;
 import com.trafficsimulator.controller.Controller;
 
 public class Main {

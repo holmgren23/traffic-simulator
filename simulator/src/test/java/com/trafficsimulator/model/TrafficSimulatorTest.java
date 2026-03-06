@@ -11,6 +11,7 @@ import java.util.Random;
 
 class TrafficSimulatorTest {
     private TrafficSimulator simulator;
+    private Road mainRoad;
     
     //Randommizer seed, Triggers on 4096;
     int seed = 4095;
@@ -21,44 +22,46 @@ class TrafficSimulatorTest {
         //Any seed before 4096 won't trigger it
         
         simulator = new TrafficSimulator(new Random(seed));
+        mainRoad = new Road(200);
+        simulator.getMap().addRoad(mainRoad);
     }
 
     @Test
     void testGap_noCarAhead() {
-        simulator.getRoad().setCell(0, new Car(0, 0, 5));
+        mainRoad.setCell(0, new Car(0, 0, 5));
 
-        assertEquals(Integer.MAX_VALUE, simulator.gap(0));
+        assertEquals(Integer.MAX_VALUE, simulator.getMap().gap(mainRoad, 0));
     }
 
     @Test
     void testGap_carImmediatelyAhead() {
-        simulator.getRoad().setCell(0, new Car(0, 0, 5));
-        simulator.getRoad().setCell(1, new Car(1, 1, 5));
+        mainRoad.setCell(0, new Car(0, 0, 5));
+        mainRoad.setCell(1, new Car(1, 1, 5));
 
-        assertEquals(0, simulator.gap(0));
+        assertEquals(0, simulator.getMap().gap(mainRoad, 0));
     }
 
     @Test
     void testGap_carThreeCellsAhead() {
-        simulator.getRoad().setCell(0, new Car(0, 0, 5));
-        simulator.getRoad().setCell(3, new Car(1, 3, 5));
+        mainRoad.setCell(0, new Car(0, 0, 5));
+        mainRoad.setCell(3, new Car(1, 3, 5));
 
-        assertEquals(2, simulator.gap(0));
+        assertEquals(2, simulator.getMap().gap(mainRoad, 0));
     }
 
     @Test
     void testGap_CarAtLastCell() {
-        int lastcell = simulator.getRoad().getLength() - 1;
-        simulator.getRoad().setCell(lastcell, new Car(0, lastcell, 5));
+        int lastcell = mainRoad.getLength() - 1;
+        mainRoad.setCell(lastcell, new Car(0, lastcell, 5));
 
-        assertEquals(Integer.MAX_VALUE, simulator.gap(lastcell));
+        assertEquals(Integer.MAX_VALUE, simulator.getMap().gap(mainRoad, lastcell));
     }
 
     @Test
     void testSpawnCar_spawnDoNotWrongTick() {
         simulator.tickUpdate();
 
-        assertNull(simulator.getRoad().getCell(0));
+        assertNull(mainRoad.getCell(0));
     }
 
     @Test
@@ -67,25 +70,25 @@ class TrafficSimulatorTest {
             simulator.tickUpdate();
         }
 
-        assertNotNull(simulator.getRoad().getCell(0));
+        assertNotNull(mainRoad.getCell(0));
     }
 
     @Test
     void testSpawnCar_noSpawnIfCellOccupied() {
         Car blockingCar = new Car(99, 0, 5);
-        simulator.getRoad().setCell(0, blockingCar);
+        mainRoad.setCell(0, blockingCar);
 
         for (int i = 0; i < 5; i++) {
             simulator.tickUpdate();
         }
 
-        assertEquals(blockingCar, simulator.getRoad().getCell(0));
+        assertEquals(blockingCar, mainRoad.getCell(0));
     }
 
     @Test
     void testMoveCars_carMovesForwardOnOpenRoad() {
         Car car = new Car(0, 0, 5);
-        simulator.getRoad().setCell(0, car);
+        mainRoad.setCell(0, car);
         simulator.getCars().add(car);
 
         simulator.tickUpdate();
@@ -103,8 +106,8 @@ class TrafficSimulatorTest {
         Car car1 = new Car(0, 0, 5);
         Car car2 = new Car(1, 2, 5);
 
-        simulator.getRoad().setCell(0, car1);
-        simulator.getRoad().setCell(2, car2);
+        mainRoad.setCell(0, car1);
+        mainRoad.setCell(2, car2);
         simulator.getCars().add(car1);
         simulator.getCars().add(car2);
 
@@ -116,8 +119,8 @@ class TrafficSimulatorTest {
     @Test
     void updateSpeeds_speedCannotExceedMaxSpeed() {
         Car car = new Car(0, 0, 3);
-        car.setCurrentSpeed(3); // already at max
-        simulator.getRoad().setCell(0, car);
+        car.setCurrentSpeed(3); //already at max
+        mainRoad.setCell(0, car);
         simulator.getCars().add(car);
 
         for (int i = 0; i < 20; i++) {
@@ -129,24 +132,24 @@ class TrafficSimulatorTest {
     @Test
     void updateSpeeds_speedCannotExceedGap() {
         Car car1 = new Car(0, 0, 5);
-        Car car2 = new Car(1, 3, 5); // gap of 2
-        simulator.getRoad().setCell(0, car1);
-        simulator.getRoad().setCell(3, car2);
+        Car car2 = new Car(1, 3, 5); //gap of 2
+        mainRoad.setCell(0, car1);
+        mainRoad.setCell(3, car2);
         simulator.getCars().add(car1);
         simulator.getCars().add(car2);
 
         simulator.tickUpdate();
 
-        // car1 should never have moved past car2
+        //car1 should never have moved past car2
         assertTrue(car1.getPosition() < car2.getPosition());
     }
 
     @Test
     void testMoveCars_carRemovedWhenExitsRoad() {
-        int atEnd = simulator.getRoad().getLength() - 1;
+        int atEnd = mainRoad.getLength() - 1;
         Car car = new Car(0, atEnd, 5);
         car.setCurrentSpeed(5);
-        simulator.getRoad().setCell(atEnd, car);
+        mainRoad.setCell(atEnd, car);
         simulator.getCars().add(car);
 
         simulator.tickUpdate();

@@ -5,7 +5,6 @@ import com.trafficsimulator.model.ObstacleType;
 import com.trafficsimulator.model.Road;
 import com.trafficsimulator.model.RoadObject;
 import com.trafficsimulator.model.Car;
-import com.trafficsimulator.model.TrafficSimulator;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
@@ -14,10 +13,16 @@ public class RoadView extends Canvas implements SubView {
     private final Road road;
     private final Road road2;
 
+<<<<<<< HEAD
     public RoadView(TrafficSimulator ts, TrafficSimulator ts2, int width) {
         super(width, 80);
         this.road = ts.getRoad();
         this.road2 = ts2.getRoad();
+=======
+    public RoadView(Road road, int width) {
+        super(width, 80);
+        this.road = road;
+>>>>>>> feature/intersection
     }
 
     public void update(){
@@ -36,8 +41,8 @@ public class RoadView extends Canvas implements SubView {
         for (int i = 0; i < cells; i += 3) {
             gc.fillRect(i * cellWidth, getHeight() / 2, cellWidth, getHeight() / 20);
         }
-        // Draw the road object
         for (int i = 0; i < cells; i++) {
+<<<<<<< HEAD
             RoadObject obstacle = road.getObstacle(i);
             RoadObject vehicle = road.getCell(i);
 
@@ -46,13 +51,29 @@ public class RoadView extends Canvas implements SubView {
                     double centerX = i * cellWidth + cellWidth / 2;
                     double roadMiddle = height / 2;
 
+=======
+            // Draw vehicles
+            RoadObject obj = road.getCell(i);
+            if (obj instanceof Car car) {
+                gc.setFill(car.getColor());
+                gc.fillRect(width - (i * cellWidth) - cellWidth, 20, cellWidth, height / 8);
+                gc.fillRect(i * cellWidth + 1, getHeight() - 20, cellWidth, height / 8);
+            }
+
+            // Draw obstacles
+            RoadObject obs = road.getObstacle(i);
+            if (obs instanceof Obstacle obstacle) {
+                if (obstacle.getType() == ObstacleType.TRAFFIC_LIGHT) {
+                    double roadMiddle = height / 2;
+                    double centerX = i * cellWidth + cellWidth / 2;
+>>>>>>> feature/intersection
                     gc.setFill(Color.GRAY);
                     gc.fillRect(centerX - 2, 55, cellWidth, roadMiddle - 15);
-
-                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                    gc.setFill(obstacle.isOpen() ? Color.GREEN : Color.RED);
                     gc.fillOval(centerX - 6, 45, 14, 14);
                 }
             }
+<<<<<<< HEAD
 
             if (vehicle instanceof Car car) {
                 gc.setFill(car.getColor());
@@ -81,6 +102,8 @@ public class RoadView extends Canvas implements SubView {
                 gc.setFill(car.getColor());
                 gc.fillRect(width - (i * cellWidth) - cellWidth + 1, 10, cellWidth, height / 8);
             }
+=======
+>>>>>>> feature/intersection
         }
     }
 }

@@ -4,11 +4,13 @@ public class Road {
     private RoadObject[] vehicles;
     private RoadObject[] obstacles;
 
+    //Road that can take a vehicle and obstacle in the same cell but different layers(arrays)
     public Road(int length) {
         vehicles = new RoadObject[length];
         obstacles = new RoadObject[length];
     }
 
+    //Gets road length
     public int getLength() {
         return vehicles.length;
     }

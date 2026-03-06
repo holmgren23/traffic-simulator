@@ -51,7 +51,7 @@ public class MainView extends Application {
         primaryStage.setTitle("Traffic Simulator");
 
         System.out.println(ts);
-        RoadView roadView = new RoadView(ts, ts2, windowWidth);
+        RoadView roadView = new RoadView(ts.getMap().getRoads().get(0), windowWidth);
         StatisticsView statsView = new StatisticsView(ts);
         TransportView transportView = new TransportView(controller);
         SubView[] subViews = new SubView[] {roadView, statsView, transportView};
