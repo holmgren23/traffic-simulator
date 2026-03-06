@@ -74,4 +74,15 @@ public class Map {
             }
         }
     }
+
+    public static Map Highway() {
+        Map map = new Map();
+        Road road1 = new Road(200);
+        Road road2 = new Road(200);
+        map.addRoad(road1);
+        map.addRoad(road2);
+        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, 100), road1);
+        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, 100), road2);
+        return map;
+    }
 }
