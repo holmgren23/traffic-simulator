@@ -5,12 +5,14 @@ public class Obstacle implements RoadObject {
     private ObstacleType type;
     private Boolean open;
 
+    //Creates an obstacle 
     public Obstacle(ObstacleType type, int position) {
         this.type = type;
         this.position = position;
         this.open = false;
     }
 
+    //Getters and setters
     public int getPosition() {
         return position;
     }
@@ -23,16 +25,19 @@ public class Obstacle implements RoadObject {
         return type;
     }
 
+    //Returns true if a road is accessiable and false if it's not
     public boolean isOpen() {
         return open;
     }
 
+    //Calculates which connected roads should be closed or open based on priority rules for that obstacle type
     public void calculatePriority(int tickCount) {
         switch (type) {
-            case TRAFFIC_LIGHT -> calculateTrafficLight(tickCount);
+            case TRAFFIC_LIGHT -> calculateTrafficLight(tickCount); //Single road traffic light
         }
     }
 
+    //Single road traffic light priority rule
     private void calculateTrafficLight(int tickCount) {
         int greenDuration = 20;
         int redDuration = 20;

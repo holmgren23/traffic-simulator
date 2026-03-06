@@ -38,6 +38,7 @@ public class MainView extends Application {
     
     public static void setModel(TrafficSimulator ts) {
         MainView.ts = ts;
+    
     }
 
     // Launches the JavaFX application
@@ -77,5 +78,4 @@ public class MainView extends Application {
         primaryStage.setScene(window);
         primaryStage.show();
     }
-
 }

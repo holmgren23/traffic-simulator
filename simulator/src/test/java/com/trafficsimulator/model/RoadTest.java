@@ -17,6 +17,7 @@ public class RoadTest {
     public void tearDown() {
         road = null;
     }
+    
     @Test
     public void testgetLength() {
         assertEquals(100, road.getLength());
