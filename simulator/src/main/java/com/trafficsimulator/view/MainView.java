@@ -8,6 +8,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class MainView extends Application {
     // Dimentions for the window(pixels)
@@ -39,6 +41,14 @@ public class MainView extends Application {
         MainView.ts = ts;
     
     }
+    public static void showStatisticsPopup(String reportText) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Simulation Statistics Report");
+        alert.setHeaderText("Final Report:");
+        alert.setContentText(reportText);
+        //Stop and wait for user to click OK
+        alert.showAndWait(); 
+    }
 
     // Launches the JavaFX application
     public void startWindow() {
@@ -50,7 +60,7 @@ public class MainView extends Application {
         primaryStage.setTitle("Traffic Simulator");
 
         RoadView roadView = new RoadView(ts, windowWidth);
-        StatisticsView statsView = new StatisticsView(ts);
+        StatisticsView statsView = new StatisticsView(ts, controller.getTickLength());
         TransportView transportView = new TransportView(controller);
         SubView[] subViews = new SubView[] {roadView, statsView, transportView};
 
