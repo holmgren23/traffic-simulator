@@ -85,7 +85,7 @@ public class Map {
     }
 
     //Two way road constructor with traffic light on each side
-    public static Map Highway(int roadLength) {
+    public static Map createHighway(int roadLength) {
         Map map = new Map(MapType.HIGHWAY);
         Road road1 = new Road(roadLength);
         Road road2 = new Road(roadLength, Direction.WEST);
@@ -99,7 +99,7 @@ public class Map {
     //Creates a one way road
     public static Map createOneWay(int roadLength) {
         Map map = new Map(MapType.ONE_WAY);
-        Road road = new Road(roadLength, false);
+        Road road = new Road(roadLength);
         map.addRoad(road);
         return map;
     }

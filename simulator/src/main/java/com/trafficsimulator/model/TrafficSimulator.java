@@ -25,6 +25,7 @@ public class TrafficSimulator {
         this(new Random(), Map.createHighway(roadLength));
         this.spawnRate = spawnRate;
         this.roadLength = roadLength;
+
     }
 
     // Constructor for testing, Should make a new one for controller/view in future

@@ -1,6 +1,8 @@
 package com.trafficsimulator.view;
 
 import com.trafficsimulator.model.*;
+import com.trafficsimulator.model.Road.Direction;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
@@ -25,9 +27,41 @@ public abstract class RoadView extends Canvas implements SubView {
         }
     }
 
+    private void drawTrafficLight(GraphicsContext gc, Obstacle obs, double x, double yOffset, double cellWidth, Direction direction) {
+        double centerX = x + cellWidth / 2;
+
+        switch (direction) {
+            case EAST -> {
+                gc.setFill(Color.GRAY);
+                gc.fillRect(centerX - 2, yOffset - 10, cellWidth, 30);
+                gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                gc.fillOval(centerX - 6, yOffset - 10, 14, 14);
+            }
+            case WEST -> {
+                gc.setFill(Color.GRAY);
+                gc.fillRect(centerX - 2, yOffset - 10, cellWidth, 25);
+                gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                gc.fillOval(centerX - 6, yOffset + 10, 14, 14);
+            }
+            case NORTH -> {
+                gc.setFill(Color.GRAY);
+                gc.fillRect(x + 10, yOffset - 2, 10, cellWidth);
+                gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                gc.fillOval(x + 20, yOffset - 6, 14, 14);
+            }
+            case SOUTH -> {
+                gc.setFill(Color.GRAY);
+                gc.fillRect(x - 10, yOffset - 2, 10, cellWidth);
+                gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                gc.fillOval(x - 20, yOffset - 6, 14, 14);
+            }
+        }
+    }
+
     protected void drawRoadObjects(GraphicsContext gc, Road road, double width, double height, double cellWidth, double yOffset) {
         int cells = road.getLength();
-        boolean reversed = road.isReversed();
+        Direction direction = road.getDirection();
+        boolean reversed = direction == Direction.WEST || direction == Direction.NORTH;
 
         for (int i = 0; i < cells; i++) {
             int cellIndex = reversed ? cells - 1 - i : i;
@@ -36,20 +70,7 @@ public abstract class RoadView extends Canvas implements SubView {
 
             RoadObject obstacle = road.getObstacle(cellIndex);
             if (obstacle instanceof Obstacle obs && obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
-                double centerX = x + cellWidth / 2;
-                if (reversed) {
-                    //top road - draw light below the cars
-                    gc.setFill(Color.GRAY);
-                    gc.fillRect(centerX - 2, yOffset - 5, cellWidth, 25);
-                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
-                    gc.fillOval(centerX - 6, yOffset + 10, 14, 14);
-                } else {
-                    //bottom road - draw light above the cars
-                    gc.setFill(Color.GRAY);
-                    gc.fillRect(centerX - 2, yOffset - 10, cellWidth, 30);
-                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
-                    gc.fillOval(centerX - 6, yOffset - 10, 14, 14);
-                }
+                drawTrafficLight(gc, obs, centerX, yOffset, cellWidth, direction);
             }
 
             // Draw vehicles
