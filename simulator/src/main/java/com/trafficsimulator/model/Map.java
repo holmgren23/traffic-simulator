@@ -81,21 +81,21 @@ public class Map {
         }
     }
 
-    public static Map createHighway() {
+    public static Map createHighway(int roadLength) {
         Map map = new Map(MapType.HIGHWAY);
         //length ska bytas ut från 200 till 'length'
-        Road road1 = new Road(200, false);
-        Road road2 = new Road(200, true);
+        Road road1 = new Road(roadLength, false);
+        Road road2 = new Road(roadLength, true);
         map.addRoad(road1);
         map.addRoad(road2);
-        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, 100), road1);
-        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, 100), road2);
+        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road1);
+        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road2);
         return map;
     }
 
-    public static Map createOneWay() {
+    public static Map createOneWay(int roadLength) {
         Map map = new Map(MapType.ONE_WAY);
-        Road road = new Road(200, false);
+        Road road = new Road(roadLength, false);
         map.addRoad(road);
         return map;
     }

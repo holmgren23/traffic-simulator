@@ -16,9 +16,9 @@ public class TrafficSimulator {
     private double speedupProbability = 0.3;
 
     // Deterministic random constructor for testing of random functions. Calls constructor below
-    public TrafficSimulator() {
-        this(new Random(), Map.createHighway());
-    }
+/*     public TrafficSimulator() {
+        this(new Random(), Map.createHighway(200));
+    } */
 
     // Constructor for testing, Should make a new one for controller/view in future
     public TrafficSimulator(Random rand, Map map) {
