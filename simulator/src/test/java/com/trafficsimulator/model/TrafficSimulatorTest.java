@@ -89,6 +89,7 @@ class TrafficSimulatorTest {
     void testMoveCars_carMovesForwardOnOpenRoad() {
         Car car = new Car(0, 0, 5);
         mainRoad.setCell(0, car);
+        car.setRoad(mainRoad);
         simulator.getCars().add(car);
 
         simulator.tickUpdate();
@@ -105,7 +106,8 @@ class TrafficSimulatorTest {
     void testUpdateSpeeds_carBreaksWhenCarCloseAhead() {
         Car car1 = new Car(0, 0, 5);
         Car car2 = new Car(1, 2, 5);
-
+        car1.setRoad(mainRoad);
+        car2.setRoad(mainRoad);
         mainRoad.setCell(0, car1);
         mainRoad.setCell(2, car2);
         simulator.getCars().add(car1);
@@ -119,6 +121,7 @@ class TrafficSimulatorTest {
     @Test
     void updateSpeeds_speedCannotExceedMaxSpeed() {
         Car car = new Car(0, 0, 3);
+        car.setRoad(mainRoad);
         car.setCurrentSpeed(3); //already at max
         mainRoad.setCell(0, car);
         simulator.getCars().add(car);
@@ -133,6 +136,8 @@ class TrafficSimulatorTest {
     void updateSpeeds_speedCannotExceedGap() {
         Car car1 = new Car(0, 0, 5);
         Car car2 = new Car(1, 3, 5); //gap of 2
+        car1.setRoad(mainRoad);
+        car2.setRoad(mainRoad);
         mainRoad.setCell(0, car1);
         mainRoad.setCell(3, car2);
         simulator.getCars().add(car1);
@@ -148,6 +153,7 @@ class TrafficSimulatorTest {
     void testMoveCars_carRemovedWhenExitsRoad() {
         int atEnd = mainRoad.getLength() - 1;
         Car car = new Car(0, atEnd, 5);
+        car.setRoad(mainRoad);
         car.setCurrentSpeed(5);
         mainRoad.setCell(atEnd, car);
         simulator.getCars().add(car);
