@@ -50,7 +50,7 @@ public class MainView extends Application {
     public void start(Stage primaryStage) {
         MainView.primaryStage = primaryStage;
         primaryStage.setTitle("Traffic Simulator");
-        
+
         MenuView menuView = new MenuView(this, controller);
 
         StackPane root = new StackPane(menuView);
@@ -61,7 +61,11 @@ public class MainView extends Application {
     }
 
     public void showSimulation() {
-        RoadView roadView = new RoadView(ts, windowWidth);
+        RoadView roadView = switch (ts.getMap().getType()) {
+            case HIGHWAY -> new HighwayView(ts, windowWidth);
+            case ONE_WAY -> new OneWayView(ts, windowWidth);
+            default -> new HighwayView(ts, windowWidth);
+        };
         StatisticsView statsView = new StatisticsView(ts);
         TransportView transportView = new TransportView(controller);
         SubView[] subViews = new SubView[] { roadView, statsView, transportView };
