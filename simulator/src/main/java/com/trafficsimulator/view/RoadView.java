@@ -1,7 +1,6 @@
 package com.trafficsimulator.view;
 
 import com.trafficsimulator.model.*;
-import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;

@@ -2,7 +2,7 @@ package com.trafficsimulator.view;
 
 import com.trafficsimulator.model.*;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+
 
 public class HighwayView extends RoadView {
     
