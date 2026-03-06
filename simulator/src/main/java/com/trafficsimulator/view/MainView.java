@@ -10,21 +10,21 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class MainView extends Application {
-    // Dimentions for the window(pixels)
+    //Dimensions for the window(pixels)
     private static int windowWidth = 0;
     private static int windowHeight = 0;
     private static Controller controller;
     private static TrafficSimulator ts;
     private static Stage primaryStage;
 
-    // Constructor that allows setting custom window size
+    //Constructor that allows setting custom window size
     public MainView(int width, int height) {
         windowWidth = width;
         windowHeight = height;
     }
 
-    // Default constructor required by JavaFX, sets default window size if not
-    // provided by constructor
+    //Default constructor required by JavaFX, sets default window size if not
+    //provided by constructor
     public MainView() {
         if (windowWidth == 0)
             windowWidth = 1280;
@@ -41,7 +41,7 @@ public class MainView extends Application {
 
     }
 
-    // Launches the JavaFX application
+    //Launches the JavaFX application
     public void startWindow() {
         launch();
     }

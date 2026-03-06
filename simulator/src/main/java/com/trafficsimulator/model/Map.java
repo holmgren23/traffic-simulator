@@ -24,6 +24,7 @@ public class Map {
         road.setObstacle(obstacle.getPosition(), obstacle);
     }
 
+    //Returns preconfigured standard map types
     public MapType getType(){
         return type;
     }
@@ -81,9 +82,9 @@ public class Map {
         }
     }
 
+    //Creates two road traveling in different direction. Use for two roads in opposite directions
     public static Map createHighway(int roadLength) {
         Map map = new Map(MapType.HIGHWAY);
-        //length ska bytas ut från 200 till 'length'
         Road road1 = new Road(roadLength, false);
         Road road2 = new Road(roadLength, true);
         map.addRoad(road1);
@@ -93,6 +94,7 @@ public class Map {
         return map;
     }
 
+    //Creates a one way road
     public static Map createOneWay(int roadLength) {
         Map map = new Map(MapType.ONE_WAY);
         Road road = new Road(roadLength, false);
