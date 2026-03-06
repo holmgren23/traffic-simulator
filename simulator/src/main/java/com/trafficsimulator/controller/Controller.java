@@ -92,6 +92,7 @@ public class Controller {
   
   public void stopSimulation() {
     this.stopped = true;
+    MainView.showStatisticsPopup(ts.getStats().getFinalReport(TICK_LENGTH));
     Platform.exit();
   }
   
@@ -115,5 +116,9 @@ public class Controller {
     }
 
     this.running = true;
+  }
+
+  public int getTickLength() {
+    return this.TICK_LENGTH;
   }
 }
