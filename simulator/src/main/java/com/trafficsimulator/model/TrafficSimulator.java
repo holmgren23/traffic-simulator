@@ -9,6 +9,7 @@ public class TrafficSimulator {
     private Map map;
     private int tickCount;
     private int spawnRate;
+    private int roadLength;
     private int nextID;
     private Random rand;
     private Statistics stats;
@@ -18,6 +19,14 @@ public class TrafficSimulator {
     // Deterministic random constructor for testing of random functions. Calls constructor below
     public TrafficSimulator() {
         this(new Random());
+    }
+    
+    public TrafficSimulator(int spawnRate, int roadLength) {
+        this(new Random());
+        this.spawnRate = spawnRate;
+        this.roadLength = roadLength;
+        this.initializeSimulation();
+        this.setMap(Map.Highway(roadLength));
     }
 
     // Constructor for testing, Should make a new one for controller/view in future
@@ -46,6 +55,14 @@ public class TrafficSimulator {
 
     public int getSpawnRate() {
         return spawnRate;
+    }
+    
+    public void setSpawnRate(int spawnRate) {
+        this.spawnRate = spawnRate;
+    }
+
+    public void setMap(Map map) {
+        this.map = map;
     }
 
     public Map getMap() {

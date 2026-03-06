@@ -17,6 +17,7 @@ public class MainView extends Application {
     private static int windowHeight = 0;
     private static Controller controller;
     private static TrafficSimulator ts;
+    private static Stage primaryStage;
 
     // Constructor that allows setting custom window size
     public MainView(int width, int height) {
@@ -57,8 +58,19 @@ public class MainView extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        MainView.primaryStage = primaryStage;
         primaryStage.setTitle("Traffic Simulator");
+        
+        MenuView menuView = new MenuView(this, controller);
 
+        StackPane root = new StackPane(menuView);
+        root.setStyle("-fx-background-color: rgb(54, 66, 56);");
+        Scene window = new Scene(root, windowWidth, windowHeight);
+        primaryStage.setScene(window);
+        primaryStage.show();
+    }
+
+    public void showSimulation() {
         RoadView roadView = new RoadView(ts, windowWidth);
         StatisticsView statsView = new StatisticsView(ts, controller.getTickLength());
         TransportView transportView = new TransportView(controller);

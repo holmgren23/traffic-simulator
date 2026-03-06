@@ -19,6 +19,8 @@ public class RoadView extends Canvas implements SubView {
         double width = getWidth();
         double height = getHeight();
         List<Road> roads = map.getRoads();
+        System.out.println("Road size ");
+        System.out.println(roads.size());
         int cells = roads.get(0).getLength();
         double cellWidth = width / cells;
 
