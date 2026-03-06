@@ -156,6 +156,10 @@ public class TrafficSimulator {
     public Statistics getStats() {
         return stats;
     }
+    
+    public String getFinalStats() {
+        return stats.getFinalReport(100);
+    }
 
     //Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic
     public void resetSimulation() {

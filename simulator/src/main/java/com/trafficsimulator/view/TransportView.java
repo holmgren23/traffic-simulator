@@ -22,18 +22,24 @@ public class TransportView extends HBox implements SubView {
         this.buttons[0].setText(isRunning ? " Pause " : "Resume");
       },
       e -> this.controller.resetSimulation(),
-      e -> this.controller.stopSimulation()
+      e -> {
+        this.controller.stopSimulation();
+        MainView.showStatisticsPopup();
+        this.mainView.showMenu();
+      }
     )
   );
   private Button[] buttons;
   private Controller controller;
+  private MainView mainView;
 
-  public TransportView(Controller controller) {
+  public TransportView(MainView mainView, Controller controller) {
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setMaxHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setStyle("-fx-padding: 5;");
     this.setSpacing(4);
     
+    this.mainView = mainView;
     this.controller = controller;
 
     this.buttons = new Button[this.BUTTON_LABELS.length];

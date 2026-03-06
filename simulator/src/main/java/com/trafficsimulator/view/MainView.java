@@ -42,7 +42,8 @@ public class MainView extends Application {
         MainView.ts = ts;
 
     }
-    public static void showStatisticsPopup(String reportText) {
+    public static void showStatisticsPopup() {
+        String reportText = ts.getFinalStats();
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Simulation Statistics Report");
         alert.setHeaderText("Final Report:");
@@ -60,7 +61,12 @@ public class MainView extends Application {
     public void start(Stage primaryStage) {
         MainView.primaryStage = primaryStage;
         primaryStage.setTitle("Traffic Simulator");
+        
+        this.showMenu();
+    }
 
+        
+    public void showMenu() {
         MenuView menuView = new MenuView(this, controller);
 
         StackPane root = new StackPane(menuView);
@@ -77,7 +83,7 @@ public class MainView extends Application {
             default -> new HighwayView(ts, windowWidth);
         };
         StatisticsView statsView = new StatisticsView(ts, controller.getTickLength());
-        TransportView transportView = new TransportView(controller);
+        TransportView transportView = new TransportView(this, controller);
         SubView[] subViews = new SubView[] { roadView, statsView, transportView };
 
         controller.setSubViews(subViews);
