@@ -36,12 +36,23 @@ public abstract class RoadView extends Canvas implements SubView {
 
             RoadObject obstacle = road.getObstacle(cellIndex);
             if (obstacle instanceof Obstacle obs && obs.getType() == ObstacleType.TRAFFIC_LIGHT) {
-                gc.setFill(Color.GRAY);
-                gc.fillRect(centerX - 2, reversed ? yOffset + 10 : yOffset - 20, 4, 10);
-                gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
-                gc.fillOval(centerX - 6, reversed ? yOffset + 20 : yOffset - 30, 14, 14);
+                double centerX = x + cellWidth / 2;
+                if (reversed) {
+                    //top road - draw light below the cars
+                    gc.setFill(Color.GRAY);
+                    gc.fillRect(centerX - 2, yOffset - 5, cellWidth, 25);
+                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                    gc.fillOval(centerX - 6, yOffset + 10, 14, 14);
+                } else {
+                    //bottom road - draw light above the cars
+                    gc.setFill(Color.GRAY);
+                    gc.fillRect(centerX - 2, yOffset - 10, cellWidth, 30);
+                    gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
+                    gc.fillOval(centerX - 6, yOffset - 10, 14, 14);
+                }
             }
 
+            // Draw vehicles
             RoadObject vehicle = road.getCell(cellIndex);
             if (vehicle instanceof Car car) {
                 gc.setFill(car.getColor());

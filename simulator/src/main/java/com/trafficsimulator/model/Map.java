@@ -2,6 +2,8 @@ package com.trafficsimulator.model;
 
 import java.util.ArrayList;
 
+import com.trafficsimulator.model.Road.Direction;
+
 public class Map {
     private ArrayList<Road> roads;
     private MapType type;
@@ -82,15 +84,15 @@ public class Map {
         }
     }
 
-    //Creates two road traveling in different direction. Use for two roads in opposite directions
-    public static Map createHighway(int roadLength) {
+    //Two way road constructor with traffic light on each side
+    public static Map Highway(int roadLength) {
         Map map = new Map(MapType.HIGHWAY);
-        Road road1 = new Road(roadLength, false);
-        Road road2 = new Road(roadLength, true);
+        Road road1 = new Road(roadLength);
+        Road road2 = new Road(roadLength, Direction.WEST);
         map.addRoad(road1);
         map.addRoad(road2);
         map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road1);
-        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road2);
+        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2 - 1), road2);
         return map;
     }
 

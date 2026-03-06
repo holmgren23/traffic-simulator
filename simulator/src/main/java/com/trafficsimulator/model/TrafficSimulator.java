@@ -77,24 +77,24 @@ public class TrafficSimulator {
             int maxSpeed = car.getMaxSpeed();
             int position = car.getPosition();
 
-            // New Speed calculation
-            speed = Math.min(speed + 1, maxSpeed); // Speed up
+            //New Speed calculation
+            speed = Math.min(speed + 1, maxSpeed); //Speed up
 
             if (speed > 0 && rand.nextDouble() < slowProbability) {
-                speed -= 1; // Random speed change
+                speed -= 1; //Random speed change
             }
             else if (speed < maxSpeed && rand.nextDouble() < speedupProbability) {
-                speed = Math.min(speed + 1, maxSpeed); // Random speed change
+                speed = Math.min(speed + 1, maxSpeed); //Random speed change
             }
 
-            speed = Math.min(speed, map.gap(road, position)); // Break
+            speed = Math.min(speed, map.gap(road, position)); //Break
 
             RoadObject ahead = map.getObjectAhead(road, position);
             if (ahead instanceof Obstacle obs && !obs.isOpen() && map.gap(road, position) == 0) {
                 speed = 0;
             }
 
-            newSpeeds.put(car, speed); // New final speed
+            newSpeeds.put(car, speed); //New final speed
         }
 
         return newSpeeds;
@@ -104,32 +104,32 @@ public class TrafficSimulator {
     private void moveCars(HashMap<Car, Integer> newSpeeds) {
         ArrayList<Car> carsToRemove = new ArrayList<>();
         
-        // Moves cars to new positions
+        //Moves cars to new positions
         for (Car car : cars) {
             Road road = car.getRoad();
             int oldPos = car.getPosition();
             int newSpeed = newSpeeds.get(car);
             int newPos = oldPos + newSpeed;
 
-            // Remove from old cell
+            //Remove from old cell
             if (road.getCell(oldPos) == car) {
                 road.setCell(oldPos, null);
 
             }
-            // If car exits road - Currently removes, can be changed to loop
+            //If car exits road - Currently removes, can be changed to loop
             if (newPos >= road.getLength()) {
-                carsToRemove.add(car); // Collects all cars that should be removed
+                carsToRemove.add(car); //Collects all cars that should be removed
                 continue;
             }
-            // Place in new cell
+            //Place in new cell
             car.setPosition(newPos);
             car.setCurrentSpeed(newSpeed);
             road.setCell(newPos, car);
         }
-        cars.removeAll(carsToRemove); // Removes cars outside road
+        cars.removeAll(carsToRemove); //Removes cars outside road
     }
 
-    // Function spawns cars based on spawnrate per tick.
+    //Function spawns cars based on spawnrate per tick.
     private void spawnCar() {
         for (Road road : map.getRoads()) {
             if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
@@ -143,7 +143,7 @@ public class TrafficSimulator {
         }
     }
 
-    // Tick update. Should be callable by controller
+    //Tick update. Should be callable by controller
     public void tickUpdate() {
         tickCount++;
         map.updateObstacles(tickCount);
@@ -152,10 +152,12 @@ public class TrafficSimulator {
         spawnCar();
     }
 
+    //Returns the statistics of the current tick
     public Statistics getStats() {
         return stats;
     }
 
+    //Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic
     public void resetSimulation() {
         map.clearVehicle();
         cars = new ArrayList<>();
