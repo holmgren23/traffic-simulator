@@ -30,14 +30,14 @@ public class MainView extends Application {
         if (windowHeight == 0)
             windowHeight = 720;
     }
-    
+
     public static void setController(Controller controller) {
         MainView.controller = controller;
     }
-    
+
     public static void setModel(TrafficSimulator ts) {
         MainView.ts = ts;
-    
+
     }
 
     // Launches the JavaFX application
@@ -49,10 +49,14 @@ public class MainView extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Traffic Simulator");
 
-        RoadView roadView = new RoadView(ts, windowWidth);
+        RoadView roadView = switch (ts.getMap().getType()) {
+            case HIGHWAY -> new HighwayView(ts, windowWidth);
+            case ONE_WAY -> new OneWayView(ts, windowWidth);
+            default -> new HighwayView(ts, windowWidth);
+        };
         StatisticsView statsView = new StatisticsView(ts);
         TransportView transportView = new TransportView(controller);
-        SubView[] subViews = new SubView[] {roadView, statsView, transportView};
+        SubView[] subViews = new SubView[] { roadView, statsView, transportView };
 
         controller.setSubViews(subViews);
         Thread simThread = new Thread(() -> controller.loop());
