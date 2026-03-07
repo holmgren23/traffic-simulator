@@ -1,22 +1,22 @@
 package com.trafficsimulator.view;
 
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import com.trafficsimulator.controller.Controller;
+import com.trafficsimulator.utility.InputParametersDTO;
+
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.ComboBox;
-
-import com.trafficsimulator.controller.Controller;
-import com.trafficsimulator.utility.InputParametersDTO;;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;;
 
 public class MenuView extends GridPane {
   private final int BTN_ROW = 6;
@@ -25,6 +25,49 @@ public class MenuView extends GridPane {
   private Slider spawnRateControl, minSpeedControl, maxSpeedControl;
   private Spinner<Integer> roadLengthControl;
   private ComboBox<String> mapSelector;
+  
+  @FunctionalInterface
+  interface FindInputValue {
+    double operate(double v);
+  }
+  
+  private class SliderSection extends GridPane {
+    private Color textColor = Color.SILVER;
+    private Slider inputSlider;
+    private Label valueLabel;
+
+    public SliderSection(String labelText, int min, int max, int initVal) {
+      this.setStyle("-fx-padding: 2;");
+      this.setHgap(0);
+      this.setVgap(12);
+
+      Label label = new Label(labelText);
+      this.valueLabel = new Label(String.valueOf(initVal));
+      this.inputSlider = new Slider(min, max, initVal);
+      
+      Label[] labels = {label, valueLabel};
+      for (Label l : labels) {
+        l.setTextFill(this.textColor);
+        this.add(l, 0, 0);
+      }
+      this.add(inputSlider, 0, 1);
+
+      GridPane.setHalignment(valueLabel, HPos.RIGHT);
+      //GridPane.setHgrow(inputSlider, Priority.ALWAYS);
+    }
+    
+    public void setBehavior(FindInputValue expr) {
+      this.inputSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+        double rounded = expr.operate(newVal.doubleValue());
+        inputSlider.setValue(rounded);
+        valueLabel.setText(String.valueOf((int)rounded));
+      });
+    }
+    
+    public Slider getSlider() {
+      return this.inputSlider;
+    }
+  }
 
   public MenuView(MainView mainView, Controller controller) {
     this.mainView = mainView;
@@ -33,7 +76,7 @@ public class MenuView extends GridPane {
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setMaxHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setStyle("-fx-padding: 5;");
-    this.setHgap(20);
+    this.setHgap(25);
     this.setVgap(10);
     
     this.setupInputControls();
@@ -42,7 +85,7 @@ public class MenuView extends GridPane {
   
   private Pane spacer() {
     Pane spacer = new Pane();
-    spacer.setMinHeight(40);
+    spacer.setMinHeight(25);
     return spacer;
   }
   
@@ -62,84 +105,53 @@ public class MenuView extends GridPane {
   }
   
   private void setupInputControls() {
-    Label spawnRateLabel = new Label("Spawn interval");
-    Label spawnRateValueLabel = new Label("");
-    spawnRateLabel.setTextFill(Color.SILVER);
-    this.spawnRateControl = new Slider(1, 10, 5);
-    this.spawnRateControl.valueProperty().addListener((obs, oldVal, newVal) -> {
-      double rounded = Math.round(newVal.doubleValue());
-      this.spawnRateControl.setValue(rounded);
-      spawnRateValueLabel.setText(String.valueOf((int)rounded));
-    });
+    SliderSection spawnRateSection = new SliderSection("Spawn interval", 1, 10, 5);
+    FindInputValue returnNewValue = v ->  Math.round(v);
+    spawnRateSection.setBehavior(returnNewValue);
     
     Label roadLengthLabel = new Label("Road length");
-    spawnRateLabel.setTextFill(Color.SILVER);
     this.roadLengthControl = new Spinner<Integer>();
     this.roadLengthControl.setEditable(true);
     this.roadLengthControl.setValueFactory(
       new SpinnerValueFactory.IntegerSpinnerValueFactory(100, 10000, 200)
     );
+    VBox roadLengthSection = new VBox(10, roadLengthLabel, roadLengthControl);
     
-    Label minSpeedLabel = new Label("Min speed");
-    Label minSpeedValueLabel = new Label("");
-    this.minSpeedControl = new Slider(1, 15, 2);
-    this.minSpeedControl.valueProperty().addListener((obs, oldVal, newVal) -> {
-      double nv = newVal.doubleValue();
-      double value = nv <= this.maxSpeedControl.getValue() ? nv : oldVal.doubleValue();
-      this.minSpeedControl.setValue(Math.round(value));
-      minSpeedValueLabel.setText(String.valueOf((int)value));
-    });
-
-    Label maxSpeedLabel = new Label("Max speed");
-    Label maxSpeedValueLabel = new Label("");
-    this.maxSpeedControl = new Slider(1, 15, 5);
-    this.maxSpeedControl.valueProperty().addListener((obs, oldVal, newVal) -> {
-      double value = newVal.doubleValue() >= this.minSpeedControl.getValue() ? newVal.doubleValue() : oldVal.doubleValue();
-      this.maxSpeedControl.setValue(Math.round(value));
-      maxSpeedValueLabel.setText(String.valueOf((int)value));
-    });
-
+    SliderSection minSpeedSection = new SliderSection("Min speed", 1, 15, 2);
+    SliderSection maxSpeedSection = new SliderSection("Max speed", 1, 15, 6);
+    FindInputValue limitByMax = v -> v <= maxSpeedSection.getSlider().getValue() ? Math.round(v) : maxSpeedSection.getSlider().getValue();
+    FindInputValue limitByMin = v -> v >= minSpeedSection.getSlider().getValue() ? Math.round(v) : minSpeedSection.getSlider().getValue();
+    minSpeedSection.setBehavior(limitByMax);
+    maxSpeedSection.setBehavior(limitByMin);
 
     Label mapSelectorLabel = new Label("Select map");
     String[] dummyMaps = {"Dummy1", "Dummy2", "Dummy3"};
     this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(dummyMaps));
+    VBox mapSelectorSection = new VBox(10, mapSelectorLabel, mapSelector);
     
     Label[] labels = {
-      spawnRateLabel,
-      spawnRateValueLabel,
       roadLengthLabel,
-      minSpeedLabel,
-      minSpeedValueLabel,
-      maxSpeedLabel,
-      maxSpeedValueLabel,
       mapSelectorLabel
     };
     for (Label l : labels) {
       l.setTextFill(Color.SILVER);
     }
     
-    Slider[] sliders = {spawnRateControl, minSpeedControl, maxSpeedControl};
-    for (Slider s : sliders) {
-      s.setMajorTickUnit(1);
-      s.setShowTickLabels(true);
-    }
-
     // Columns from the left
     this.addColumn(0, 
-      spawnRateLabel, this.spawnRateControl,
-      spawnRateValueLabel,
-      roadLengthLabel, this.roadLengthControl
+      spawnRateSection,
+      spacer(),
+      roadLengthSection
     );
     
     this.addColumn(1,
-      minSpeedLabel, this.minSpeedControl,
-      minSpeedValueLabel,
-      maxSpeedLabel, this.maxSpeedControl,
-      maxSpeedValueLabel
+      minSpeedSection,
+      spacer(),
+      maxSpeedSection
     );
     
     this.addColumn(2,
-      mapSelectorLabel, this.mapSelector
+      mapSelectorSection
     );
   }
 
