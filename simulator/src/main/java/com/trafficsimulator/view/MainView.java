@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -48,6 +49,11 @@ public class MainView extends Application {
         alert.setTitle("Simulation Statistics Report");
         alert.setHeaderText("Final Report:");
         alert.setContentText(reportText);
+        
+        //Tell the operating system that this is a popup window,
+        //helpful on some linux systems
+        ((Stage) alert.getDialogPane().getScene().getWindow()).initStyle(StageStyle.UTILITY);
+
         //Stop and wait for user to click OK
         alert.showAndWait(); 
     }

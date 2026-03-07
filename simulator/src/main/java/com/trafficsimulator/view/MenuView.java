@@ -22,9 +22,10 @@ public class MenuView extends GridPane {
   private final int BTN_ROW = 6;
   private MainView mainView;
   private Controller controller;
-  private Slider spawnRateControl, minSpeedControl, maxSpeedControl;
+  private SliderSection spawnRateSection, minSpeedSection, maxSpeedSection;
   private Spinner<Integer> roadLengthControl;
   private ComboBox<String> mapSelector;
+  private int vGap = 12;
   
   @FunctionalInterface
   interface FindInputValue {
@@ -39,9 +40,9 @@ public class MenuView extends GridPane {
     public SliderSection(String labelText, int min, int max, int initVal) {
       this.setStyle("-fx-padding: 2;");
       this.setHgap(0);
-      this.setVgap(12);
+      this.setVgap(vGap);
 
-      Label label = new Label(labelText);
+      Label label = new Label(labelText + ": ");
       this.valueLabel = new Label(String.valueOf(initVal));
       this.inputSlider = new Slider(min, max, initVal);
       
@@ -66,6 +67,10 @@ public class MenuView extends GridPane {
     
     public Slider getSlider() {
       return this.inputSlider;
+    }
+    
+    public double getValue() {
+      return this.inputSlider.getValue();
     }
   }
 
@@ -105,7 +110,7 @@ public class MenuView extends GridPane {
   }
   
   private void setupInputControls() {
-    SliderSection spawnRateSection = new SliderSection("Spawn interval", 1, 10, 5);
+    spawnRateSection = new SliderSection("Spawn interval", 1, 10, 5);
     FindInputValue returnNewValue = v ->  Math.round(v);
     spawnRateSection.setBehavior(returnNewValue);
     
@@ -115,10 +120,10 @@ public class MenuView extends GridPane {
     this.roadLengthControl.setValueFactory(
       new SpinnerValueFactory.IntegerSpinnerValueFactory(100, 10000, 200)
     );
-    VBox roadLengthSection = new VBox(10, roadLengthLabel, roadLengthControl);
+    VBox roadLengthSection = new VBox(vGap, roadLengthLabel, roadLengthControl);
     
-    SliderSection minSpeedSection = new SliderSection("Min speed", 1, 15, 2);
-    SliderSection maxSpeedSection = new SliderSection("Max speed", 1, 15, 6);
+    minSpeedSection = new SliderSection("Min speed", 1, 15, 2);
+    maxSpeedSection = new SliderSection("Max speed", 1, 15, 6);
     FindInputValue limitByMax = v -> v <= maxSpeedSection.getSlider().getValue() ? Math.round(v) : maxSpeedSection.getSlider().getValue();
     FindInputValue limitByMin = v -> v >= minSpeedSection.getSlider().getValue() ? Math.round(v) : minSpeedSection.getSlider().getValue();
     minSpeedSection.setBehavior(limitByMax);
@@ -127,7 +132,7 @@ public class MenuView extends GridPane {
     Label mapSelectorLabel = new Label("Select map");
     String[] dummyMaps = {"Dummy1", "Dummy2", "Dummy3"};
     this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(dummyMaps));
-    VBox mapSelectorSection = new VBox(10, mapSelectorLabel, mapSelector);
+    VBox mapSelectorSection = new VBox(vGap, mapSelectorLabel, mapSelector);
     
     Label[] labels = {
       roadLengthLabel,
@@ -157,10 +162,10 @@ public class MenuView extends GridPane {
 
   private InputParametersDTO getInputValues() {
     return new InputParametersDTO(
-      this.spawnRateControl.getValue(),
+      this.spawnRateSection.getValue(),
       this.roadLengthControl.getValue(),
-      this.minSpeedControl.getValue(),
-      this.maxSpeedControl.getValue()
+      this.minSpeedSection.getValue(),
+      this.maxSpeedSection.getValue()
     );
   }
 }
