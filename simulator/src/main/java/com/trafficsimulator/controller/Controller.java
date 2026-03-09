@@ -4,6 +4,7 @@ import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.utility.InputParametersDTO;
 import com.trafficsimulator.view.MainView;
 import com.trafficsimulator.view.SubView;
+import com.trafficsimulator.model.Map;
 
 import javafx.application.Platform;
 
@@ -25,11 +26,17 @@ public class Controller {
   }
   
   public void createSimulation(InputParametersDTO params) {
+    Map selctedMap = switch (params.getMapType()){
+      case "Highway" -> Map.createHighway(params.getRoadLength());
+      case "One way street" -> Map.createOneWay(params.getRoadLength());
+      default -> Map.createHighway(params.getRoadLength()); 
+    };
     ts = new TrafficSimulator(
       (int)params.getSpawnRate(),
       (int)params.getRoadLength(),
       (int)params.getMinSpeed(),
-      (int)params.getMaxSpeed()
+      (int)params.getMaxSpeed(),
+      selctedMap
     );
     MainView.setModel(ts);
   }
