@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.execution.Timeout;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,9 +13,12 @@ import org.junit.jupiter.api.Nested;
 import com.trafficsimulator.model.Map;
 import com.trafficsimulator.model.MapType;
 import com.trafficsimulator.model.Road;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.trafficsimulator.model.TrafficSimulator;
+import com.trafficsimulator.model.Car;
 
 public class ControllerTest {
   Controller controller;
@@ -54,6 +58,11 @@ public class ControllerTest {
     assertEquals(activeThreads, Thread.activeCount());
   }
   
+  @Test
+  public void testGetTickLength() {
+    assertEquals(100, controller.getTickLength());
+  }
+  
   @Nested
   public class TestsWithMoreSetup {
     @BeforeEach
@@ -89,6 +98,23 @@ public class ControllerTest {
       assertEquals(false, controller.isRunning());
       controller.toggleRunning();
       assertEquals(true, controller.isRunning());
+    }
+    
+    @Test
+    public void testResetSimulationRunning() {
+      ArrayList<Car> cars = ts.getCars();
+      controller.resetSimulation();
+      assertTrue(controller.isRunning());
+      assertNotSame(cars, ts.getCars());
+    }
+
+    @Test
+    public void testResetSimulationNotRunning() {
+      controller.toggleRunning();
+      ArrayList<Car> cars = ts.getCars();
+      controller.resetSimulation();
+      assertTrue(controller.isRunning());
+      assertNotSame(cars, ts.getCars());
     }
   }
 }
