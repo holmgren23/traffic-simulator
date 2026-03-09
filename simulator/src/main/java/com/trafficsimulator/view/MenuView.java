@@ -131,6 +131,7 @@ public class MenuView extends GridPane {
     Label mapSelectorLabel = new Label("Select map");
     String[] maps = {"Highway", "One way street", "Dummy3"};
     this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(maps));
+    if (maps.length > 0) { this.mapSelector.setValue(maps[0]); };
     VBox mapSelectorSection = new VBox(vGap, mapSelectorLabel, mapSelector);
     
     Label[] labels = {
