@@ -130,8 +130,8 @@ public class MenuView extends GridPane {
     maxSpeedSection.setBehavior(limitByMin);
 
     Label mapSelectorLabel = new Label("Select map");
-    String[] dummyMaps = {"Dummy1", "Dummy2", "Dummy3"};
-    this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(dummyMaps));
+    String[] maps = {"Highway", "One way street", "Dummy3"};
+    this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(maps));
     VBox mapSelectorSection = new VBox(vGap, mapSelectorLabel, mapSelector);
     
     Label[] labels = {
@@ -165,7 +165,8 @@ public class MenuView extends GridPane {
       this.spawnRateSection.getValue(),
       this.roadLengthControl.getValue(),
       this.minSpeedSection.getValue(),
-      this.maxSpeedSection.getValue()
+      this.maxSpeedSection.getValue(),
+      this.mapSelector.getValue()
     );
   }
 }
