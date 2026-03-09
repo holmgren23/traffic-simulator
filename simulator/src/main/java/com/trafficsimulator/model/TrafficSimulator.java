@@ -138,7 +138,6 @@ public class TrafficSimulator {
                 cars.add(newCar);
                 road.setCell(0, newCar);
                 nextID++;
-                stats.incrementTotalCarsSpawned();
             }
         }
     }
@@ -158,7 +157,7 @@ public class TrafficSimulator {
     }
     
     public String getFinalStats() {
-        return stats.getFinalReport(100);
+        return stats.getFinalReport();
     }
 
     //Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic

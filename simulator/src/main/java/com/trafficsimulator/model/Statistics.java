@@ -1,90 +1,94 @@
 package com.trafficsimulator.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Statistics {
-
-    private int speedMultiplicator = 30; // cell * 20 for example
+    private static final int TICK_MS = 100;
+    private static final int SPEED_MULTIPLIER = 30;
 
     private int totalCarsSpawned = 0;
-    private double currentAverageSpeed = 0;
-
-    private int currentStationaryCars = 0;
-    private int currentAmountOfCars = 0;
-
+    private int totalCarsExited = 0;
     private long totalTicks = 0;
-    private double totalAverageSpeed = 0;
+    private double currentAvgSpeed = 0;
+    private int currentStationary = 0;
+    private int currentCarCount = 0;
+    private int previousCarCount = 0;
 
-    
-
-
-    public void incrementTotalCarsSpawned() {
-        this.totalCarsSpawned++;
-    }
-
-    public void update(ArrayList<Car> cars) {
+    public void update(List<Car> cars) {
         totalTicks++;
+        this.currentCarCount = cars.size();
 
+        // Update total cars spawned and exited based on the change in car count
+        if (currentCarCount > previousCarCount) {     
+            totalCarsSpawned += (currentCarCount - previousCarCount);
+        } else if (currentCarCount < previousCarCount) {
+            totalCarsExited += (previousCarCount - currentCarCount);
+        }
+
+        previousCarCount = currentCarCount;
+       
         if (cars.isEmpty()) {
-            this.currentAverageSpeed = 0;
-            this.currentStationaryCars = 0;
-            this.currentAmountOfCars = 0;
+            this.currentAvgSpeed = 0;
+            this.currentStationary = 0;
             return;
         }
-
-        double sumSpeed = 0;
+        // Calculate average speed and count stationary cars
+        double speedSum = 0;
         int stoppedCount = 0;
-
         for (Car car : cars) {
-            sumSpeed += car.getCurrentSpeed();
-            if (car.getCurrentSpeed() == 0) {
-                stoppedCount++;
-            }
+            double speed = car.getCurrentSpeed();
+            speedSum += speed;
+            if (speed == 0) stoppedCount++;
         }
-
-        this.currentAmountOfCars = cars.size();
-        this.currentAverageSpeed = sumSpeed / cars.size();
-        this.currentStationaryCars = stoppedCount;
-        this.totalAverageSpeed += this.currentAverageSpeed;
+        // Update current stats
+        this.currentStationary = stoppedCount;
+        this.currentAvgSpeed = speedSum / cars.size();
     }
 
-    public int getTotalCarsSpawned() {
-        return totalCarsSpawned;
-    }
 
-    public double getAverageSpeed() {
-        return currentAverageSpeed * speedMultiplicator;
-    }
-
-    public int getStationaryCars() {
-        return currentStationaryCars;
-    }
-    public int getCurrentAmountOfCars() {
-        return currentAmountOfCars;
-    }
-    public long getTotalTicks() {
-        return totalTicks;
-    }
-    public double getTotalAverageSpeed() {
-        if (totalTicks == 0) {
-            return 0;
-        }
-        return (totalAverageSpeed / totalTicks) * speedMultiplicator;
-    }
-
-    public String getFinalReport(double TICK_LENGTH) {
-        long totalSeconds = (long) (totalTicks * TICK_LENGTH / 1000);
-        long h = totalSeconds / 3600;
-        long m = (totalSeconds % 3600) / 60;
-        long s = totalSeconds % 60;
+    public StatSnapshot getSnapshot() {
+   
+        double totalMinutes = (totalTicks * TICK_MS) / 60000.0;
     
-        return String.format(
-            "Final Report: \n" +
-            "Time Elapsed: %02d:%02d:%02d\n" +
-            "Total Ticks: %d\n" +
-            "Total Cars Spawned: %d\n" +
-            "Final Average Speed: %.2f kmh",
-            h, m, s, totalTicks, totalCarsSpawned, getTotalAverageSpeed()
+        double avgInFlow = (totalMinutes > 0) ? (totalCarsSpawned / totalMinutes) : 0;
+
+        double avgOutFlow = (totalMinutes > 0) ? (totalCarsExited / totalMinutes) : 0;
+    
+        return new StatSnapshot(
+            totalCarsSpawned,
+            currentCarCount,
+            currentStationary,
+            currentAvgSpeed * SPEED_MULTIPLIER,
+            avgInFlow,
+            avgOutFlow,
+            totalTicks
         );
+    }
+    // Generates a final report string summarizing the simulation results
+    public String getFinalReport() {
+        StatSnapshot s = getSnapshot();
+        long totalSeconds = (s.totalTicks() * TICK_MS) / 1000;
+        
+        return String.format(
+            "--- FINAL REPORT ---\n" +
+            "Time Elapsed: %02d:%02d:%02d\n" +
+            "Total Cars Spawned: %d\n" +
+            "Total Cars Exited: %d\n" +
+            "Average Speed: %.2f km/h\n" +
+            "Final InFlow: %.2f veh/m\n" +
+            "Final OutFlow: %.2f veh/m",
+            totalSeconds / 3600, (totalSeconds % 3600) / 60, totalSeconds % 60,
+            s.totalSpawned(), totalCarsExited,
+            s.currentAvgSpeedKmh(), s.avgInFlow(), s.avgOutFlow()
+        );
+    }
+
+ 
+    public long getTotalTicks() { 
+        return totalTicks; 
+    }
+
+    public int getTotalCarsSpawned() { 
+        return totalCarsSpawned; 
     }
 }
