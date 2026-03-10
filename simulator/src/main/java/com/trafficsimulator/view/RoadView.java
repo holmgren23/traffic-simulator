@@ -1,5 +1,7 @@
 package com.trafficsimulator.view;
 
+import java.util.ArrayList;
+
 import com.trafficsimulator.model.*;
 import com.trafficsimulator.model.Road.Direction;
 
@@ -37,6 +39,7 @@ public class RoadView extends Canvas implements SubView {
             drawRoad(gc, road);
             drawRoadObjects(gc, road);
         }
+        drawDividers(gc);
     }
 
     //Draws the road
@@ -61,6 +64,66 @@ public class RoadView extends Canvas implements SubView {
             gc.fillRect(x1 - roadThickness / 2, y1, roadThickness, y2 - y1);
         }
 
+    }
+
+    private void drawDividers(GraphicsContext gc) {
+        ArrayList<Road> roads = map.getRoads();
+        for (int i = 0; i < roads.size(); i++) {
+            for (int j = i + 1; j < roads.size(); j++) {
+                Road a = roads.get(i);
+                Road b = roads.get(j);
+
+                if (!areParallel(a, b)) continue;
+                if (!areAdjacent(a, b)) continue;
+
+                double lineY = ((a.getStartY() + b.getStartY()) / 2.0) * scaleY();
+                double x1 = Math.min(a.getStartX(), b.getStartX()) * scaleX();
+                double x2 = Math.max(a.getEndX(), b.getEndX()) * scaleX();
+                double cellSize = (x2 - x1) / a.getLength();
+
+                boolean sameDirection = a.getDirection() == b.getDirection();
+
+                if (sameDirection) {
+                    //dashed white line
+                    double dashSize = cellSize * 0.8;
+                    gc.setFill(Color.WHITE);
+                    for (double x = x1; x < x2; x += cellSize * 3) {
+                        gc.fillRect(x, lineY, dashSize, 2);
+                    }
+                } else {
+                    //solid white line
+                    gc.setFill(Color.WHITE);
+                    gc.fillRect(x1, lineY, x2 - x1, 2);
+                }
+            }
+        }
+    }
+
+    private boolean areParallel(Road a, Road b) {
+        boolean bothHorizontal = (a.getDirection() == Direction.EAST || a.getDirection() == Direction.WEST)
+                            && (b.getDirection() == Direction.EAST || b.getDirection() == Direction.WEST);
+        boolean bothVertical = (a.getDirection() == Direction.NORTH || a.getDirection() == Direction.SOUTH)
+                            && (b.getDirection() == Direction.NORTH || b.getDirection() == Direction.SOUTH);
+
+        if (bothHorizontal) {
+            return a.getStartX() == b.getStartX() && a.getEndX() == b.getEndX();
+        }
+        if (bothVertical) {
+            return a.getStartY() == b.getStartY() && a.getEndY() == b.getEndY();
+        }
+        return false;
+    }
+
+    private boolean areAdjacent(Road a, Road b) {
+    double midY = (a.getStartY() + b.getStartY()) / 2.0;
+        for (Road other : map.getRoads()) {
+            if (other == a || other == b) continue;
+            if (other.getStartY() > Math.min(a.getStartY(), b.getStartY()) 
+                && other.getStartY() < Math.max(a.getStartY(), b.getStartY())) {
+                return false; //another road sits between them
+            }
+        }
+        return true;
     }
 
     //Draws cars and obstacles
