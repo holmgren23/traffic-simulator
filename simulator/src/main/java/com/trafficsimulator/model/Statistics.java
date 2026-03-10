@@ -3,6 +3,7 @@ package com.trafficsimulator.model;
 import java.util.List;
 
 public class Statistics {
+    private static final double MS_PER_MIN = 60000.0;
     private static final int TICK_MS = 100;
     private static final int SPEED_MULTIPLIER = 30;
 
@@ -44,14 +45,11 @@ public class Statistics {
         this.currentStationary = stoppedCount;
         this.currentAvgSpeed = speedSum / cars.size();
     }
-
-
+    // Generates a snapshot of the current statistics
     public StatSnapshot getSnapshot() {
    
         double totalMinutes = (totalTicks * TICK_MS) / 60000.0;
-    
         double avgInFlow = (totalMinutes > 0) ? (totalCarsSpawned / totalMinutes) : 0;
-
         double avgOutFlow = (totalMinutes > 0) ? (totalCarsExited / totalMinutes) : 0;
     
         return new StatSnapshot(
@@ -64,6 +62,7 @@ public class Statistics {
             totalTicks
         );
     }
+
     // Generates a final report string summarizing the simulation results
     public String getFinalReport() {
         StatSnapshot s = getSnapshot();
@@ -83,12 +82,14 @@ public class Statistics {
         );
     }
 
- 
-    public long getTotalTicks() { 
-        return totalTicks; 
+    // Calculates flow rate in vehicles per minute based on Tickcount and elapsed time
+    public double calculateFlow(int count, long ticks, int tickMs) {
+        double elapsedMinutes = (ticks * tickMs) / MS_PER_MIN;
+        if (elapsedMinutes > 0) {
+            return count / elapsedMinutes;
+        } else {
+            return 0;
+        }
     }
 
-    public int getTotalCarsSpawned() { 
-        return totalCarsSpawned; 
-    }
 }
