@@ -93,6 +93,27 @@ public class Map {
         return roads.stream().mapToInt(r -> Math.max(r.getStartY(), r.getEndY())).max().orElse(100) + 30;
     }
 
+    public void transferCar(Car car, Road fromRoad, ArrayList<Car> carsToRemove) {
+        fromRoad.setCell(car.getPosition(), null);
+
+        // default — remove car
+        if (!fromRoad.hasExit()) {
+            carsToRemove.add(car); 
+            return;
+        }
+
+        Road targetRoad = fromRoad.getExitRoad();
+        int targetPos = fromRoad.getExitPosition();
+
+        if (targetRoad.getCell(targetPos) == null) {
+            car.setPosition(targetPos);
+            car.setRoad(targetRoad);
+            targetRoad.setCell(targetPos, car);
+        } else {
+            carsToRemove.add(car);
+        }
+    }
+
     //Two way road constructor with traffic light on each side
     public static Map createHighway(int roadLength) {
         Map map = new Map(MapType.HIGHWAY);
@@ -131,9 +152,10 @@ public class Map {
 
 
         int junctionPoint = roadLength / 2;
-        int clearance = 10;
+        int clearance = 5;
 
         Intersection intersection = new Intersection(roadB.getLength() - 1, roadA, junctionPoint, clearance);
+        roadB.setExit(roadA, junctionPoint);
 
         map.addRoad(roadA);
         map.addRoad(roadB);

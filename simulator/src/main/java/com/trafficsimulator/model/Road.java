@@ -6,6 +6,8 @@ public class Road {
     private Direction direction;
     private int startX, startY;
     private int endX, endY;
+    private Road exitRoad;
+    private int exitPosition;
     public enum Direction {
         EAST, WEST, NORTH, SOUTH
     }
@@ -37,6 +39,23 @@ public class Road {
     //Get road direction
     public Direction getDirection() {
         return direction;
+    }
+
+    public void setExit(Road exitRoad, int exitPosition) {
+        this.exitRoad = exitRoad;
+        this.exitPosition = exitPosition;
+    }
+
+    public Road getExitRoad() {
+        return exitRoad;
+    }
+
+    public int getExitPosition() {
+        return exitPosition;
+    }
+
+    public boolean hasExit() {
+        return exitRoad != null;
     }
 
     public int getStartX() {return startX;}

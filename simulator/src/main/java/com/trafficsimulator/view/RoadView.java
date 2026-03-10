@@ -78,7 +78,7 @@ public class RoadView extends Canvas implements SubView {
 
             double cellStart = i * cellSize;
             double x = horizontal ? x1 + cellStart : x1;
-            double y = horizontal ? y1 : y1 + cellSize;
+            double y = horizontal ? y1 : y1 + cellStart;
 
             RoadObject obstacle = road.getObstacle(cellIndex);
             if (obstacle instanceof Obstacle obs) {
