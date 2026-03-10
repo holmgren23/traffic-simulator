@@ -121,16 +121,14 @@ public class Map {
 
         int width = roadLength * CELL_SIZE;
 
-        Road road1 = new Road(roadLength, Direction.EAST, 0 , 48, width, 48);
-        Road road2 = new Road(roadLength, Direction.WEST, 0, 52, width, 52);
-        map.addRoad(road1);
-        map.addRoad(road2);
-        map.addRoad(new Road(roadLength, Direction.EAST));//lane 2 nedre
-        map.addRoad(new Road(roadLength, Direction.WEST));//lane 4 övre 
+        map.addRoad(new Road(roadLength, Direction.EAST, 0 , 48, width, 48));
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 52, width, 52));
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 44, width, 44));//lane 2 nedre
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 56, width, 56));//lane 4 övre 
 
 
-        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road1);
-        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2 - 1), road2);
+        //map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road1);
+        //map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2 - 1), road2);
 
         return map;
     }

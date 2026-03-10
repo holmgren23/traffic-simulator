@@ -91,7 +91,7 @@ public class MainView extends Application {
     public void showSimulation() {
         RoadView roadView = new RoadView(ts, windowWidth, windowHeight - 100);
 
-        StatisticsView statsView = new StatisticsView(ts, controller.getTickLength());
+        StatisticsView statsView = new StatisticsView(ts);
         TransportView transportView = new TransportView(this, controller);
         SubView[] subViews = new SubView[] { roadView, statsView, transportView };
 
