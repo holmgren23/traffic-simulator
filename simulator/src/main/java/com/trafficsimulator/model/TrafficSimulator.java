@@ -118,7 +118,7 @@ public class TrafficSimulator {
             }
             //If car exits road - Currently removes, can be changed to loop
             if (newPos >= road.getLength()) {
-                carsToRemove.add(car); //Collects all cars that should be removed
+                map.transferCar(car, road, carsToRemove); //Collects all cars that should be removed
                 continue;
             }
             //Place in new cell
@@ -156,6 +156,7 @@ public class TrafficSimulator {
         return stats;
     }
     
+    //Gets the final state of statistics for the termination of the simulation
     public String getFinalStats() {
         return stats.getFinalReport();
     }

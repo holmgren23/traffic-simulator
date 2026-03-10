@@ -73,11 +73,8 @@ public class MainView extends Application {
     }
 
     public void showSimulation() {
-        RoadView roadView = switch (ts.getMap().getType()) {
-            case HIGHWAY -> new HighwayView(ts, windowWidth);
-            case ONE_WAY -> new OneWayView(ts, windowWidth);
-            default -> new HighwayView(ts, windowWidth);
-        };
+        RoadView roadView = new RoadView(ts, windowWidth, windowHeight - 100);
+
         StatisticsView statsView = new StatisticsView(ts);
         TransportView transportView = new TransportView(this, controller);
         SubView[] subViews = new SubView[] { roadView, statsView, transportView };
