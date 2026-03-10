@@ -99,6 +99,7 @@ public class TransportView extends HBox implements SubView {
     timeScalingSlider.valueProperty().addListener((_, oldValue, newValue) -> {
       int TICK_LENGTH = 550 - (int)Math.round(newValue.doubleValue());
       this.controller.setTickLength(TICK_LENGTH);
+      scalingLabel.setText("Tick length: " + TICK_LENGTH);
     });
     this.getChildren().addAll(pause, reset, stop, scalingLabel, timeScalingSlider);
   }

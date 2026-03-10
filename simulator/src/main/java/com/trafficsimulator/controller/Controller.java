@@ -26,6 +26,7 @@ public class Controller {
   }
   
   public void createSimulation(InputParametersDTO params) {
+    this.TICK_LENGTH = 100;
     Map selctedMap = switch (params.getMapType()){
       case "Highway" -> Map.createHighway(params.getRoadLength());
       case "One way street" -> Map.createOneWay(params.getRoadLength());
