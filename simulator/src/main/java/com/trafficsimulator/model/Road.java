@@ -41,19 +41,24 @@ public class Road {
         return direction;
     }
 
+    //Sets the road that cars leaving the current road will transfer to
     public void setExit(Road exitRoad, int exitPosition) {
         this.exitRoad = exitRoad;
         this.exitPosition = exitPosition;
     }
 
+    //Gets the road that cars will be transfered to at end of road
     public Road getExitRoad() {
         return exitRoad;
     }
 
+    //Gets the positon that cars will appear on the road the cars are transfered to at end of road 
     public int getExitPosition() {
         return exitPosition;
     }
 
+    //Returns if a road has a different road cars will be transfered to at end of road.
+    //Sent to carsToRemove if null(default)
     public boolean hasExit() {
         return exitRoad != null;
     }

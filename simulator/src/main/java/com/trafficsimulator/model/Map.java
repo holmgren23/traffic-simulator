@@ -85,14 +85,15 @@ public class Map {
         }
     }
 
+    //Fucntions for finding how much space the map needs in the window
     public int getMapWidth() {
         return roads.stream().mapToInt(r -> Math.max(r.getStartX(), r.getEndX())).max().orElse(800);
     }
-
     public int getMapHeight() {
         return roads.stream().mapToInt(r -> Math.max(r.getStartY(), r.getEndY())).max().orElse(100) + 30;
     }
 
+    //For transfering cars at the end of a road to an other road object
     public void transferCar(Car car, Road fromRoad, ArrayList<Car> carsToRemove) {
         fromRoad.setCell(car.getPosition(), null);
 
@@ -142,6 +143,7 @@ public class Map {
         return map;
     }
 
+    //Creates a map with a one road intersecting into an other road
     public static Map createTIntersection(int roadLength) {
         Map map = new Map(MapType.T_INTERSECTION);
         int width = roadLength * CELL_SIZE;

@@ -157,6 +157,7 @@ public class TrafficSimulator {
         return stats;
     }
     
+    //Gets the final state of statistics for the termination of the simulation
     public String getFinalStats() {
         return stats.getFinalReport(100);
     }

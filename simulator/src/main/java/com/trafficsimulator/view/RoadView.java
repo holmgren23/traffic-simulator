@@ -12,6 +12,7 @@ public class RoadView extends Canvas implements SubView {
     private final double windowWidth;
     private final double windowHeight;
 
+    //RoadView constructor that takes the window size to scale the render towards
     public RoadView(TrafficSimulator ts, double windowWidth, double windowHeight) {
         super(windowWidth, windowHeight);
         this.map = ts.getMap();
@@ -19,6 +20,7 @@ public class RoadView extends Canvas implements SubView {
         this.windowWidth = windowWidth;
     }
 
+    //X and Y scalars for the map to be rendered
     private double scaleX() {
         return windowWidth / map.getMapWidth();
     }
@@ -37,6 +39,7 @@ public class RoadView extends Canvas implements SubView {
         }
     }
 
+    //Draws the road
     private void drawRoad(GraphicsContext gc, Road road) {
         double x1 = road.getStartX() * scaleX();
         double y1 = road.getStartY() * scaleY();
@@ -60,6 +63,7 @@ public class RoadView extends Canvas implements SubView {
 
     }
 
+    //Draws cars and obstacles
     private void drawRoadObjects(GraphicsContext gc, Road road) {
         int cells = road.getLength();
         double x1 = road.getStartX() * scaleX();
@@ -80,11 +84,13 @@ public class RoadView extends Canvas implements SubView {
             double x = horizontal ? x1 + cellStart : x1;
             double y = horizontal ? y1 : y1 + cellStart;
 
+            //Draw obstacles
             RoadObject obstacle = road.getObstacle(cellIndex);
             if (obstacle instanceof Obstacle obs) {
                 drawObstacle(gc, obs, x, y, cellSize, horizontal);
             }
 
+            //Draw vehicles
             RoadObject vehicle = road.getCell(cellIndex);
             if (vehicle instanceof Car car) {
                 gc.setFill(car.getColor());
@@ -98,6 +104,7 @@ public class RoadView extends Canvas implements SubView {
         }
     }
 
+    //Holder for how to draw the different obstacles
     public void drawObstacle(GraphicsContext gc, Obstacle obs, double x, double y, double cellSize, boolean horizontal) {
         double poleWidth = cellSize * 0.4;
         double poleHeight = cellSize * 3;
