@@ -138,18 +138,17 @@ public class TrafficSimulator {
                 cars.add(newCar);
                 road.setCell(0, newCar);
                 nextID++;
-                stats.incrementTotalCarsSpawned();
             }
         }
     }
 
     //Tick update. Should be callable by controller
-    public void tickUpdate() {
+    public void tickUpdate(int currentTickeLength) {
         tickCount++;
         map.updateObstacles(tickCount);
         moveCars(updateSpeeds());
-        stats.update(cars);
         spawnCar();
+        stats.update(cars, nextID, currentTickeLength);
     }
 
     //Returns the statistics of the current tick
@@ -158,7 +157,7 @@ public class TrafficSimulator {
     }
     
     public String getFinalStats() {
-        return stats.getFinalReport(100);
+        return stats.getFinalReport();
     }
 
     //Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic
