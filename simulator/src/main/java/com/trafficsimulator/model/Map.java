@@ -122,9 +122,9 @@ public class Map {
         int laneWidth = 8;
         int width = roadLength * CELL_SIZE;
 
-        map.addRoad(new Road(roadLength, Direction.EAST, 0 , 48, width, 48, laneWidth));
+        map.addRoad(new Road(roadLength, Direction.EAST, 0 , 44, width, 44, laneWidth));
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 48, width, 48, laneWidth));//lane 2 nedre
         map.addRoad(new Road(roadLength, Direction.WEST, 0, 52, width, 52, laneWidth));
-        map.addRoad(new Road(roadLength, Direction.EAST, 0, 44, width, 44, laneWidth));//lane 2 nedre
         map.addRoad(new Road(roadLength, Direction.WEST, 0, 56, width, 56, laneWidth));//lane 4 övre 
 
 
@@ -154,7 +154,7 @@ public class Map {
         int laneWidth = 8;
 
         Road roadA = new Road(roadLength, Direction.EAST, 0, 70, width, 70, laneWidth);
-        Road roadB = new Road(roadLength / 2, Direction.SOUTH, junctionX, 0, junctionX, 70, laneWidth);
+        Road roadB = new Road(roadLength / 2, Direction.SOUTH, junctionX, 0, junctionX, 70 - laneWidth / 2, laneWidth);
 
 
         int junctionPoint = roadLength / 2;
