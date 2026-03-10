@@ -3,18 +3,19 @@ package com.trafficsimulator.model;
 import java.util.List;
 
 public class Statistics {
-    private static final int TICK_MS = 100;
     private static final int SPEED_MULTIPLIER = 30; // Assuming 1 unit of speed equals 30 km/h for display purposes
 
     private int totalCarsSpawned = 0;
     private int totalCarsExited = 0;
     private long totalTicks = 0;
+    private long totalElapsedTimeMS = 0;
     private double currentAvgSpeed = 0;
     private int currentStationary = 0;
     private int currentCarCount = 0;
 
-    public void update(List<Car> cars, int totalSpawned) {
+    public void update(List<Car> cars, int totalSpawned, int currentTickLength) {
         totalTicks++;
+        totalElapsedTimeMS += currentTickLength;
         this.currentCarCount = cars.size();
         this.totalCarsSpawned = totalSpawned;
         this.totalCarsExited = totalSpawned - this.currentCarCount;
@@ -39,7 +40,7 @@ public class Statistics {
 
     // Generates a snapshot of the current statistics
     public StatSnapshot getSnapshot() {
-        double totalMinutes = (totalTicks * TICK_MS) / 60000.0;
+        double totalMinutes = (totalElapsedTimeMS) / 60000.0;
         // Calculate average inflow and outflow rates
         double avgInFlow = (totalMinutes > 0) ? (totalCarsSpawned / totalMinutes) : 0;
         double avgOutFlow = (totalMinutes > 0) ? (totalCarsExited / totalMinutes) : 0;
@@ -51,14 +52,15 @@ public class Statistics {
             currentAvgSpeed * SPEED_MULTIPLIER,
             avgInFlow,
             avgOutFlow,
-            totalTicks
+            totalTicks,
+            totalElapsedTimeMS
         );
     }
 
     // Generates a final report string summarizing the simulation results
     public String getFinalReport() {
         StatSnapshot s = getSnapshot();
-        long totalSeconds = (s.totalTicks() * TICK_MS) / 1000;
+        long totalSeconds = totalElapsedTimeMS / 1000;
         
         return String.format(
             "--- FINAL REPORT ---\n" +

@@ -94,7 +94,7 @@ public class MainView extends Application {
             case ONE_WAY -> new OneWayView(ts, windowWidth);
             default -> new HighwayView(ts, windowWidth);
         };
-        StatisticsView statsView = new StatisticsView(ts, controller.getTickLength());
+        StatisticsView statsView = new StatisticsView(ts);
         TransportView transportView = new TransportView(this, controller);
         SubView[] subViews = new SubView[] { roadView, statsView, transportView };
 

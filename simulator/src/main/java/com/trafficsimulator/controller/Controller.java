@@ -86,7 +86,7 @@ public class Controller {
     } while (currentTime < this.nextTick);
 
     this.nextTick = currentTime + TICK_LENGTH;
-    this.ts.tickUpdate();
+    this.ts.tickUpdate(this.TICK_LENGTH);
     Platform.runLater(() -> {
       this.updateViews();
     });

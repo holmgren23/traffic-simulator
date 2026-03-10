@@ -18,12 +18,11 @@ public class StatisticsView extends VBox implements SubView {
     private final Label currentCarsLabel = new Label();
     private final Label vehicleInFlowLabel = new Label();
     private final Label vehicleOutFlowLabel = new Label();
-    private final int tickLength;
 
-    public StatisticsView(TrafficSimulator simulator, int TICK_LENGTH) {
+
+    public StatisticsView(TrafficSimulator simulator) {
         this.simulator = simulator;
-        this.tickLength = TICK_LENGTH;
-    
+  
 
         this.setSpacing(5);
         this.setStyle("-fx-padding: 15;");
@@ -61,7 +60,7 @@ public class StatisticsView extends VBox implements SubView {
 
     public void update() {
         StatSnapshot stats = simulator.getStats().getSnapshot();
-        long totalSeconds = (stats.totalTicks() * (long)tickLength) / 1000;
+        long totalSeconds = stats.totalElapsedTimeMS() / 1000;
         long hours = totalSeconds / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;

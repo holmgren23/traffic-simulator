@@ -8,5 +8,6 @@ public record StatSnapshot(
     double currentAvgSpeedKmh,
     double avgInFlow,
     double avgOutFlow,
-    long totalTicks
+    long totalTicks,
+    long totalElapsedTimeMS
 ) {}

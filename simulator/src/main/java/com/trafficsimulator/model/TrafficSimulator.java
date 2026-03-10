@@ -143,12 +143,12 @@ public class TrafficSimulator {
     }
 
     //Tick update. Should be callable by controller
-    public void tickUpdate() {
+    public void tickUpdate(int currentTickeLength) {
         tickCount++;
         map.updateObstacles(tickCount);
         moveCars(updateSpeeds());
         spawnCar();
-        stats.update(cars, nextID);
+        stats.update(cars, nextID, currentTickeLength);
     }
 
     //Returns the statistics of the current tick
