@@ -67,7 +67,6 @@ public class TransportView extends HBox implements SubView {
       if (e.getCode() != KeyCode.ENTER) { e.consume(); }
     });
     this.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-      System.out.println("Key pressed: " + e.getCode());
       switch (e.getCode()) {
         case KeyCode.SPACE:
         case KeyCode.K:
