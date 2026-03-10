@@ -5,8 +5,10 @@ import com.trafficsimulator.controller.Controller;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.scene.control.Alert;
@@ -67,6 +69,10 @@ public class MainView extends Application {
     public void start(Stage primaryStage) {
         MainView.primaryStage = primaryStage;
         primaryStage.setTitle("Traffic Simulator");
+
+        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        windowWidth = (int)screenBounds.getWidth();
+        windowHeight = (int)screenBounds.getHeight();
         
         this.showMenu();
     }

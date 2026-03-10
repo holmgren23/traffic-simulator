@@ -11,7 +11,7 @@ public class InputParametersDTOTest {
 
   @BeforeEach
   public void setUp() {
-    dto = new InputParametersDTO(2, 3, 4, 5);
+    dto = new InputParametersDTO(2, 3, 4, 5, "testMap");
   }
   
   @AfterEach
@@ -36,5 +36,10 @@ public class InputParametersDTOTest {
    @Test
    public void testGetMaxSpeed() {
     assertEquals(5, dto.getMaxSpeed());
+   }
+   
+   @Test
+   public void testGetMapType() {
+    assertEquals("testMap", dto.getMapType());
    }
 }
