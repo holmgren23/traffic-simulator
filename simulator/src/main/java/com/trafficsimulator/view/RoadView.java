@@ -50,7 +50,7 @@ public class RoadView extends Canvas implements SubView {
         boolean horizontal = road.getDirection() == Direction.EAST || road.getDirection() == Direction.WEST;
         double roadLength = horizontal ? (x2 - x1) : (y2 - y1);
         double cellSize = roadLength / cells;
-        double roadThickness = cellSize * 3;
+        double roadThickness = road.getLaneWidth() * scaleY();
 
         gc.setFill(Color.BLACK);
         if (horizontal) {

@@ -119,12 +119,13 @@ public class Map {
     public static Map createHighway(int roadLength) {
         Map map = new Map(MapType.HIGHWAY);
 
+        int laneWidth = 8;
         int width = roadLength * CELL_SIZE;
 
-        map.addRoad(new Road(roadLength, Direction.EAST, 0 , 48, width, 48));
-        map.addRoad(new Road(roadLength, Direction.WEST, 0, 52, width, 52));
-        map.addRoad(new Road(roadLength, Direction.EAST, 0, 44, width, 44));//lane 2 nedre
-        map.addRoad(new Road(roadLength, Direction.WEST, 0, 56, width, 56));//lane 4 övre 
+        map.addRoad(new Road(roadLength, Direction.EAST, 0 , 48, width, 48, laneWidth));
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 52, width, 52, laneWidth));
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 44, width, 44, laneWidth));//lane 2 nedre
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 56, width, 56, laneWidth));//lane 4 övre 
 
 
         //map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road1);
@@ -136,10 +137,11 @@ public class Map {
     //Creates a one way road
     public static Map createOneWay(int roadLength) {
         Map map = new Map(MapType.ONE_WAY);
+        int laneWidth = 8;
 
         int width = roadLength * CELL_SIZE;
 
-        Road road = new Road(roadLength, Direction.EAST, 0, 50, width, 50);
+        Road road = new Road(roadLength, Direction.EAST, 0, 50, width, 50, laneWidth);
         map.addRoad(road);
         return map;
     }
@@ -149,9 +151,10 @@ public class Map {
         Map map = new Map(MapType.T_INTERSECTION);
         int width = roadLength * CELL_SIZE;
         int junctionX = width / 2;
+        int laneWidth = 8;
 
-        Road roadA = new Road(roadLength, Direction.EAST, 0, 70, width, 70);
-        Road roadB = new Road(roadLength / 2, Direction.SOUTH, junctionX, 0, junctionX, 70);
+        Road roadA = new Road(roadLength, Direction.EAST, 0, 70, width, 70, laneWidth);
+        Road roadB = new Road(roadLength / 2, Direction.SOUTH, junctionX, 0, junctionX, 70, laneWidth);
 
 
         int junctionPoint = roadLength / 2;

@@ -8,12 +8,13 @@ public class Road {
     private int endX, endY;
     private Road exitRoad;
     private int exitPosition;
+    private int laneWidth;
     public enum Direction {
         EAST, WEST, NORTH, SOUTH
     }
 
     //Road that can take a vehicle and obstacle in the same cell but different layers(arrays)
-    public Road(int length, Direction direction, int startX, int startY, int endX, int endY) {
+    public Road(int length, Direction direction, int startX, int startY, int endX, int endY, int laneWidth) {
         vehicles = new RoadObject[length];
         obstacles = new RoadObject[length];
         this.direction = direction;
@@ -21,15 +22,16 @@ public class Road {
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
+        this.laneWidth = laneWidth;
     }
 
     //Default contructor
     public Road(int length, Direction direction) {
-        this(length, Direction.EAST, 0 , 0, 0, 0);
+        this(length, Direction.EAST, 0 , 0, 0, 0, 4);
     }
 
     public Road(int length) {
-        this(length, Direction.EAST, 0, 0, 0,0);
+        this(length, Direction.EAST, 0, 0, 0,0, 4);
     }
 
     //Gets road length
@@ -39,6 +41,11 @@ public class Road {
     //Get road direction
     public Direction getDirection() {
         return direction;
+    }
+
+    //Width of lanes
+    public int getLaneWidth() {
+        return laneWidth;
     }
 
     //Sets the road that cars leaving the current road will transfer to
