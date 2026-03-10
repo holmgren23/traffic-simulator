@@ -14,11 +14,13 @@ public class Statistics {
     private int currentCarCount = 0;
 
     public void update(List<Car> cars, int totalSpawned, int currentTickLength) {
+
         totalTicks++;
         totalElapsedTimeMS += currentTickLength;
         this.currentCarCount = cars.size();
         this.totalCarsSpawned = totalSpawned;
         this.totalCarsExited = totalSpawned - this.currentCarCount;
+        
        // If there are no cars, average speed and stationary count is zero
         if (cars.isEmpty()) {
             this.currentAvgSpeed = 0;

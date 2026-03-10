@@ -4,15 +4,13 @@ import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.controller.Controller;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 public class MainView extends Application {
     //Dimensions for the window(pixels)
@@ -44,20 +42,6 @@ public class MainView extends Application {
     public static void setModel(TrafficSimulator ts) {
         MainView.ts = ts;
 
-    }
-    public static void showStatisticsPopup() {
-        String reportText = ts.getFinalStats();
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Simulation Statistics Report");
-        alert.setHeaderText("Final Report:");
-        alert.setContentText(reportText);
-        
-        //Tell the operating system that this is a popup window,
-        //helpful on some linux systems
-        ((Stage) alert.getDialogPane().getScene().getWindow()).initStyle(StageStyle.UTILITY);
-
-        //Stop and wait for user to click OK
-        alert.showAndWait(); 
     }
 
     //Launches the JavaFX application
@@ -101,10 +85,25 @@ public class MainView extends Application {
         simThread.start();
 
         StackPane root = new StackPane(roadView, statsView, transportView);
+        StackPane.setAlignment(statsView, Pos.TOP_LEFT);
+        StackPane.setMargin(statsView, new Insets(10, 0, 0, 10));
+
         StackPane.setAlignment(transportView, Pos.BOTTOM_CENTER);
+        StackPane.setMargin(transportView, new Insets(0, 20, 20, 0));
         root.setStyle("-fx-background-color: rgb(15, 54, 22);");
         Scene window = new Scene(root, windowWidth, windowHeight);
         primaryStage.setScene(window);
         primaryStage.show();
     }
+
+    public void showSummaryScreen() {
+    // Skapa den nya rapportvyn
+    ReportView reportView = new ReportView(this, ts);
+    
+    // Skapa en ny scen och sätt den på huvudfönstret
+    Scene scene = new Scene(reportView, windowWidth, windowHeight);
+    primaryStage.setScene(scene);
+    primaryStage.show();
+}
+
 }
