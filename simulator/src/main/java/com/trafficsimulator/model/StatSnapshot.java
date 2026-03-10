@@ -1,5 +1,6 @@
 package com.trafficsimulator.model;
 
+// Record class to hold a snapshot of traffic statistics at a given moment
 public record StatSnapshot(
     int totalSpawned,
     int currentCars,

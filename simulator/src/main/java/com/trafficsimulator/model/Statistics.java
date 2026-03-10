@@ -3,9 +3,8 @@ package com.trafficsimulator.model;
 import java.util.List;
 
 public class Statistics {
-    private static final double MS_PER_MIN = 60000.0;
     private static final int TICK_MS = 100;
-    private static final int SPEED_MULTIPLIER = 30;
+    private static final int SPEED_MULTIPLIER = 30; // Assuming 1 unit of speed equals 30 km/h for display purposes
 
     private int totalCarsSpawned = 0;
     private int totalCarsExited = 0;
@@ -13,21 +12,13 @@ public class Statistics {
     private double currentAvgSpeed = 0;
     private int currentStationary = 0;
     private int currentCarCount = 0;
-    private int previousCarCount = 0;
 
-    public void update(List<Car> cars) {
+    public void update(List<Car> cars, int totalSpawned) {
         totalTicks++;
         this.currentCarCount = cars.size();
-
-        // Update total cars spawned and exited based on the change in car count
-        if (currentCarCount > previousCarCount) {     
-            totalCarsSpawned += (currentCarCount - previousCarCount);
-        } else if (currentCarCount < previousCarCount) {
-            totalCarsExited += (previousCarCount - currentCarCount);
-        }
-
-        previousCarCount = currentCarCount;
-       
+        this.totalCarsSpawned = totalSpawned;
+        this.totalCarsExited = totalSpawned - this.currentCarCount;
+       // If there are no cars, average speed and stationary count is zero
         if (cars.isEmpty()) {
             this.currentAvgSpeed = 0;
             this.currentStationary = 0;
@@ -45,13 +36,14 @@ public class Statistics {
         this.currentStationary = stoppedCount;
         this.currentAvgSpeed = speedSum / cars.size();
     }
+
     // Generates a snapshot of the current statistics
     public StatSnapshot getSnapshot() {
-   
         double totalMinutes = (totalTicks * TICK_MS) / 60000.0;
+        // Calculate average inflow and outflow rates
         double avgInFlow = (totalMinutes > 0) ? (totalCarsSpawned / totalMinutes) : 0;
         double avgOutFlow = (totalMinutes > 0) ? (totalCarsExited / totalMinutes) : 0;
-    
+        // Create and return a snapshot of the current statistics
         return new StatSnapshot(
             totalCarsSpawned,
             currentCarCount,
@@ -82,14 +74,5 @@ public class Statistics {
         );
     }
 
-    // Calculates flow rate in vehicles per minute based on Tickcount and elapsed time
-    public double calculateFlow(int count, long ticks, int tickMs) {
-        double elapsedMinutes = (ticks * tickMs) / MS_PER_MIN;
-        if (elapsedMinutes > 0) {
-            return count / elapsedMinutes;
-        } else {
-            return 0;
-        }
-    }
 
 }

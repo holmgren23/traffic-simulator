@@ -147,8 +147,8 @@ public class TrafficSimulator {
         tickCount++;
         map.updateObstacles(tickCount);
         moveCars(updateSpeeds());
-        stats.update(cars);
         spawnCar();
+        stats.update(cars, nextID);
     }
 
     //Returns the statistics of the current tick
