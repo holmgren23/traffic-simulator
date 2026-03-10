@@ -9,7 +9,7 @@ import com.trafficsimulator.model.Map;
 import javafx.application.Platform;
 
 public class Controller {
-  private final int TICK_LENGTH = 100;
+  private int TICK_LENGTH = 100;
   private TrafficSimulator ts;
   private SubView[] views;
   private long nextTick;
@@ -123,6 +123,10 @@ public class Controller {
     }
 
     this.running = true;
+  }
+
+  public void setTickLength(int TICK_LENGTH){
+    this.TICK_LENGTH = TICK_LENGTH;
   }
 
   public int getTickLength() {

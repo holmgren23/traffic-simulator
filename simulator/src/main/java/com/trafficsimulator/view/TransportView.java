@@ -12,6 +12,9 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 
 public class TransportView extends HBox implements SubView {
   private final ArrayList<EventHandler<ActionEvent>> eventHandlers = new ArrayList<>(
@@ -21,6 +24,7 @@ public class TransportView extends HBox implements SubView {
   private simButton pause, reset, stop;
   private Controller controller;
   private MainView mainView;
+  private Slider timeScalingSlider;
   
   private class simButton extends Button {
     public simButton(String text, String tooltip, EventHandler<ActionEvent> eventHandler) {
@@ -86,7 +90,17 @@ public class TransportView extends HBox implements SubView {
           break;
       }
     });
-    this.getChildren().addAll(pause, reset, stop);
+
+    Label scalingLabel = new Label("Time Scaling:");
+    scalingLabel.setTextFill(Color.WHITE);
+    this.timeScalingSlider = new Slider(10, 500, 100);
+    timeScalingSlider.setSnapToTicks(true);
+    timeScalingSlider.setMajorTickUnit(50);
+    timeScalingSlider.valueProperty().addListener((_, oldValue, newValue) -> {
+      int TICK_LENGTH = 550 - (int)Math.round(newValue.doubleValue());
+      this.controller.setTickLength(TICK_LENGTH);
+    });
+    this.getChildren().addAll(pause, reset, stop, scalingLabel, timeScalingSlider);
   }
 
   public void update() {
