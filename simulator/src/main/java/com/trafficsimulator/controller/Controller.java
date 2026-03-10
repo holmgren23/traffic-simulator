@@ -4,11 +4,12 @@ import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.utility.InputParametersDTO;
 import com.trafficsimulator.view.MainView;
 import com.trafficsimulator.view.SubView;
+import com.trafficsimulator.model.Map;
 
 import javafx.application.Platform;
 
 public class Controller {
-  private final int TICK_LENGTH = 100;
+  private int TICK_LENGTH = 100;
   private TrafficSimulator ts;
   private SubView[] views;
   private long nextTick;
@@ -25,11 +26,18 @@ public class Controller {
   }
   
   public void createSimulation(InputParametersDTO params) {
+    this.TICK_LENGTH = 100;
+    Map selctedMap = switch (params.getMapType()){
+      case "Highway" -> Map.createHighway(params.getRoadLength());
+      case "One way street" -> Map.createOneWay(params.getRoadLength());
+      default -> Map.createHighway(params.getRoadLength()); 
+    };
     ts = new TrafficSimulator(
       (int)params.getSpawnRate(),
       (int)params.getRoadLength(),
       (int)params.getMinSpeed(),
-      (int)params.getMaxSpeed()
+      (int)params.getMaxSpeed(),
+      selctedMap
     );
     MainView.setModel(ts);
   }
@@ -116,6 +124,10 @@ public class Controller {
     }
 
     this.running = true;
+  }
+
+  public void setTickLength(int TICK_LENGTH){
+    this.TICK_LENGTH = TICK_LENGTH;
   }
 
   public int getTickLength() {

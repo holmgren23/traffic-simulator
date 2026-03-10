@@ -14,7 +14,6 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;;
 
@@ -25,6 +24,7 @@ public class MenuView extends GridPane {
   private SliderSection spawnRateSection, minSpeedSection, maxSpeedSection;
   private Spinner<Integer> roadLengthControl;
   private ComboBox<String> mapSelector;
+  private Color textColor = Color.SILVER;
   private int vGap = 12;
   
   @FunctionalInterface
@@ -33,7 +33,6 @@ public class MenuView extends GridPane {
   }
   
   private class SliderSection extends GridPane {
-    private Color textColor = Color.SILVER;
     private Slider inputSlider;
     private Label valueLabel;
 
@@ -48,7 +47,7 @@ public class MenuView extends GridPane {
       
       Label[] labels = {label, valueLabel};
       for (Label l : labels) {
-        l.setTextFill(this.textColor);
+        l.setTextFill(textColor);
         this.add(l, 0, 0);
       }
       this.add(inputSlider, 0, 1);
@@ -130,8 +129,9 @@ public class MenuView extends GridPane {
     maxSpeedSection.setBehavior(limitByMin);
 
     Label mapSelectorLabel = new Label("Select map");
-    String[] dummyMaps = {"Dummy1", "Dummy2", "Dummy3"};
-    this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(dummyMaps));
+    String[] maps = {"Highway", "One way street", "Dummy3"};
+    this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(maps));
+    if (maps.length > 0) { this.mapSelector.setValue(maps[0]); };
     VBox mapSelectorSection = new VBox(vGap, mapSelectorLabel, mapSelector);
     
     Label[] labels = {
@@ -139,7 +139,7 @@ public class MenuView extends GridPane {
       mapSelectorLabel
     };
     for (Label l : labels) {
-      l.setTextFill(Color.SILVER);
+      l.setTextFill(textColor);
     }
     
     // Columns from the left
@@ -165,7 +165,8 @@ public class MenuView extends GridPane {
       this.spawnRateSection.getValue(),
       this.roadLengthControl.getValue(),
       this.minSpeedSection.getValue(),
-      this.maxSpeedSection.getValue()
+      this.maxSpeedSection.getValue(),
+      this.mapSelector.getValue()
     );
   }
 }

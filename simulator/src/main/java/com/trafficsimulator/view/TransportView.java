@@ -1,37 +1,38 @@
 package com.trafficsimulator.view;
 
-import javafx.scene.layout.HBox;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.trafficsimulator.controller.Controller;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+
 public class TransportView extends HBox implements SubView {
-  private final String[] BUTTON_LABELS = new String[] {"Pause", "Reset", "Stop"};
   private final ArrayList<EventHandler<ActionEvent>> eventHandlers = new ArrayList<>(
     Arrays.asList(
-      e -> {
-        this.controller.toggleRunning();
-        boolean isRunning = this.controller.isRunning();
-        this.buttons[0].setText(isRunning ? " Pause " : "Resume");
-      },
-      e -> this.controller.resetSimulation(),
-      e -> {
-        this.controller.stopSimulation();
-        MainView.showStatisticsPopup();
-        this.mainView.showMenu();
-      }
     )
   );
-  private Button[] buttons;
+  private simButton pause, reset, stop;
   private Controller controller;
   private MainView mainView;
+  private Slider timeScalingSlider;
+  
+  private class simButton extends Button {
+    public simButton(String text, String tooltip, EventHandler<ActionEvent> eventHandler) {
+      this.setText(text);
+      this.setTooltip(new Tooltip(tooltip));
+      this.setOnAction(eventHandler);
+    }
+  }
 
   public TransportView(MainView mainView, Controller controller) {
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
@@ -42,31 +43,46 @@ public class TransportView extends HBox implements SubView {
     this.mainView = mainView;
     this.controller = controller;
 
-    this.buttons = new Button[this.BUTTON_LABELS.length];
-    for (int i = 0; i < this.BUTTON_LABELS.length; i++) {
-      this.buttons[i] = new Button(this.BUTTON_LABELS[i]);
-      this.buttons[i].setOnAction(this.eventHandlers.get(i));
-    }
+    this.pause = new simButton(
+      "Pause",
+      "Temporarily pause the simulation [K / SPACE BAR]",
+      e -> {
+        this.controller.toggleRunning();
+        boolean isRunning = this.controller.isRunning();
+        this.pause.setText(isRunning ? " Pause " : "Resume");
+      }
+    );
+    this.reset = new simButton(
+      "Reset",
+      "Reset statistics and start simulation anew [BACKSPACE]",
+      e -> this.controller.resetSimulation()
+    );
+    this.stop = new simButton(
+      "Stop",
+      "Stop simulation and show statistics summary [ESC]",
+      e -> {
+        this.controller.stopSimulation();
+        MainView.showStatisticsPopup();
+        this.mainView.showMenu();
+      }
+    );
+
     this.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
       if (e.getCode() != KeyCode.ENTER) { e.consume(); }
     });
     this.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-      System.out.println("Key pressed: " + e.getCode());
       switch (e.getCode()) {
         case KeyCode.SPACE:
         case KeyCode.K:
-          System.out.println("Pause/Resume");
-          this.buttons[0].fire();
+          this.pause.fire();
           e.consume();
           break;
         case KeyCode.BACK_SPACE:
-          System.out.println("Reset");
-          this.buttons[1].fire();
+          this.reset.fire();
           e.consume();
           break;
         case KeyCode.ESCAPE:
-          System.out.println("Stop");
-          this.buttons[2].fire();
+          this.stop.fire();
           e.consume();
           break;
       
@@ -74,7 +90,18 @@ public class TransportView extends HBox implements SubView {
           break;
       }
     });
-    this.getChildren().addAll(buttons);
+
+    Label scalingLabel = new Label("Time Scaling:");
+    scalingLabel.setTextFill(Color.WHITE);
+    this.timeScalingSlider = new Slider(10, 500, 100);
+    timeScalingSlider.setSnapToTicks(true);
+    timeScalingSlider.setMajorTickUnit(50);
+    timeScalingSlider.valueProperty().addListener((_, oldValue, newValue) -> {
+      int TICK_LENGTH = 550 - (int)Math.round(newValue.doubleValue());
+      this.controller.setTickLength(TICK_LENGTH);
+      scalingLabel.setText("Tick length: " + TICK_LENGTH);
+    });
+    this.getChildren().addAll(pause, reset, stop, scalingLabel, timeScalingSlider);
   }
 
   public void update() {

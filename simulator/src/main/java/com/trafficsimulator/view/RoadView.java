@@ -20,10 +20,10 @@ public abstract class RoadView extends Canvas implements SubView {
         gc.fillRect(0, 0, width, height);
     }
 
-    protected void drawLines(GraphicsContext gc, double cellWidth, double height, int cells) {
+    protected void drawLines(GraphicsContext gc, double cellWidth, double y, int cells) {
         gc.setFill(Color.WHITE);
         for(int i = 0; i < cells; i +=3){
-            gc.fillRect(i * cellWidth, height / 2, cellWidth, height/20);
+            gc.fillRect(i * cellWidth, y, cellWidth, 3);
         }
     }
 

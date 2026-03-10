@@ -16,13 +16,13 @@ public class TrafficSimulator {
     private double speedupProbability = 0.3;
 
     //Main constructor   
-    public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed) {
+    public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, Map map) {
         this.rand = new Random();
         this.spawnRate = spawnRate;
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
 
-        this.initializeSimulation(Map.createHighway(roadLength));
+        this.initializeSimulation(map);
     }
 
     //Deterministic random constructor for testing of random functions.
