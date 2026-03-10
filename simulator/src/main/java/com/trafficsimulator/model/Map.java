@@ -7,6 +7,7 @@ import com.trafficsimulator.model.Road.Direction;
 public class Map {
     private ArrayList<Road> roads;
     private MapType type;
+    private static final int CELL_SIZE = 5;
 
     //initialize a new map that can hold roads
     public Map(MapType type) {
@@ -84,23 +85,84 @@ public class Map {
         }
     }
 
+    //Fucntions for finding how much space the map needs in the window
+    public int getMapWidth() {
+        return roads.stream().mapToInt(r -> Math.max(r.getStartX(), r.getEndX())).max().orElse(800);
+    }
+    public int getMapHeight() {
+        return roads.stream().mapToInt(r -> Math.max(r.getStartY(), r.getEndY())).max().orElse(100) + 30;
+    }
+
+    //For transfering cars at the end of a road to an other road object
+    public void transferCar(Car car, Road fromRoad, ArrayList<Car> carsToRemove) {
+        fromRoad.setCell(car.getPosition(), null);
+
+        // default — remove car
+        if (!fromRoad.hasExit()) {
+            carsToRemove.add(car); 
+            return;
+        }
+
+        Road targetRoad = fromRoad.getExitRoad();
+        int targetPos = fromRoad.getExitPosition();
+
+        if (targetRoad.getCell(targetPos) == null) {
+            car.setPosition(targetPos);
+            car.setRoad(targetRoad);
+            targetRoad.setCell(targetPos, car);
+        } else {
+            carsToRemove.add(car);
+        }
+    }
+
     //Two way road constructor with traffic light on each side
     public static Map createHighway(int roadLength) {
         Map map = new Map(MapType.HIGHWAY);
-        Road road1 = new Road(roadLength);
-        Road road2 = new Road(roadLength, Direction.WEST);
+
+        int width = roadLength * CELL_SIZE;
+
+        Road road1 = new Road(roadLength, Direction.EAST, 0 , 48, width, 48);
+        Road road2 = new Road(roadLength, Direction.WEST, 0, 52, width, 52);
+
         map.addRoad(road1);
         map.addRoad(road2);
         map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road1);
         map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2 - 1), road2);
+
         return map;
     }
 
     //Creates a one way road
     public static Map createOneWay(int roadLength) {
         Map map = new Map(MapType.ONE_WAY);
-        Road road = new Road(roadLength);
+
+        int width = roadLength * CELL_SIZE;
+
+        Road road = new Road(roadLength, Direction.EAST, 0, 50, width, 50);
         map.addRoad(road);
+        return map;
+    }
+
+    //Creates a map with a one road intersecting into an other road
+    public static Map createTIntersection(int roadLength) {
+        Map map = new Map(MapType.T_INTERSECTION);
+        int width = roadLength * CELL_SIZE;
+        int junctionX = width / 2;
+
+        Road roadA = new Road(roadLength, Direction.EAST, 0, 70, width, 70);
+        Road roadB = new Road(roadLength / 2, Direction.SOUTH, junctionX, 0, junctionX, 70);
+
+
+        int junctionPoint = roadLength / 2;
+        int clearance = 5;
+
+        Intersection intersection = new Intersection(roadB.getLength() - 1, roadA, junctionPoint, clearance);
+        roadB.setExit(roadA, junctionPoint);
+
+        map.addRoad(roadA);
+        map.addRoad(roadB);
+        map.addObstacle(intersection, roadB);
+
         return map;
     }
 }

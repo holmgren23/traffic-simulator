@@ -4,20 +4,32 @@ public class Road {
     private RoadObject[] vehicles;
     private RoadObject[] obstacles;
     private Direction direction;
+    private int startX, startY;
+    private int endX, endY;
+    private Road exitRoad;
+    private int exitPosition;
     public enum Direction {
         EAST, WEST, NORTH, SOUTH
     }
 
     //Road that can take a vehicle and obstacle in the same cell but different layers(arrays)
-    public Road(int length, Direction direction) {
+    public Road(int length, Direction direction, int startX, int startY, int endX, int endY) {
         vehicles = new RoadObject[length];
         obstacles = new RoadObject[length];
         this.direction = direction;
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
     }
 
     //Default contructor
+    public Road(int length, Direction direction) {
+        this(length, Direction.EAST, 0 , 0, 0, 0);
+    }
+
     public Road(int length) {
-        this(length, Direction.EAST);
+        this(length, Direction.EAST, 0, 0, 0,0);
     }
 
     //Gets road length
@@ -28,6 +40,33 @@ public class Road {
     public Direction getDirection() {
         return direction;
     }
+
+    //Sets the road that cars leaving the current road will transfer to
+    public void setExit(Road exitRoad, int exitPosition) {
+        this.exitRoad = exitRoad;
+        this.exitPosition = exitPosition;
+    }
+
+    //Gets the road that cars will be transfered to at end of road
+    public Road getExitRoad() {
+        return exitRoad;
+    }
+
+    //Gets the positon that cars will appear on the road the cars are transfered to at end of road 
+    public int getExitPosition() {
+        return exitPosition;
+    }
+
+    //Returns if a road has a different road cars will be transfered to at end of road.
+    //Sent to carsToRemove if null(default)
+    public boolean hasExit() {
+        return exitRoad != null;
+    }
+
+    public int getStartX() {return startX;}
+    public int getStartY() {return startY;}
+    public int getEndX() {return endX;}
+    public int getEndY() {return endY;}
 
     // Vehicle layer
     public RoadObject getCell(int index) {

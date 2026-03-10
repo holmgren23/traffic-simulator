@@ -29,6 +29,7 @@ public class Controller {
     Map selctedMap = switch (params.getMapType()){
       case "Highway" -> Map.createHighway(params.getRoadLength());
       case "One way street" -> Map.createOneWay(params.getRoadLength());
+      case "T Intersection" -> Map.createTIntersection(params.getRoadLength());
       default -> Map.createHighway(params.getRoadLength()); 
     };
     ts = new TrafficSimulator(
