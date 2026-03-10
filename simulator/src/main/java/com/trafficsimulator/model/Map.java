@@ -122,10 +122,11 @@ public class Map {
         int laneWidth = 8;
         int width = roadLength * CELL_SIZE;
 
-        map.addRoad(new Road(roadLength, Direction.EAST, 0 , 44, width, 44, laneWidth));
-        map.addRoad(new Road(roadLength, Direction.EAST, 0, 48, width, 48, laneWidth));//lane 2 nedre
-        map.addRoad(new Road(roadLength, Direction.WEST, 0, 52, width, 52, laneWidth));
-        map.addRoad(new Road(roadLength, Direction.WEST, 0, 56, width, 56, laneWidth));//lane 4 övre 
+        //To make more lanes give they p
+        map.addRoad(new Road(roadLength, Direction.WEST, 0 , 44, width, 44, laneWidth));
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 48, width, 48, laneWidth));//lane 2 nedre
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 52, width, 52, laneWidth));
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 56, width, 56, laneWidth));//lane 4 övre 
 
 
         //map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road1);
