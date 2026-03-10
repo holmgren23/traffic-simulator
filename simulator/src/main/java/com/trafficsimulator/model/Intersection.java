@@ -5,7 +5,7 @@ public class Intersection extends Obstacle {
     private int junctionPosition;
     private int clearanceDistance;
 
-
+    //Intersection object that closes the road if the junctions point has cars in clearance distance
     public Intersection(int position, Road mainRoad, int junctionPosition, int clearanceDistance) {
         super(ObstacleType.INTERSECTION, position);
         this.mainRoad = mainRoad;
@@ -13,10 +13,12 @@ public class Intersection extends Obstacle {
         this.clearanceDistance = clearanceDistance;
     }
 
+    //Priority check for closing and opening the road
     public void calculatePriority(int tickCount) {
         setOpen(isJunctionClear());
     }
 
+    //Checks clearance on the connected road
     private boolean isJunctionClear() {
         for (int i = junctionPosition - clearanceDistance; i <= junctionPosition + clearanceDistance; i++) {
             if (i >= 0 && i < mainRoad.getLength()) {

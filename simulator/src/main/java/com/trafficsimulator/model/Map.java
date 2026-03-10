@@ -121,8 +121,8 @@ public class Map {
 
         int width = roadLength * CELL_SIZE;
 
-        Road road1 = new Road(roadLength, Direction.EAST, 0 , 40, width, 40);
-        Road road2 = new Road(roadLength, Direction.WEST, 0, 50, width, 50);
+        Road road1 = new Road(roadLength, Direction.EAST, 0 , 48, width, 48);
+        Road road2 = new Road(roadLength, Direction.WEST, 0, 52, width, 52);
 
         map.addRoad(road1);
         map.addRoad(road2);
