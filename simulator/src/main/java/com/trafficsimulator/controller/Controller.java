@@ -9,7 +9,7 @@ import com.trafficsimulator.model.Map;
 import javafx.application.Platform;
 
 public class Controller {
-  private final int TICK_LENGTH = 100;
+  private int TICK_LENGTH = 100;
   private TrafficSimulator ts;
   private SubView[] views;
   private long nextTick;
@@ -26,6 +26,7 @@ public class Controller {
   }
   
   public void createSimulation(InputParametersDTO params) {
+    this.TICK_LENGTH = 100;
     Map selctedMap = switch (params.getMapType()){
       case "Highway" -> Map.createHighway(params.getRoadLength());
       case "One way street" -> Map.createOneWay(params.getRoadLength());
@@ -86,7 +87,7 @@ public class Controller {
     } while (currentTime < this.nextTick);
 
     this.nextTick = currentTime + TICK_LENGTH;
-    this.ts.tickUpdate();
+    this.ts.tickUpdate(this.TICK_LENGTH);
     Platform.runLater(() -> {
       this.updateViews();
     });
@@ -124,6 +125,10 @@ public class Controller {
     }
 
     this.running = true;
+  }
+
+  public void setTickLength(int TICK_LENGTH){
+    this.TICK_LENGTH = TICK_LENGTH;
   }
 
   public int getTickLength() {
