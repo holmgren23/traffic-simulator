@@ -2,7 +2,7 @@ package com.trafficsimulator.model;
 
 import java.util.List;
 
-import com.trafficsimulator.utility.HelperMethods;
+import com.trafficsimulator.utility.Constants;
 
 public class Statistics {
     private static final int SPEED_MULTIPLIER = 30; // Assuming 1 unit of speed equals 30 km/h for display purposes
@@ -18,7 +18,7 @@ public class Statistics {
     public void update(List<Car> cars, int totalSpawned) {
 
         totalTicks++;
-        totalElapsedTimeMS += HelperMethods.TICK_LENGTH;
+        totalElapsedTimeMS += Constants.TICK_LENGTH;
         this.currentCarCount = cars.size();
         this.totalCarsSpawned = totalSpawned;
         this.totalCarsExited = totalSpawned - this.currentCarCount;

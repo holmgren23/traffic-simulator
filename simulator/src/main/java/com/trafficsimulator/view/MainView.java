@@ -72,12 +72,12 @@ public class MainView extends Application {
         primaryStage.show();
     }
 
-    public void showSimulation() {
+    public void showSimulation(int timeScaling) {
         RoadView roadView = new RoadView(ts, windowWidth, windowHeight - 100);
 
         StatisticsView statsView = new StatisticsView(ts);
-        TransportView transportView = new TransportView(this, controller);
-        SubView[] subViews = new SubView[] { roadView, statsView, transportView };
+        TransportView transportView = new TransportView(this, controller, timeScaling);
+        SubView[] subViews = new SubView[] { roadView, statsView};
 
         controller.setSubViews(subViews);
         Thread simThread = new Thread(() -> controller.loop());

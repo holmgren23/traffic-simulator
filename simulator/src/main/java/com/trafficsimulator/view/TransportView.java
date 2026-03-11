@@ -7,24 +7,20 @@ import com.trafficsimulator.controller.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.control.Slider;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.GridPane;
 
-public class TransportView extends HBox implements SubView {
-  private final ArrayList<EventHandler<ActionEvent>> eventHandlers = new ArrayList<>(
-    Arrays.asList(
-    )
-  );
+public class TransportView extends GridPane {
   private simButton pause, reset, stop;
   private Controller controller;
   private MainView mainView;
-  private Slider timeScalingSlider;
+  private SliderSection timeScalingSection;
+  private HBox buttonRow;
   
   private class simButton extends Button {
     public simButton(String text, String tooltip, EventHandler<ActionEvent> eventHandler) {
@@ -34,11 +30,12 @@ public class TransportView extends HBox implements SubView {
     }
   }
 
-  public TransportView(MainView mainView, Controller controller) {
+  public TransportView(MainView mainView, Controller controller, int timeScaling) {
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setMaxHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setStyle("-fx-padding: 5;");
-    this.setSpacing(4);
+    this.setHgap(4);
+    this.setVgap(8);
     
     this.mainView = mainView;
     this.controller = controller;
@@ -66,6 +63,9 @@ public class TransportView extends HBox implements SubView {
       }
 
     );
+    
+    this.buttonRow = new HBox(pause, reset, stop);
+    this.buttonRow.setSpacing(4);
 
     this.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
       if (e.getCode() != KeyCode.ENTER) { e.consume(); }
@@ -91,19 +91,14 @@ public class TransportView extends HBox implements SubView {
       }
     });
 
-    Label scalingLabel = new Label("Time Scaling:");
-    scalingLabel.setTextFill(Color.WHITE);
-    this.timeScalingSlider = new Slider(0.2, 8, 1);
-    timeScalingSlider.setSnapToTicks(true);
-    timeScalingSlider.setMajorTickUnit(0.5);
-    timeScalingSlider.valueProperty().addListener((_, oldValue, newValue) -> {
-      double timeScaling = newValue.doubleValue();
-      this.controller.setTimeScaling(timeScaling);
-      scalingLabel.setText("Time scaling: " + (int)(timeScaling * 100) + " %");
+    this.timeScalingSection = new SliderSection("Time scaling", " %", 20, 800, timeScaling);
+    timeScalingSection.setBehavior(v -> {
+      long val = Math.round(v);
+      this.controller.setTimeScaling((int)val);
+      return val;
     });
-    this.getChildren().addAll(pause, reset, stop, scalingLabel, timeScalingSlider);
+    this.add(buttonRow, 0, 0);
+    this.add(timeScalingSection, 0, 1);
+    GridPane.setHalignment(timeScalingSection, HPos.CENTER);
   }
-
-  public void update() {
-  };
 }

@@ -2,7 +2,7 @@ package com.trafficsimulator.controller;
 
 import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.utility.InputParametersDTO;
-import com.trafficsimulator.utility.HelperMethods;
+import com.trafficsimulator.utility.Constants;
 import com.trafficsimulator.view.MainView;
 import com.trafficsimulator.view.SubView;
 import com.trafficsimulator.model.Map;
@@ -27,12 +27,15 @@ public class Controller {
   }
   
   public void createSimulation(InputParametersDTO params) {
+    this.setTimeScaling((int)params.getTimeScalingFactor());
+
     Map selctedMap = switch (params.getMapType()){
       case "Highway" -> Map.createHighway(params.getRoadLength());
       case "One way street" -> Map.createOneWay(params.getRoadLength());
       case "T Intersection" -> Map.createTIntersection(params.getRoadLength());
       default -> Map.createHighway(params.getRoadLength()); 
     };
+
     ts = new TrafficSimulator(
       (int)params.getSpawnRate(),
       (int)params.getRoadLength(),
@@ -40,6 +43,7 @@ public class Controller {
       (int)params.getMaxSpeed(),
       selctedMap
     );
+
     MainView.setModel(ts);
   }
   
@@ -94,7 +98,7 @@ public class Controller {
   }
   
   private void setNextTick() {
-    this.nextTick = System.currentTimeMillis() + (int)(HelperMethods.TICK_LENGTH / this.timeScaling);
+    this.nextTick = System.currentTimeMillis() + (int)(Constants.TICK_LENGTH / this.timeScaling);
   }
 
   public void toggleRunning() {
@@ -131,7 +135,7 @@ public class Controller {
     this.running = true;
   }
 
-  public void setTimeScaling(double timeScaling){
-    this.timeScaling = timeScaling;
+  public void setTimeScaling(int timeScaling){
+    this.timeScaling = timeScaling / 100.0;
   }
 }

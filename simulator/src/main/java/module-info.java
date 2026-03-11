@@ -1,7 +1,7 @@
 module com.trafficsimulator {
     requires javafx.controls;
     requires javafx.fxml;
-    requires javafx.graphics;
+    requires transitive javafx.graphics;
 
     opens com.trafficsimulator.view to javafx.graphics, javafx.fxml;
     opens com.trafficsimulator.controller to javafx.graphics;

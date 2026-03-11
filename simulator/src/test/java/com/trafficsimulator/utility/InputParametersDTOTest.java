@@ -11,7 +11,7 @@ public class InputParametersDTOTest {
 
   @BeforeEach
   public void setUp() {
-    dto = new InputParametersDTO(2, 3, 4, 5, "testMap");
+    dto = new InputParametersDTO("testMap", 3, 4, 5, 6, 7);
   }
   
   @AfterEach
@@ -20,26 +20,32 @@ public class InputParametersDTOTest {
   }
   
   @Test
-  public void testGetSpawnRate() {
-    assertEquals(2, dto.getSpawnRate());
+  public void testGetMapType() {
+   assertEquals("testMap", dto.getMapType());
   }
   
   @Test
   public void testGetRoadLength() {
     assertEquals(3, dto.getRoadLength());
   }
-   @Test
-   public void testGetMinSpeed() {
-    assertEquals(4, dto.getMinSpeed());
-   }
 
-   @Test
-   public void testGetMaxSpeed() {
-    assertEquals(5, dto.getMaxSpeed());
-   }
+  @Test
+  public void testGetMinSpeed() {
+   assertEquals(4, dto.getMinSpeed());
+  }
+
+  @Test
+  public void testGetMaxSpeed() {
+   assertEquals(5, dto.getMaxSpeed());
+  }
    
-   @Test
-   public void testGetMapType() {
-    assertEquals("testMap", dto.getMapType());
-   }
+  @Test
+  public void testGetSpawnRate() {
+    assertEquals(6, dto.getSpawnRate());
+  }
+  
+  @Test
+  public void testGetTimeScaling() {
+    assertEquals(7, dto.getTimeScalingFactor());
+  }
 }
