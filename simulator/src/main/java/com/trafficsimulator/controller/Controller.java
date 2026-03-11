@@ -2,6 +2,7 @@ package com.trafficsimulator.controller;
 
 import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.utility.InputParametersDTO;
+import com.trafficsimulator.utility.HelperMethods;
 import com.trafficsimulator.view.MainView;
 import com.trafficsimulator.view.SubView;
 import com.trafficsimulator.model.Map;
@@ -9,7 +10,7 @@ import com.trafficsimulator.model.Map;
 import javafx.application.Platform;
 
 public class Controller {
-  private int TICK_LENGTH = 100;
+  private double timeScaling = 1;
   private TrafficSimulator ts;
   private SubView[] views;
   private long nextTick;
@@ -17,16 +18,15 @@ public class Controller {
   private boolean stopped;
   
   public Controller() {
-    this.nextTick = System.currentTimeMillis() + TICK_LENGTH; 
+    this.setNextTick();
   }
 
   public Controller(TrafficSimulator ts) {
     this.ts = ts;
-    this.nextTick = System.currentTimeMillis() + TICK_LENGTH; 
+    this.setNextTick();
   }
   
   public void createSimulation(InputParametersDTO params) {
-    this.TICK_LENGTH = 100;
     Map selctedMap = switch (params.getMapType()){
       case "Highway" -> Map.createHighway(params.getRoadLength());
       case "One way street" -> Map.createOneWay(params.getRoadLength());
@@ -85,11 +85,15 @@ public class Controller {
       currentTime = System.currentTimeMillis();
     } while (currentTime < this.nextTick);
 
-    this.nextTick = currentTime + TICK_LENGTH;
+    this.setNextTick();
     this.ts.tickUpdate();
     Platform.runLater(() -> {
       this.updateViews();
     });
+  }
+  
+  private void setNextTick() {
+    this.nextTick = System.currentTimeMillis() + (int)(HelperMethods.TICK_LENGTH / this.timeScaling);
   }
 
   public void toggleRunning() {
@@ -126,11 +130,7 @@ public class Controller {
     this.running = true;
   }
 
-  public void setTickLength(int TICK_LENGTH){
-    this.TICK_LENGTH = TICK_LENGTH;
-  }
-
-  public int getTickLength() {
-    return this.TICK_LENGTH;
+  public void setTimeScaling(double timeScaling){
+    this.timeScaling = timeScaling;
   }
 }

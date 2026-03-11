@@ -1,6 +1,7 @@
 package com.trafficsimulator.model;
 
 import java.util.ArrayList;
+import com.trafficsimulator.utility.HelperMethods;
 
 public class Statistics {
 
@@ -73,7 +74,7 @@ public class Statistics {
     }
 
     public String getFinalReport(double TICK_LENGTH) {
-        long totalSeconds = (long) (totalTicks * TICK_LENGTH / 1000);
+        long totalSeconds = HelperMethods.ticksToTime(totalTicks);
         long h = totalSeconds / 3600;
         long m = (totalSeconds % 3600) / 60;
         long s = totalSeconds % 60;

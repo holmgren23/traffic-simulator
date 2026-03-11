@@ -2,6 +2,8 @@ package com.trafficsimulator.view;
 
 import com.trafficsimulator.model.Statistics;
 import com.trafficsimulator.model.TrafficSimulator;
+import com.trafficsimulator.utility.HelperMethods;
+
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -14,12 +16,9 @@ public class StatisticsView extends VBox implements SubView {
     private final Label avgSpeedLabel = new Label();
     private final Label stationaryCarsLabel = new Label();
     private final Label currentCarsLabel = new Label();
-    private final int tickLength;
 
-    public StatisticsView(TrafficSimulator simulator, int TICK_LENGTH) {
+    public StatisticsView(TrafficSimulator simulator) {
         this.simulator = simulator;
-        this.tickLength = TICK_LENGTH;
-    
 
         this.setSpacing(5);
         this.setStyle("-fx-padding: 15;");
@@ -42,7 +41,7 @@ public class StatisticsView extends VBox implements SubView {
 
     public void update() {
         Statistics stats = simulator.getStats();
-        long totalSeconds = (stats.getTotalTicks() * (long)tickLength) / 1000;
+        long totalSeconds = HelperMethods.ticksToTime(stats.getTotalTicks());
         long hours = totalSeconds / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;

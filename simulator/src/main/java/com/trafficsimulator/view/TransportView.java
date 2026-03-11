@@ -93,13 +93,13 @@ public class TransportView extends HBox implements SubView {
 
     Label scalingLabel = new Label("Time Scaling:");
     scalingLabel.setTextFill(Color.WHITE);
-    this.timeScalingSlider = new Slider(10, 500, 100);
+    this.timeScalingSlider = new Slider(0.2, 8, 1);
     timeScalingSlider.setSnapToTicks(true);
-    timeScalingSlider.setMajorTickUnit(50);
+    timeScalingSlider.setMajorTickUnit(0.5);
     timeScalingSlider.valueProperty().addListener((_, oldValue, newValue) -> {
-      int TICK_LENGTH = 550 - (int)Math.round(newValue.doubleValue());
-      this.controller.setTickLength(TICK_LENGTH);
-      scalingLabel.setText("Tick length: " + TICK_LENGTH);
+      double timeScaling = newValue.doubleValue();
+      this.controller.setTimeScaling(timeScaling);
+      scalingLabel.setText("Time scaling: " + (int)(timeScaling * 100) + " %");
     });
     this.getChildren().addAll(pause, reset, stop, scalingLabel, timeScalingSlider);
   }
