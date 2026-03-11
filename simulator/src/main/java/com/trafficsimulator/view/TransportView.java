@@ -1,8 +1,5 @@
 package com.trafficsimulator.view;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.trafficsimulator.controller.Controller;
 
 import javafx.event.ActionEvent;
@@ -30,7 +27,7 @@ public class TransportView extends GridPane {
     }
   }
 
-  public TransportView(MainView mainView, Controller controller, int timeScaling) {
+  public TransportView(MainView mainView, Controller controller, double timeScaling) {
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setMaxHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setStyle("-fx-padding: 5;");
@@ -40,6 +37,31 @@ public class TransportView extends GridPane {
     this.mainView = mainView;
     this.controller = controller;
 
+    this.createButtons();
+    this.addKeyboardShortcuts();
+
+    this.timeScalingSection = new SliderSection(
+      "Time scaling",
+      " %",
+      0,
+      1,
+      timeScaling,
+      labelVal -> {
+        double offset = Math.log(30);
+        double scale = Math.log(800);
+        return Math.round(Math.pow(Math.E, (offset + labelVal * (scale - offset))));
+      }
+    );
+    timeScalingSection.setBehavior(sliderVal -> sliderVal);
+    timeScalingSection.setChangeAction(() -> this.controller.setTimeScaling(timeScalingSection.getValue()));
+    timeScalingSection.getSlider().setBlockIncrement(0.025f);
+
+    this.add(buttonRow, 0, 0);
+    this.add(timeScalingSection, 0, 1);
+    GridPane.setHalignment(timeScalingSection, HPos.CENTER);
+  }
+  
+  private void createButtons() {
     this.pause = new simButton(
       "Pause",
       "Temporarily pause the simulation [K / SPACE BAR]",
@@ -61,12 +83,13 @@ public class TransportView extends GridPane {
         this.controller.stopSimulation();
         this.mainView.showSummaryScreen();
       }
-
     );
     
     this.buttonRow = new HBox(pause, reset, stop);
     this.buttonRow.setSpacing(4);
-
+  }
+  
+  private void addKeyboardShortcuts() {
     this.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
       if (e.getCode() != KeyCode.ENTER) { e.consume(); }
     });
@@ -85,20 +108,16 @@ public class TransportView extends GridPane {
           this.stop.fire();
           e.consume();
           break;
+        case KeyCode.PLUS:
+          this.timeScalingSection.getSlider().increment();
+          break;
+        case KeyCode.MINUS:
+          this.timeScalingSection.getSlider().decrement();
+          break;
       
         default:
           break;
       }
     });
-
-    this.timeScalingSection = new SliderSection("Time scaling", " %", 20, 800, timeScaling);
-    timeScalingSection.setBehavior(v -> {
-      long val = Math.round(v);
-      this.controller.setTimeScaling((int)val);
-      return val;
-    });
-    this.add(buttonRow, 0, 0);
-    this.add(timeScalingSection, 0, 1);
-    GridPane.setHalignment(timeScalingSection, HPos.CENTER);
   }
 }

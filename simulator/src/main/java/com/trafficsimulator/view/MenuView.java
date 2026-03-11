@@ -48,7 +48,7 @@ public class MenuView extends GridPane {
     Button startSimButton = new Button("Start");
     startSimButton.setOnAction(e -> {
       this.controller.createSimulation(this.getInputValues());
-      this.mainView.showSimulation((int)this.timeScalingSection.getValue());
+      this.mainView.showSimulation(this.timeScalingSection.getSlider().getValue());
     });
     this.add(startSimButton, this.getColumnCount() - 1, this.BTN_ROW);
     GridPane.setHalignment(startSimButton, HPos.LEFT);
@@ -76,17 +76,27 @@ public class MenuView extends GridPane {
     
     minSpeedSection = new SliderSection("Min speed", 1, 15, 2);
     maxSpeedSection = new SliderSection("Max speed", 1, 15, 6);
-    FindInputValue limitByMax = v -> v <= maxSpeedSection.getSlider().getValue() ? Math.round(v) : maxSpeedSection.getSlider().getValue();
-    FindInputValue limitByMin = v -> v >= minSpeedSection.getSlider().getValue() ? Math.round(v) : minSpeedSection.getSlider().getValue();
+    UnaryNumericOperation limitByMax = v -> v <= maxSpeedSection.getValue() ? Math.round(v) : maxSpeedSection.getSlider().getValue();
+    UnaryNumericOperation limitByMin = v -> v >= minSpeedSection.getValue() ? Math.round(v) : minSpeedSection.getSlider().getValue();
     minSpeedSection.setBehavior(limitByMax);
     maxSpeedSection.setBehavior(limitByMin);
 
     spawnRateSection = new SliderSection("Spawn interval", 1, 10, 5);
-    FindInputValue returnNewValue = v ->  Math.round(v);
-    spawnRateSection.setBehavior(returnNewValue);
+    spawnRateSection.setBehavior(v ->  Math.round(v));
     
-    timeScalingSection = new SliderSection("Time scaling", " %", 20, 800, 100);
-    timeScalingSection.setBehavior(returnNewValue);
+    timeScalingSection = new SliderSection(
+      "Time scaling",
+      " %",
+      0,
+      1,
+      ((Math.log(100) - Math.log(30)) / (Math.log(800) - Math.log(30))),
+      v -> {
+        double offset = Math.log(30);
+        double scale = Math.log(800);
+        return Math.round(Math.pow(Math.E, (offset + v * (scale - offset))));
+      }
+    );
+    timeScalingSection.setBehavior( v -> v);
     
     Label[] labels = {
       mapSelectorLabel,

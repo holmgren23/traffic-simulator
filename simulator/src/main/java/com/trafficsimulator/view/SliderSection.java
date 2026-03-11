@@ -11,20 +11,35 @@ public class SliderSection extends GridPane {
   private Slider inputSlider;
   private Label valueLabel;
   private String labelUnit;
+  private double value;
+  private UnaryNumericOperation scaler;
+  private PassableAction changeAction;
 
-  public SliderSection(String labelText, int min, int max, int initVal) {
+  public SliderSection(String labelText, double min, double max, double initVal) {
     this(labelText, "", min, max, initVal);
   }
+  
+  public SliderSection(
+    String labelText,
+    String labelUnit,
+    double min,
+    double max,
+    double initVal,
+    UnaryNumericOperation scaler) {
+      this.scaler = scaler;
+      this(labelText, labelUnit, min, max, initVal);
+    }
 
-  public SliderSection(String labelText, String labelUnit, int min, int max, int initVal) {
+  public SliderSection(String labelText, String labelUnit, double min, double max, double initVal) {
     this.setStyle("-fx-padding: 2;");
     this.setHgap(0);
     this.setVgap(Constants.V_GAP);
 
     this.labelUnit = labelUnit;
+    this.value = this.scaleValue(initVal);
     
     Label label = new Label(labelText + ": ");
-    this.valueLabel = new Label(String.valueOf(initVal) + labelUnit);
+    this.valueLabel = new Label(String.valueOf((int)this.value) + labelUnit);
     this.inputSlider = new Slider(min, max, initVal);
     
     Label[] labels = {label, valueLabel};
@@ -38,12 +53,34 @@ public class SliderSection extends GridPane {
     //GridPane.setHgrow(inputSlider, Priority.ALWAYS);
   }
   
-  public void setBehavior(FindInputValue expr) {
+  public void setBehavior(UnaryNumericOperation expr) {
     this.inputSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
       double rounded = expr.operate(newVal.doubleValue());
       inputSlider.setValue(rounded);
-      valueLabel.setText(String.valueOf((int)rounded) + this.labelUnit);
+      double scaled = this.scaleValue(rounded);
+      this.value = scaled;
+      valueLabel.setText(String.valueOf((int)scaled) + this.labelUnit);
+      if (this.changeAction != null) {
+        this.changeAction.run();
+      }
     });
+  }
+  
+  public void setChangeAction(PassableAction a) {
+    this.changeAction = a;
+  }
+  
+  private double scaleValue(double v) {
+    if (this.scaler != null) {
+      return this.scaler.operate(v);
+    }
+    else {
+      return v;
+    }
+  }
+  
+  public void setScaling(UnaryNumericOperation expr) {
+    this.scaler = expr;
   }
   
   public Slider getSlider() {
@@ -51,6 +88,6 @@ public class SliderSection extends GridPane {
   }
   
   public double getValue() {
-    return this.inputSlider.getValue();
+    return this.value;
   }
 }

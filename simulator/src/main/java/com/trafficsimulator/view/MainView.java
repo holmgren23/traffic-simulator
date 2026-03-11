@@ -72,7 +72,7 @@ public class MainView extends Application {
         primaryStage.show();
     }
 
-    public void showSimulation(int timeScaling) {
+    public void showSimulation(double timeScaling) {
         RoadView roadView = new RoadView(ts, windowWidth, windowHeight - 100);
 
         StatisticsView statsView = new StatisticsView(ts);

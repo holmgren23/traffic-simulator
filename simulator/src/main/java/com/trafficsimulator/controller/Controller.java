@@ -27,7 +27,7 @@ public class Controller {
   }
   
   public void createSimulation(InputParametersDTO params) {
-    this.setTimeScaling((int)params.getTimeScalingFactor());
+    this.setTimeScaling(params.getTimeScalingFactor());
 
     Map selctedMap = switch (params.getMapType()){
       case "Highway" -> Map.createHighway(params.getRoadLength());
@@ -135,7 +135,7 @@ public class Controller {
     this.running = true;
   }
 
-  public void setTimeScaling(int timeScaling){
-    this.timeScaling = timeScaling / 100.0;
+  public void setTimeScaling(double timeScaling){
+    this.timeScaling = (timeScaling / 100.0);
   }
 }
