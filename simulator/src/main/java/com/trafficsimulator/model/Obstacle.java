@@ -25,6 +25,10 @@ public class Obstacle implements RoadObject {
         return type;
     }
 
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
     //Returns true if a road is accessiable and false if it's not
     public boolean isOpen() {
         return open;
@@ -34,6 +38,7 @@ public class Obstacle implements RoadObject {
     public void calculatePriority(int tickCount) {
         switch (type) {
             case TRAFFIC_LIGHT -> calculateTrafficLight(tickCount); //Single road traffic light
+            case INTERSECTION -> calculatePriority(tickCount);
         }
     }
 

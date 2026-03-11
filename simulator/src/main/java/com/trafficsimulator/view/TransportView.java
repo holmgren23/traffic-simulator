@@ -62,9 +62,9 @@ public class TransportView extends HBox implements SubView {
       "Stop simulation and show statistics summary [ESC]",
       e -> {
         this.controller.stopSimulation();
-        MainView.showStatisticsPopup();
-        this.mainView.showMenu();
+        this.mainView.showSummaryScreen();
       }
+
     );
 
     this.addEventFilter(KeyEvent.KEY_RELEASED, e -> {

@@ -118,7 +118,7 @@ public class TrafficSimulator {
             }
             //If car exits road - Currently removes, can be changed to loop
             if (newPos >= road.getLength()) {
-                carsToRemove.add(car); //Collects all cars that should be removed
+                map.transferCar(car, road, carsToRemove); //Collects all cars that should be removed
                 continue;
             }
             //Place in new cell
@@ -138,7 +138,6 @@ public class TrafficSimulator {
                 cars.add(newCar);
                 road.setCell(0, newCar);
                 nextID++;
-                stats.incrementTotalCarsSpawned();
             }
         }
     }
@@ -148,8 +147,8 @@ public class TrafficSimulator {
         tickCount++;
         map.updateObstacles(tickCount);
         moveCars(updateSpeeds());
-        stats.update(cars);
         spawnCar();
+        stats.update(cars, nextID);
     }
 
     //Returns the statistics of the current tick
@@ -157,8 +156,9 @@ public class TrafficSimulator {
         return stats;
     }
     
+    //Gets the final state of statistics for the termination of the simulation
     public String getFinalStats() {
-        return stats.getFinalReport(100);
+        return stats.getFinalReport();
     }
 
     //Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic

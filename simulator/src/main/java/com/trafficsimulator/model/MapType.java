@@ -2,5 +2,6 @@ package com.trafficsimulator.model;
 
 public enum MapType {
     HIGHWAY,
-    ONE_WAY
+    ONE_WAY,
+    T_INTERSECTION
 }
