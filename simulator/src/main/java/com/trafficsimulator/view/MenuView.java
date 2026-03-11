@@ -12,6 +12,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -50,11 +51,13 @@ public class MenuView extends GridPane {
       this.controller.createSimulation(this.getInputValues());
       this.mainView.showSimulation(this.timeScalingSection.getSlider().getValue());
     });
+    startSimButton.setTooltip(new Tooltip("Run the simulation"));
     this.add(startSimButton, this.getColumnCount() - 1, this.BTN_ROW);
     GridPane.setHalignment(startSimButton, HPos.LEFT);
     
     Button exitButton = new Button("Exit");
     exitButton.setOnAction(e -> Platform.exit());
+    exitButton.setTooltip(new Tooltip("Quit the program and return to desktop"));
     this.add(exitButton, this.getColumnCount() - 1, this.BTN_ROW);
     GridPane.setHalignment(exitButton, HPos.RIGHT);
   }
@@ -64,6 +67,9 @@ public class MenuView extends GridPane {
     String[] maps = {"Highway", "One way street", "T Intersection"};
     this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(maps));
     if (maps.length > 0) { this.mapSelector.setValue(maps[0]); };
+    Tooltip mapSelectorTooltip = new Tooltip("Select the type of map to simulate");
+    mapSelectorLabel.setTooltip(mapSelectorTooltip);
+    this.mapSelector.setTooltip(mapSelectorTooltip);
     VBox mapSelectorSection = new VBox(Constants.V_GAP, mapSelectorLabel, mapSelector);
     
     Label roadLengthLabel = new Label("Road length");
@@ -72,6 +78,9 @@ public class MenuView extends GridPane {
     this.roadLengthControl.setValueFactory(
       new SpinnerValueFactory.IntegerSpinnerValueFactory(100, 10000, 200)
     );
+    Tooltip roadLengthTooltip = new Tooltip("Set the length of the road (in number of cells)");
+    roadLengthLabel.setTooltip(roadLengthTooltip);
+    this.roadLengthControl.setTooltip(roadLengthTooltip);
     VBox roadLengthSection = new VBox(Constants.V_GAP, roadLengthLabel, roadLengthControl);
     
     minSpeedSection = new SliderSection("Min speed", 1, 15, 2);
@@ -80,9 +89,12 @@ public class MenuView extends GridPane {
     UnaryNumericOperation limitByMin = v -> v >= minSpeedSection.getValue() ? Math.round(v) : minSpeedSection.getSlider().getValue();
     minSpeedSection.setBehavior(limitByMax);
     maxSpeedSection.setBehavior(limitByMin);
+    minSpeedSection.setTooltip("Set the minimum ideal speed for vehicles in the simulation");
+    maxSpeedSection.setTooltip("Set the maximum ideal speed for vehicles in the simulation");
 
-    spawnRateSection = new SliderSection("Spawn interval", 1, 10, 5);
+    spawnRateSection = new SliderSection("Spawn rate", 1, Constants.MAX_TICKS_PER_SPAWN, 5);
     spawnRateSection.setBehavior(v ->  Math.round(v));
+    spawnRateSection.setTooltip("Set how often a vehicle is spawned (in vehicles per second)");
     
     timeScalingSection = new SliderSection(
       "Time scaling",
@@ -97,6 +109,7 @@ public class MenuView extends GridPane {
       }
     );
     timeScalingSection.setBehavior( v -> v);
+    timeScalingSection.setTooltip("Set the playback speed of the simulation");
     
     Label[] labels = {
       mapSelectorLabel,

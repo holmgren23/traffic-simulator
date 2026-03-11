@@ -8,4 +8,6 @@ public class Constants {
 
   public static final Color TEXT_COLOR = Color.SILVER;
   public static final int V_GAP = 12;
+  
+  public static final int MAX_TICKS_PER_SPAWN = 10;
 }

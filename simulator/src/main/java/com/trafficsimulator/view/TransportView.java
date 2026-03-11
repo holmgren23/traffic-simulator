@@ -55,6 +55,7 @@ public class TransportView extends GridPane {
     timeScalingSection.setBehavior(sliderVal -> sliderVal);
     timeScalingSection.setChangeAction(() -> this.controller.setTimeScaling(timeScalingSection.getValue()));
     timeScalingSection.getSlider().setBlockIncrement(0.025f);
+    timeScalingSection.setTooltip("Set the playback speed of the simulation [+/-]");
 
     this.add(buttonRow, 0, 0);
     this.add(timeScalingSection, 0, 1);

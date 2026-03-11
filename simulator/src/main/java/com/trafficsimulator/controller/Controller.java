@@ -37,7 +37,7 @@ public class Controller {
     };
 
     ts = new TrafficSimulator(
-      (int)params.getSpawnRate(),
+      (int)(Constants.MAX_TICKS_PER_SPAWN - params.getSpawnRate() + 1),
       (int)params.getRoadLength(),
       (int)params.getMinSpeed(),
       (int)params.getMaxSpeed(),

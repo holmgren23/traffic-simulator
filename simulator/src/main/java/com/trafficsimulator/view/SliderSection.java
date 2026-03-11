@@ -3,13 +3,14 @@ package com.trafficsimulator.view;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 import javafx.geometry.HPos;
 
 import com.trafficsimulator.utility.Constants;
 
 public class SliderSection extends GridPane {
   private Slider inputSlider;
-  private Label valueLabel;
+  private Label descriptionLabel, valueLabel;
   private String labelUnit;
   private double value;
   private UnaryNumericOperation scaler;
@@ -38,11 +39,11 @@ public class SliderSection extends GridPane {
     this.labelUnit = labelUnit;
     this.value = this.scaleValue(initVal);
     
-    Label label = new Label(labelText + ": ");
+    this.descriptionLabel = new Label(labelText + ": ");
     this.valueLabel = new Label(String.valueOf((int)this.value) + labelUnit);
     this.inputSlider = new Slider(min, max, initVal);
     
-    Label[] labels = {label, valueLabel};
+    Label[] labels = {this.descriptionLabel, valueLabel};
     for (Label l : labels) {
       l.setTextFill(Constants.TEXT_COLOR);
       this.add(l, 0, 0);
@@ -89,5 +90,15 @@ public class SliderSection extends GridPane {
   
   public double getValue() {
     return this.value;
+  }
+  
+  public void setTooltip(Tooltip tooltip) {
+    this.inputSlider.setTooltip(tooltip);
+    this.descriptionLabel.setTooltip(tooltip);
+    this.valueLabel.setTooltip(tooltip);
+  }
+
+  public void setTooltip(String text) {
+    this.setTooltip(new Tooltip(text));
   }
 }
