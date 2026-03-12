@@ -27,15 +27,6 @@ public class Road {
         this.laneWidth = laneWidth;
     }
 
-    //Default contructor
-    public Road(int length, Direction direction) {
-        this(length, Direction.EAST, 0 , 0, 0, 0, 4);
-    }
-
-    public Road(int length) {
-        this(length, Direction.EAST, 0, 0, 0,0, 4);
-    }
-
     //Gets road length
     public int getLength() {
         return vehicles.length;

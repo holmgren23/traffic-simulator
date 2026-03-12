@@ -8,9 +8,6 @@ import com.trafficsimulator.model.Road.Direction;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.LineTo;
 
 public class RoadView extends Canvas implements SubView {
     protected final Map map;
@@ -52,14 +49,8 @@ public class RoadView extends Canvas implements SubView {
         double x2 = road.getEndX() * scaleX();
         double y2 = road.getEndY() * scaleY();
 
-        int cells = road.getLength();
         boolean horizontal = road.getDirection() == Direction.EAST || road.getDirection() == Direction.WEST;
-        double roadLength = horizontal ? (x2 - x1) : (y2 - y1);
-        double cellSize = roadLength / cells;
         double roadThickness = road.getLaneWidth() * scaleY();
-        
-        Path roadPath = new Path();
-        
 
         gc.setFill(Color.BLACK);
         if (horizontal) {
@@ -121,7 +112,6 @@ public class RoadView extends Canvas implements SubView {
     }
 
     private boolean areAdjacent(Road a, Road b) {
-    double midY = (a.getStartY() + b.getStartY()) / 2.0;
         for (Road other : map.getRoads()) {
             if (other == a || other == b) continue;
             if (other.getStartY() > Math.min(a.getStartY(), b.getStartY()) 
