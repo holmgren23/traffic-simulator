@@ -15,6 +15,7 @@ public class Statistics {
     private int currentCarCount = 0;
     private int minSpeed, maxSpeed, spawnRate, roadLength;
     
+    public Statistics() {}
 
     public Statistics(int minSpeed, int maxSpeed, int spawnRate, int roadLength) {
         this.minSpeed = minSpeed;
@@ -97,11 +98,14 @@ public class Statistics {
     public String getSettingsReport() {
         return String.format(
             "--- SETTINGS ---\n"+
-            "Min Speed: %d\n" +
-            "Max Speed: %d\n" +
+            "Min Speed: %d km/h\n" +
+            "Max Speed: %d kmh/h\n" +
             "Spawn Rate: %d\n" +
-            "Road Length: %d",
-            minSpeed, maxSpeed, spawnRate, roadLength
+            "Road Length: %d" +
+            " \n" +
+            " \n" +
+            " \n",
+            (int)HelperMethods.speedToKMH(minSpeed), (int)HelperMethods.speedToKMH(maxSpeed), spawnRate, roadLength
         );
     }
 

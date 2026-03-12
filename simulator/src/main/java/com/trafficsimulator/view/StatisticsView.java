@@ -79,7 +79,7 @@ public class StatisticsView extends VBox implements SubView {
         totalCarsLabel.setText("Total cars spawned: " + stats.totalSpawned());
         currentCarsLabel.setText("Current cars: " + stats.currentCars());
         stationaryCarsLabel.setText("Stationary cars: " + stats.stationaryCars());
-        avgSpeedLabel.setText(String.format("Avg Speed: %.2f kmh", stats.currentAvgSpeedKmh()));
+        avgSpeedLabel.setText(String.format("Avg Speed: %.2f km/h", stats.currentAvgSpeedKmh()));
         vehicleInFlowLabel.setText(String.format("Inflow: %.2f veh/minute", stats.avgInFlow()));
         vehicleOutFlowLabel.setText(String.format("Outflow: %.2f veh/minute", stats.avgOutFlow()));
     
