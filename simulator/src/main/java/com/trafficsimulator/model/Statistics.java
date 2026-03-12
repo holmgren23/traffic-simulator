@@ -86,8 +86,8 @@ public class Statistics {
             "Total Cars Spawned: %d\n" +
             "Total Cars Exited: %d\n" +
             "Average Speed: %.2f km/h\n" +
-            "InFlow: %.2f veh/minute\n" +
-            "OutFlow: %.2f veh/minute",
+            "InFlow: %.2f veh/min\n" +
+            "OutFlow: %.2f veh/min",
 
             totalSeconds / 3600, (totalSeconds % 3600) / 60, totalSeconds % 60,
             s.totalSpawned(), totalCarsExited,
