@@ -9,6 +9,8 @@ public class Road {
     private Road exitRoad;
     private int exitPosition;
     private int laneWidth;
+    private Road neighborLane;
+    private boolean isSpawnRoad = true;
     public enum Direction {
         EAST, WEST, NORTH, SOUTH
     }
@@ -89,5 +91,22 @@ public class Road {
     }
     public void setObstacle(int index, RoadObject obj) {
         obstacles[index] = obj;
+    }
+
+    //Overtake lane
+    public void setNeighborLane(Road neighbor){
+        this.neighborLane = neighbor;
+    }
+
+    public Road getNeighborLane(){
+        return neighborLane;
+    }
+
+    public boolean isSpawnRoad(){
+        return isSpawnRoad;
+    }
+
+    public void setSpawnRoad(boolean isSpawnRoad){
+        this.isSpawnRoad = isSpawnRoad;
     }
 }

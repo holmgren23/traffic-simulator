@@ -12,6 +12,7 @@ public class Vehicle implements RoadObject {
     private int position;
     private Color color;
     private Road road;
+    private int laneChangeCooldown = 0;
     private static final Color[] CAR_COLORS = {
             Color.RED,
             Color.BLUE,
@@ -20,7 +21,7 @@ public class Vehicle implements RoadObject {
             Color.ORANGE
     };
 
-    //Standard vehicle contructor
+    // Standard vehicle contructor
     public Vehicle(int id, int startPosition, int maxSpeed) {
         this.id = id;
         this.position = startPosition;
@@ -30,7 +31,7 @@ public class Vehicle implements RoadObject {
         this.color = CAR_COLORS[id % CAR_COLORS.length];
     }
 
-    //Setters and Getters
+    // Setters and Getters
     public int getID() {
         return id;
     }
@@ -63,7 +64,7 @@ public class Vehicle implements RoadObject {
         position = newPosition;
     }
 
-    public Color getColor(){
+    public Color getColor() {
         return color;
     }
 
@@ -73,6 +74,14 @@ public class Vehicle implements RoadObject {
 
     public void setRoad(Road road) {
         this.road = road;
+    }
+
+    public int getLaneChangeCooldown() {
+        return laneChangeCooldown;
+    }
+
+    public void setLaneChangeCooldown(int cooldown) {
+        this.laneChangeCooldown = cooldown;
     }
 
 }
