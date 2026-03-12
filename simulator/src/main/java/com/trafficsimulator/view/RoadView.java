@@ -8,6 +8,9 @@ import com.trafficsimulator.model.Road.Direction;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.LineTo;
 
 public class RoadView extends Canvas implements SubView {
     protected final Map map;
@@ -54,6 +57,9 @@ public class RoadView extends Canvas implements SubView {
         double roadLength = horizontal ? (x2 - x1) : (y2 - y1);
         double cellSize = roadLength / cells;
         double roadThickness = road.getLaneWidth() * scaleY();
+        
+        Path roadPath = new Path();
+        
 
         gc.setFill(Color.BLACK);
         if (horizontal) {
