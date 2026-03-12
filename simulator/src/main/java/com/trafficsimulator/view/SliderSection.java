@@ -14,6 +14,7 @@ public class SliderSection extends GridPane {
   private String labelUnit;
   private double value;
   private UnaryNumericOperation scaler;
+  private boolean onlyScaleLabel;
   private PassableAction changeAction;
 
   public SliderSection(String labelText, double min, double max, double initVal) {
@@ -26,10 +27,13 @@ public class SliderSection extends GridPane {
     double min,
     double max,
     double initVal,
-    UnaryNumericOperation scaler) {
-      this.scaler = scaler;
-      this(labelText, labelUnit, min, max, initVal);
-    }
+    UnaryNumericOperation scaler,
+    boolean onlyScaleLabel
+  ) {
+    this.scaler = scaler;
+    this.onlyScaleLabel = onlyScaleLabel;
+    this(labelText, labelUnit, min, max, initVal);
+  }
 
   public SliderSection(String labelText, String labelUnit, double min, double max, double initVal) {
     this.setStyle("-fx-padding: 2;");
@@ -37,10 +41,11 @@ public class SliderSection extends GridPane {
     this.setVgap(Constants.V_GAP);
 
     this.labelUnit = labelUnit;
-    this.value = this.scaleValue(initVal);
+    double scaledValue = this.scaleValue(initVal);
+    this.value = this.onlyScaleLabel ? initVal : scaledValue;
     
     this.descriptionLabel = new Label(labelText + ": ");
-    this.valueLabel = new Label(String.valueOf((int)this.value) + labelUnit);
+    this.valueLabel = new Label(this.valueToLabel(scaledValue));
     this.inputSlider = new Slider(min, max, initVal);
     
     Label[] labels = {this.descriptionLabel, valueLabel};
@@ -59,8 +64,8 @@ public class SliderSection extends GridPane {
       double rounded = expr.operate(newVal.doubleValue());
       inputSlider.setValue(rounded);
       double scaled = this.scaleValue(rounded);
-      this.value = scaled;
-      valueLabel.setText(String.valueOf((int)scaled) + this.labelUnit);
+      this.value = (this.onlyScaleLabel ? rounded : scaled);
+      valueLabel.setText(this.valueToLabel(scaled));
       if (this.changeAction != null) {
         this.changeAction.run();
       }
@@ -72,14 +77,18 @@ public class SliderSection extends GridPane {
   }
   
   private double scaleValue(double v) {
-    if (this.scaler != null) {
-      return this.scaler.operate(v);
+    if (this.scaler == null) {
+      return v;
     }
     else {
-      return v;
+      return this.scaler.operate(v);
     }
   }
   
+  private String valueToLabel(double v) {
+    return String.valueOf((int)v) + this.labelUnit; 
+  }
+
   public void setScaling(UnaryNumericOperation expr) {
     this.scaler = expr;
   }

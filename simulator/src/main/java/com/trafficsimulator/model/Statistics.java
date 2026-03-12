@@ -3,10 +3,9 @@ package com.trafficsimulator.model;
 import java.util.List;
 
 import com.trafficsimulator.utility.Constants;
+import com.trafficsimulator.utility.HelperMethods;
 
 public class Statistics {
-    private static final int SPEED_MULTIPLIER = 30; // Assuming 1 unit of speed equals 30 km/h for display purposes
-
     private int totalCarsSpawned = 0;
     private int totalCarsExited = 0;
     private long totalTicks = 0;
@@ -53,7 +52,7 @@ public class Statistics {
             totalCarsSpawned,
             currentCarCount,
             currentStationary,
-            currentAvgSpeed * SPEED_MULTIPLIER,
+            HelperMethods.speedToKMH(currentAvgSpeed),
             avgInFlow,
             avgOutFlow,
             totalTicks,

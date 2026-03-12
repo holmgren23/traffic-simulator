@@ -50,7 +50,8 @@ public class TransportView extends GridPane {
         double offset = Math.log(30);
         double scale = Math.log(800);
         return Math.round(Math.pow(Math.E, (offset + labelVal * (scale - offset))));
-      }
+      },
+      false
     );
     timeScalingSection.setBehavior(sliderVal -> sliderVal);
     timeScalingSection.setChangeAction(() -> this.controller.setTimeScaling(timeScalingSection.getValue()));
