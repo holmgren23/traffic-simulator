@@ -197,15 +197,15 @@ public class TrafficSimulator {
         }
     }
 
-    // Tick update. Should be callable by controller
-    public void tickUpdate(int currentTickeLength) {
+    //Tick update. Should be callable by controller
+    public void tickUpdate() {
         tickCount++;
         map.updateObstacles(tickCount);
         tryChangeLanes();
         HashMap<Car, Integer> newSpeeds = updateSpeeds();
         moveCars(newSpeeds);
         spawnCar();
-        stats.update(cars, nextID, currentTickeLength);
+        stats.update(cars, nextID);
     }
 
     // Returns the statistics of the current tick

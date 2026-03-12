@@ -58,11 +58,6 @@ public class ControllerTest {
     assertEquals(activeThreads, Thread.activeCount());
   }
   
-  @Test
-  public void testGetTickLength() {
-    assertEquals(100, controller.getTickLength());
-  }
-  
   @Nested
   public class TestsWithMoreSetup {
     @BeforeEach

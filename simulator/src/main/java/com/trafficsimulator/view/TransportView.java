@@ -1,30 +1,23 @@
 package com.trafficsimulator.view;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.trafficsimulator.controller.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.control.Slider;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.GridPane;
 
-public class TransportView extends HBox implements SubView {
-  private final ArrayList<EventHandler<ActionEvent>> eventHandlers = new ArrayList<>(
-    Arrays.asList(
-    )
-  );
+public class TransportView extends GridPane {
   private simButton pause, reset, stop;
   private Controller controller;
   private MainView mainView;
-  private Slider timeScalingSlider;
+  private SliderSection timeScalingSection;
+  private HBox buttonRow;
   
   private class simButton extends Button {
     public simButton(String text, String tooltip, EventHandler<ActionEvent> eventHandler) {
@@ -34,15 +27,42 @@ public class TransportView extends HBox implements SubView {
     }
   }
 
-  public TransportView(MainView mainView, Controller controller) {
+  public TransportView(MainView mainView, Controller controller, double timeScaling) {
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setMaxHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setStyle("-fx-padding: 5;");
-    this.setSpacing(4);
+    this.setHgap(4);
+    this.setVgap(8);
     
     this.mainView = mainView;
     this.controller = controller;
 
+    this.createButtons();
+    this.addKeyboardShortcuts();
+
+    this.timeScalingSection = new SliderSection(
+      "Time scaling",
+      " %",
+      0,
+      1,
+      timeScaling,
+      labelVal -> {
+        double offset = Math.log(30);
+        double scale = Math.log(800);
+        return Math.round(Math.pow(Math.E, (offset + labelVal * (scale - offset))));
+      }
+    );
+    timeScalingSection.setBehavior(sliderVal -> sliderVal);
+    timeScalingSection.setChangeAction(() -> this.controller.setTimeScaling(timeScalingSection.getValue()));
+    timeScalingSection.getSlider().setBlockIncrement(0.025f);
+    timeScalingSection.setTooltip("Set the playback speed of the simulation [+/-]");
+
+    this.add(buttonRow, 0, 0);
+    this.add(timeScalingSection, 0, 1);
+    GridPane.setHalignment(timeScalingSection, HPos.CENTER);
+  }
+  
+  private void createButtons() {
     this.pause = new simButton(
       "Pause",
       "Temporarily pause the simulation [K / SPACE BAR]",
@@ -64,9 +84,13 @@ public class TransportView extends HBox implements SubView {
         this.controller.stopSimulation();
         this.mainView.showSummaryScreen();
       }
-
     );
-
+    
+    this.buttonRow = new HBox(pause, reset, stop);
+    this.buttonRow.setSpacing(4);
+  }
+  
+  private void addKeyboardShortcuts() {
     this.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
       if (e.getCode() != KeyCode.ENTER) { e.consume(); }
     });
@@ -85,25 +109,16 @@ public class TransportView extends HBox implements SubView {
           this.stop.fire();
           e.consume();
           break;
+        case KeyCode.PLUS:
+          this.timeScalingSection.getSlider().increment();
+          break;
+        case KeyCode.MINUS:
+          this.timeScalingSection.getSlider().decrement();
+          break;
       
         default:
           break;
       }
     });
-
-    Label scalingLabel = new Label("Time Scaling:");
-    scalingLabel.setTextFill(Color.WHITE);
-    this.timeScalingSlider = new Slider(10, 500, 100);
-    timeScalingSlider.setSnapToTicks(true);
-    timeScalingSlider.setMajorTickUnit(50);
-    timeScalingSlider.valueProperty().addListener((_, oldValue, newValue) -> {
-      int TICK_LENGTH = 550 - (int)Math.round(newValue.doubleValue());
-      this.controller.setTickLength(TICK_LENGTH);
-      scalingLabel.setText("Tick length: " + TICK_LENGTH);
-    });
-    this.getChildren().addAll(pause, reset, stop, scalingLabel, timeScalingSlider);
   }
-
-  public void update() {
-  };
 }

@@ -1,21 +1,23 @@
 package com.trafficsimulator.utility;
 
 public class InputParametersDTO {
-  private double spawnRate, minSpeed, maxSpeed;
+  private double spawnRate, minSpeed, maxSpeed, timeScalingFactor;
   private Integer roadLength;
   private String mapType;
 
   public InputParametersDTO(
-    double spawnRate,
+    String mapType,
     Integer roadLength,
     double minSpeed,
     double maxSpeed,
-    String mapType
+    double spawnRate,
+    double timeScalingFactor
   ) {
     this.spawnRate = spawnRate;
     this.roadLength = roadLength;
     this.minSpeed = minSpeed;
     this.maxSpeed = maxSpeed;
+    this.timeScalingFactor = timeScalingFactor;
     this.mapType = mapType;
   }
   
@@ -37,5 +39,9 @@ public class InputParametersDTO {
 
   public String getMapType() {
     return this.mapType;
+  }
+  
+  public double getTimeScalingFactor() {
+    return this.timeScalingFactor;
   }
 }
