@@ -105,11 +105,17 @@ public class Map {
 
     // Fucntions for finding how much space the map needs in the window
     public int getMapWidth() {
-        return roads.stream().mapToInt(r -> Math.max(r.getStartX(), r.getEndX())).max().orElse(800);
+        return roads.stream()
+            .mapToInt(r -> Math.max(
+                Math.max(r.getStartX(), r.getEndX()),
+                Math.max(r.getStartX(), r.getEndX())))
+            .max().orElse(800);
     }
 
     public int getMapHeight() {
-        return roads.stream().mapToInt(r -> Math.max(r.getStartY(), r.getEndY())).max().orElse(100) + 30;
+        return roads.stream()
+            .mapToInt(r -> Math.max(r.getStartY(), r.getEndY()))
+            .max().orElse(200) + 30;
     }
 
     // For transfering cars at the end of a road to an other road object
@@ -194,6 +200,49 @@ public class Map {
         map.addRoad(roadA);
         map.addRoad(roadB);
         map.addObstacle(intersection, roadB);
+
+        return map;
+    }
+
+    public static Map createLoop(int roadLength) {
+        Map map = new Map(MapType.INTERSECTION_LOOP);
+        int laneWidth = 8;
+        int width = roadLength * CELL_SIZE * 4 / 3;
+        int height = width;
+
+        int junctionLeft = width / 4;
+        int junctionRight = width * 3 / 4;
+        int junctionTop = height / 4;
+        int junctionBottom = height * 3 / 4;
+
+        //Horizontal roads spanning up to the side vertical roads
+        Road topRoad = new Road(roadLength, Direction.EAST, 0, junctionTop, junctionRight, junctionTop, laneWidth);
+        Road bottomRoad = new Road(roadLength, Direction.WEST, width, junctionBottom, junctionLeft, junctionBottom, laneWidth);
+
+        //Vertical roads spanning up to the horizontal roads
+        Road leftRoad = new Road(roadLength, Direction.NORTH, junctionLeft, height, junctionLeft, junctionTop, laneWidth);
+        Road rightRoad = new Road(roadLength, Direction.SOUTH, junctionRight, 0, junctionRight, junctionBottom, laneWidth);
+
+        //Exit cell of all roads
+        int position = roadLength - 1;
+        
+        //Junction cells of roads
+        int junctionCell = roadLength / 4;
+
+        int clearance = 5;
+
+        //Horizontal roads intersects the into the vertical roads
+        map.addObstacle(new Intersection(position, rightRoad, junctionCell, clearance), topRoad);
+        map.addObstacle(new Intersection(position, leftRoad, junctionCell, clearance), bottomRoad);
+
+        //Vertical roads intersects the into the horizontal roads
+        map.addObstacle(new Intersection(position, bottomRoad, junctionCell, clearance), leftRoad);
+        map.addObstacle(new Intersection(position, topRoad, junctionCell, clearance), rightRoad);
+
+        map.addRoad(topRoad);
+        map.addRoad(bottomRoad);
+        map.addRoad(leftRoad);
+        map.addRoad(rightRoad);
 
         return map;
     }
