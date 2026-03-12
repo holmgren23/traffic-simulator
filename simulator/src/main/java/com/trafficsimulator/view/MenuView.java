@@ -2,6 +2,7 @@ package com.trafficsimulator.view;
 
 import com.trafficsimulator.controller.Controller;
 import com.trafficsimulator.utility.InputParametersDTO;
+import com.trafficsimulator.utility.HelperMethods;
 import com.trafficsimulator.utility.Constants;
 
 import javafx.application.Platform;
@@ -83,8 +84,8 @@ public class MenuView extends GridPane {
     this.roadLengthControl.setTooltip(roadLengthTooltip);
     VBox roadLengthSection = new VBox(Constants.V_GAP, roadLengthLabel, roadLengthControl);
     
-    minSpeedSection = new SliderSection("Min speed", 1, 15, 2);
-    maxSpeedSection = new SliderSection("Max speed", 1, 15, 6);
+    minSpeedSection = new SliderSection("Min speed", " km/h", 1, 15, 2, v -> HelperMethods.speedToKMH(v), true);
+    maxSpeedSection = new SliderSection("Max speed", " km/h", 1, 15, 6, v -> HelperMethods.speedToKMH(v), true);
     UnaryNumericOperation limitByMax = v -> v <= maxSpeedSection.getValue() ? Math.round(v) : maxSpeedSection.getSlider().getValue();
     UnaryNumericOperation limitByMin = v -> v >= minSpeedSection.getValue() ? Math.round(v) : minSpeedSection.getSlider().getValue();
     minSpeedSection.setBehavior(limitByMax);
@@ -106,7 +107,8 @@ public class MenuView extends GridPane {
         double offset = Math.log(30);
         double scale = Math.log(800);
         return Math.round(Math.pow(Math.E, (offset + v * (scale - offset))));
-      }
+      },
+      false
     );
     timeScalingSection.setBehavior( v -> v);
     timeScalingSection.setTooltip("Set the playback speed of the simulation");

@@ -9,30 +9,33 @@ public class Map {
     private MapType type;
     private static final int CELL_SIZE = 5;
 
-    //initialize a new map that can hold roads
+    // initialize a new map that can hold roads
     public Map(MapType type) {
         this.type = type;
         roads = new ArrayList<>();
     }
-    //Add a road to a map
+
+    // Add a road to a map
     public void addRoad(Road road) {
         roads.add(road);
     }
-    //Get roads from a map
+
+    // Get roads from a map
     public ArrayList<Road> getRoads() {
         return roads;
     }
-    //add an obstacle to a road based on the obstacles position
+
+    // add an obstacle to a road based on the obstacles position
     public void addObstacle(Obstacle obstacle, Road road) {
         road.setObstacle(obstacle.getPosition(), obstacle);
     }
 
-    //Returns preconfigured standard map types
-    public MapType getType(){
+    // Returns preconfigured standard map types
+    public MapType getType() {
         return type;
     }
 
-    //Update all obstacles for all roads.
+    // Update all obstacles for all roads.
     public void updateObstacles(int tickCount) {
         for (Road road : roads) {
             for (int i = 0; i < road.getLength(); i++) {
@@ -44,19 +47,19 @@ public class Map {
         }
     }
 
-    //Finds and returns the distance to the Road Object ahead.
+    // Finds and returns the distance to the Road Object ahead.
     public int gap(Road road, int position) {
         int i = position + 1;
         // Find gap to the next car
         while (i < road.getLength()) {
             RoadObject vehicle = road.getCell(i);
             RoadObject obstacle = road.getObstacle(i);
-        
+
             if (vehicle != null) {
-                break; //Find vehicle onbject
+                break; // Find vehicle onbject
             }
             if (obstacle instanceof Obstacle obs && !obs.isOpen()) {
-                break; //Find obstacle object
+                break; // Find obstacle object
             }
             i++;
         }
@@ -67,7 +70,22 @@ public class Map {
         return i - position - 1;
     }
 
-    //Gets the Road object that is ahead
+    public int gapBehind(Road road, int position) {
+        int i = position - 1;
+        while (i >= 0) {
+            RoadObject vehicle = road.getCell(i);
+            if (vehicle != null) {
+                break;
+            }
+            i--;
+        }
+        if (i < 0) {
+            return Integer.MAX_VALUE;
+        }
+        return position - i - 1;
+    }
+
+    // Gets the Road object that is ahead
     public RoadObject getObjectAhead(Road road, int position) {
         int gapAhead = gap(road, position);
         if (gapAhead == Integer.MAX_VALUE) {
@@ -76,7 +94,7 @@ public class Map {
         return road.getCell(position + gapAhead + 1);
     }
 
-    //Clears all vehicles from the map
+    // Clears all vehicles from the map
     public void clearVehicle() {
         for (Road road : roads) {
             for (int i = 0; i < road.getLength(); i++) {
@@ -85,21 +103,22 @@ public class Map {
         }
     }
 
-    //Fucntions for finding how much space the map needs in the window
+    // Fucntions for finding how much space the map needs in the window
     public int getMapWidth() {
         return roads.stream().mapToInt(r -> Math.max(r.getStartX(), r.getEndX())).max().orElse(800);
     }
+
     public int getMapHeight() {
         return roads.stream().mapToInt(r -> Math.max(r.getStartY(), r.getEndY())).max().orElse(100) + 30;
     }
 
-    //For transfering cars at the end of a road to an other road object
+    // For transfering cars at the end of a road to an other road object
     public void transferCar(Car car, Road fromRoad, ArrayList<Car> carsToRemove) {
         fromRoad.setCell(car.getPosition(), null);
 
         // default — remove car
         if (!fromRoad.hasExit()) {
-            carsToRemove.add(car); 
+            carsToRemove.add(car);
             return;
         }
 
@@ -115,27 +134,36 @@ public class Map {
         }
     }
 
-    //Two way road constructor with traffic light on each side
+    // Two way road constructor with traffic light on each side
     public static Map createHighway(int roadLength) {
         Map map = new Map(MapType.HIGHWAY);
 
         int laneWidth = 8;
         int width = roadLength * CELL_SIZE;
 
-        //To make more lanes give they p
-        map.addRoad(new Road(roadLength, Direction.WEST, 0 , 44, width, 44, laneWidth));
-        map.addRoad(new Road(roadLength, Direction.WEST, 0, 48, width, 48, laneWidth));//lane 2 nedre
+        // To make more lanes give they p
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 44, width, 44, laneWidth));
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 48, width, 48, laneWidth));// lane 2 nedre
         map.addRoad(new Road(roadLength, Direction.EAST, 0, 52, width, 52, laneWidth));
-        map.addRoad(new Road(roadLength, Direction.EAST, 0, 56, width, 56, laneWidth));//lane 4 övre 
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 56, width, 56, laneWidth));// lane 4 övre
 
+        map.getRoads().get(0).setNeighborLane(map.getRoads().get(1));
+        map.getRoads().get(1).setNeighborLane(map.getRoads().get(0));
 
-        //map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road1);
-        //map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2 - 1), road2);
+        map.getRoads().get(3).setNeighborLane(map.getRoads().get(2));
+        map.getRoads().get(2).setNeighborLane(map.getRoads().get(3));
+
+        map.getRoads().get(1).setSpawnRoad(false);
+        map.getRoads().get(2).setSpawnRoad(false);
+        // map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2),
+        // road1);
+        // map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2 - 1),
+        // road2);
 
         return map;
     }
 
-    //Creates a one way road
+    // Creates a one way road
     public static Map createOneWay(int roadLength) {
         Map map = new Map(MapType.ONE_WAY);
         int laneWidth = 8;
@@ -147,7 +175,7 @@ public class Map {
         return map;
     }
 
-    //Creates a map with a one road intersecting into an other road
+    // Creates a map with a one road intersecting into an other road
     public static Map createTIntersection(int roadLength) {
         Map map = new Map(MapType.T_INTERSECTION);
         int width = roadLength * CELL_SIZE;
@@ -156,7 +184,6 @@ public class Map {
 
         Road roadA = new Road(roadLength, Direction.EAST, 0, 70, width, 70, laneWidth);
         Road roadB = new Road(roadLength / 2, Direction.SOUTH, junctionX, 0, junctionX, 70 - laneWidth / 2, laneWidth);
-
 
         int junctionPoint = roadLength / 2;
         int clearance = 5;
