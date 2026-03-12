@@ -14,6 +14,15 @@ public class Statistics {
     private double currentAvgSpeed = 0;
     private int currentStationary = 0;
     private int currentCarCount = 0;
+    private int minSpeed, maxSpeed, spawnRate, roadLength;
+    
+
+    public Statistics(int minSpeed, int maxSpeed, int spawnRate, int roadLength) {
+        this.minSpeed = minSpeed;
+        this.maxSpeed = maxSpeed;
+        this.spawnRate = spawnRate;
+        this.roadLength = roadLength;
+    }
 
     public void update(List<Car> cars, int totalSpawned) {
 
@@ -29,6 +38,7 @@ public class Statistics {
             this.currentStationary = 0;
             return;
         }
+
         // Calculate average speed and count stationary cars
         double speedSum = 0;
         int stoppedCount = 0;
@@ -57,7 +67,11 @@ public class Statistics {
             avgInFlow,
             avgOutFlow,
             totalTicks,
-            totalElapsedTimeMS
+            totalElapsedTimeMS,
+            minSpeed,
+            maxSpeed,
+            spawnRate,
+            roadLength
         );
     }
 
@@ -72,11 +86,23 @@ public class Statistics {
             "Total Cars Spawned: %d\n" +
             "Total Cars Exited: %d\n" +
             "Average Speed: %.2f km/h\n" +
-            "Final InFlow: %.2f veh/m\n" +
-            "Final OutFlow: %.2f veh/m",
+            "InFlow: %.2f veh/minute\n" +
+            "OutFlow: %.2f veh/minute",
+
             totalSeconds / 3600, (totalSeconds % 3600) / 60, totalSeconds % 60,
             s.totalSpawned(), totalCarsExited,
             s.currentAvgSpeedKmh(), s.avgInFlow(), s.avgOutFlow()
+        );
+    }
+    
+    public String getSettingsReport() {
+        return String.format(
+            "--- SETTINGS ---\n"+
+            "Min Speed: %d\n" +
+            "Max Speed: %d\n" +
+            "Spawn Rate: %d\n" +
+            "Road Length: %d",
+            minSpeed, maxSpeed, spawnRate, roadLength
         );
     }
 

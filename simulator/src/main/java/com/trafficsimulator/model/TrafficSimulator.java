@@ -8,12 +8,13 @@ public class TrafficSimulator {
     private ArrayList<Car> cars;
     private Map map;
     private int tickCount;
-    private int spawnRate, minSpeed, maxSpeed;
+    private int spawnRate, minSpeed, maxSpeed, roadLength;
     private int nextID;
     private Random rand;
     private Statistics stats;
     private double slowProbability = 0.2;
     private double speedupProbability = 0.3;
+    
 
     //Main constructor   
     public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, Map map) {
@@ -21,6 +22,7 @@ public class TrafficSimulator {
         this.spawnRate = spawnRate;
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
+        this.roadLength = roadLength;
 
         this.initializeSimulation(map);
     }
@@ -39,7 +41,7 @@ public class TrafficSimulator {
         cars = new ArrayList<>();
         tickCount = 0;
         nextID = 0;
-        stats = new Statistics();
+        stats = new Statistics(minSpeed, maxSpeed, spawnRate, roadLength);
     }
 
     //Getters
@@ -161,12 +163,16 @@ public class TrafficSimulator {
         return stats.getFinalReport();
     }
 
+    public String getSettingsReport() {
+        return stats.getSettingsReport();
+    }
+
     //Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic
     public void resetSimulation() {
         map.clearVehicle();
         cars = new ArrayList<>();
         tickCount = 0;
         nextID = 0;
-        stats = new Statistics();
+        stats = new Statistics(minSpeed, maxSpeed, spawnRate, roadLength);
     }
 }
