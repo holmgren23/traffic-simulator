@@ -28,11 +28,20 @@ public class ReportView extends VBox {
 
         // Report-string from Statistics
         Label reportContent = new Label(ts.getFinalStats());
-        reportContent.setAlignment(Pos.CENTER);
+        Label settingsContent = new Label(ts.getSettingsReport());
+
+
         reportContent.setStyle("-fx-text-fill: #c0c0c0; -fx-font-family: 'Courier New'; -fx-font-size: 25px;");
         reportContent.setWrapText(true);
         reportContent.setMaxWidth(600);
 
+
+        settingsContent.setStyle("-fx-text-fill: #c0c0c0; -fx-font-family: 'Courier New'; -fx-font-size: 25px;");
+        settingsContent.setWrapText(true);
+        settingsContent.setMaxWidth(600);
+
+        HBox contentContainer = new HBox( 50, reportContent, settingsContent);
+        contentContainer.setAlignment(Pos.CENTER);
         // Buttons
         Button menuBtn = new Button("Back to Menu");
         menuBtn.setPrefWidth(150);
@@ -52,13 +61,12 @@ public class ReportView extends VBox {
         HBox buttonContainer = new HBox(20, menuBtn,exportBtn, exitBtn);
         buttonContainer.setAlignment(Pos.CENTER);
 
-   
-        this.getChildren().addAll(title, reportContent, buttonContainer);
+        this.getChildren().addAll(title, contentContainer, buttonContainer);
     }
 
     private void exportToCSV(TrafficSimulator ts) {
         StatSnapshot stats = ts.getStats().getSnapshot();
-      
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Simulation Report");
         fileChooser.setInitialFileName("simulation_results.csv");
@@ -75,14 +83,14 @@ public class ReportView extends VBox {
                 long seconds = totalSeconds % 60;
 
                 String timeFormatted = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-                // Header
-                writer.println("Metric;Value");
+                // Headers
+                writer.println("Metric;Value;;Settings:");
                 
                 // Data rows
-                writer.println("Total Elapsed Time;" + timeFormatted);
-                writer.println("Total Ticks;" + stats.totalTicks());
-                writer.println("Total Cars Spawned;" + stats.totalSpawned());
-                writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars()));
+                writer.println("Total Elapsed Time;" + timeFormatted + ";;Min Speed;" + stats.minSpeed());
+                writer.println("Total Ticks;" + stats.totalTicks() + ";;Max Speed;" + stats.maxSpeed());
+                writer.println("Total Cars Spawned;" + stats.totalSpawned() + ";;Road Length;" + stats.roadLength());
+                writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars()) + ";; Spawn Rate;" + stats.spawnRate());
                 writer.println("Average Speed (km/h);" + String.format("%.2f", stats.currentAvgSpeedKmh()));
                 writer.println("Average Inflow (veh/m);" + String.format("%.2f", stats.avgInFlow()));
                 writer.println("Average Outflow (veh/m);" + String.format("%.2f", stats.avgOutFlow()));

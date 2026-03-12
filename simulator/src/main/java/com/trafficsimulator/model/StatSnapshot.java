@@ -9,5 +9,9 @@ public record StatSnapshot(
     double avgInFlow,
     double avgOutFlow,
     long totalTicks,
-    long totalElapsedTimeMS
+    long totalElapsedTimeMS,
+    int minSpeed,
+    int maxSpeed,
+    int spawnRate,
+    int roadLength
 ) {}
