@@ -8,13 +8,16 @@ import com.trafficsimulator.utility.Constants;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
@@ -23,8 +26,9 @@ public class MenuView extends GridPane {
   private MainView mainView;
   private Controller controller;
   private SliderSection spawnRateSection, minSpeedSection, maxSpeedSection, timeScalingSection;
-  private Spinner<Integer> roadLengthControl;
+  private Spinner<Integer> roadLengthControl, ticksToRunControl;
   private ComboBox<String> mapSelector;
+  private CheckBox offlineRunCheckBox;
   
   public MenuView(MainView mainView, Controller controller) {
     this.mainView = mainView;
@@ -49,8 +53,7 @@ public class MenuView extends GridPane {
   private void setupNavBtns() {
     Button startSimButton = new Button("Start");
     startSimButton.setOnAction(e -> {
-      this.controller.createSimulation(this.getInputValues());
-      this.mainView.showSimulation(this.timeScalingSection.getSlider().getValue());
+      this.controller.createSimulation(this.getInputValues(), this.mainView);
     });
     startSimButton.setTooltip(new Tooltip("Run the simulation"));
     this.add(startSimButton, this.getColumnCount() - 1, this.BTN_ROW);
@@ -110,12 +113,32 @@ public class MenuView extends GridPane {
       },
       false
     );
-    timeScalingSection.setBehavior( v -> v);
+    timeScalingSection.setBehavior(v -> v);
     timeScalingSection.setTooltip("Set the playback speed of the simulation");
+    
+    Label offlineRunLabel = new Label("Run simulation\noffline (no visuals)");
+    this.offlineRunCheckBox = new CheckBox();
+    this.offlineRunCheckBox.setOnAction(e -> this.ticksToRunControl.setDisable(! this.offlineRunCheckBox.isSelected()));
+    HBox offlineRunSection = new HBox(Constants.V_GAP, offlineRunLabel, offlineRunCheckBox);
+    offlineRunSection.setAlignment(Pos.CENTER);
+    
+    Label ticksToRunLabel = new Label("Number of ticks to run");
+    this.ticksToRunControl = new Spinner<Integer>();
+    this.ticksToRunControl.setEditable(true);
+    this.ticksToRunControl.setValueFactory(
+      new SpinnerValueFactory.IntegerSpinnerValueFactory(1000, 10000000, 10000)
+    );
+    this.ticksToRunControl.setDisable(true);
+    Tooltip ticksToRunTooltip = new Tooltip("Set the length of the road (in number of cells)");
+    ticksToRunLabel.setTooltip(ticksToRunTooltip);
+    this.ticksToRunControl.setTooltip(ticksToRunTooltip);
+    VBox ticksToRunSection = new VBox(Constants.V_GAP, ticksToRunLabel, ticksToRunControl);
     
     Label[] labels = {
       mapSelectorLabel,
-      roadLengthLabel
+      roadLengthLabel,
+      offlineRunLabel,
+      ticksToRunLabel
     };
     for (Label l : labels) {
       l.setTextFill(Constants.TEXT_COLOR);
@@ -125,13 +148,17 @@ public class MenuView extends GridPane {
     this.addColumn(0, 
       mapSelectorSection,
       spacer(),
-      roadLengthSection
+      roadLengthSection,
+      spacer(),
+      offlineRunSection
     );
     
     this.addColumn(1,
       minSpeedSection,
       spacer(),
-      maxSpeedSection
+      maxSpeedSection,
+      spacer(),
+      ticksToRunSection
     );
     
     this.addColumn(2,
@@ -148,7 +175,10 @@ public class MenuView extends GridPane {
       this.minSpeedSection.getValue(),
       this.maxSpeedSection.getValue(),
       this.spawnRateSection.getValue(),
-      this.timeScalingSection.getValue()
+      this.timeScalingSection.getValue(),
+      this.timeScalingSection.getSlider().getValue(),
+      this.offlineRunCheckBox.isSelected(),
+      this.ticksToRunControl.getValue()
     );
   }
 }

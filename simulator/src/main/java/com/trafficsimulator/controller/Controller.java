@@ -16,6 +16,7 @@ public class Controller {
   private long nextTick;
   private boolean running;
   private boolean stopped;
+  private int ticksTorun;
   
   public Controller() {
     this.setNextTick();
@@ -26,25 +27,33 @@ public class Controller {
     this.setNextTick();
   }
   
-  public void createSimulation(InputParametersDTO params) {
-    this.setTimeScaling(params.getTimeScalingFactor());
+  public void createSimulation(InputParametersDTO params, MainView mainView) {
+    this.setTimeScaling(params.timeScalingFactor());
 
-    Map selctedMap = switch (params.getMapType()){
-      case "Highway" -> Map.createHighway(params.getRoadLength());
-      case "One way street" -> Map.createOneWay(params.getRoadLength());
-      case "T Intersection" -> Map.createTIntersection(params.getRoadLength());
-      default -> Map.createHighway(params.getRoadLength()); 
+    Map selctedMap = switch (params.mapType()){
+      case "Highway" -> Map.createHighway(params.roadLength());
+      case "One way street" -> Map.createOneWay(params.roadLength());
+      case "T Intersection" -> Map.createTIntersection(params.roadLength());
+      default -> Map.createHighway(params.roadLength()); 
     };
 
     ts = new TrafficSimulator(
-      (int)(Constants.MAX_TICKS_PER_SPAWN - params.getSpawnRate() + 1),
-      (int)params.getRoadLength(),
-      (int)params.getMinSpeed(),
-      (int)params.getMaxSpeed(),
+      (int)(Constants.MAX_TICKS_PER_SPAWN - params.spawnRate() + 1),
+      (int)params.roadLength(),
+      (int)params.minSpeed(),
+      (int)params.maxSpeed(),
       selctedMap
     );
-
+    
     MainView.setModel(ts);
+    if (params.runOffline()) {
+      this.ticksTorun = (int)params.ticksToRun();
+      this.loopOffline();
+      mainView.showSummaryScreen();
+    }
+    else {
+      mainView.showSimulation(params.timeScalingRaw());
+    }
   }
   
   public void setSubViews(SubView... subViews) {
@@ -68,6 +77,12 @@ public class Controller {
           return;
         }
       }
+    }
+  }
+  
+  private void loopOffline() {
+    for (int i = 0; i < this.ticksTorun; i++) {
+      ts.tickUpdate();
     }
   }
   
