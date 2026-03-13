@@ -141,24 +141,19 @@ public class Map {
         int laneWidth = 8;
         int width = roadLength * CELL_SIZE;
 
-        // To make more lanes give they p
         map.addRoad(new Road(roadLength, Direction.WEST, 0, 44, width, 44, laneWidth));
-        map.addRoad(new Road(roadLength, Direction.WEST, 0, 48, width, 48, laneWidth));// lane 2 nedre
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 48, width, 48, laneWidth));
         map.addRoad(new Road(roadLength, Direction.EAST, 0, 52, width, 52, laneWidth));
-        map.addRoad(new Road(roadLength, Direction.EAST, 0, 56, width, 56, laneWidth));// lane 4 övre
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 56, width, 56, laneWidth));
 
-        map.getRoads().get(0).setNeighborLane(map.getRoads().get(1));
-        map.getRoads().get(1).setNeighborLane(map.getRoads().get(0));
+        map.getRoads().get(0).setOvertakeLane(map.getRoads().get(1));
+        map.getRoads().get(1).setMergeLane(map.getRoads().get(0));
 
-        map.getRoads().get(3).setNeighborLane(map.getRoads().get(2));
-        map.getRoads().get(2).setNeighborLane(map.getRoads().get(3));
+        map.getRoads().get(3).setOvertakeLane(map.getRoads().get(2));
+        map.getRoads().get(2).setMergeLane(map.getRoads().get(3));
 
         map.getRoads().get(1).setSpawnRoad(false);
         map.getRoads().get(2).setSpawnRoad(false);
-        // map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2),
-        // road1);
-        // map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2 - 1),
-        // road2);
 
         return map;
     }
@@ -172,7 +167,7 @@ public class Map {
 
         Road road = new Road(roadLength, Direction.EAST, 0, 50, width, 50, laneWidth);
         map.addRoad(road);
-        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength/2), road);
+        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road);
         return map;
     }
 
@@ -195,6 +190,60 @@ public class Map {
         map.addRoad(roadA);
         map.addRoad(roadB);
         map.addObstacle(intersection, roadB);
+
+        return map;
+    }
+
+    public static Map createAutobahn(int roadLength) {
+        Map map = new Map(MapType.AUTOBAHN);
+
+        int laneWidth = 8;
+        int width = roadLength * CELL_SIZE;
+
+        // Westbound: lanes 0-4, Y=28..44 (0=slow/spawn, 4=fast)
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 28, width, 28, laneWidth)); // 0 spawn
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 32, width, 32, laneWidth)); // 1
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 36, width, 36, laneWidth)); // 2
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 40, width, 40, laneWidth)); // 3
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 44, width, 44, laneWidth)); // 4 fast
+
+        // Eastbound: lanes 5-9, Y=48..64 (9=slow/spawn, 5=fast)
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 48, width, 48, laneWidth)); // 5 fast
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 52, width, 52, laneWidth)); // 6
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 56, width, 56, laneWidth)); // 7
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 60, width, 60, laneWidth)); // 8
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 64, width, 64, laneWidth)); // 9 spawn
+
+        // Westbound overtake chain: 0 -> 1 -> 2 -> 3 -> 4
+        map.getRoads().get(0).setOvertakeLane(map.getRoads().get(1));
+        map.getRoads().get(1).setOvertakeLane(map.getRoads().get(2));
+        map.getRoads().get(2).setOvertakeLane(map.getRoads().get(3));
+        map.getRoads().get(3).setOvertakeLane(map.getRoads().get(4));
+        // Westbound merge chain: 4 -> 3 -> 2 -> 1 -> 0
+        map.getRoads().get(4).setMergeLane(map.getRoads().get(3));
+        map.getRoads().get(3).setMergeLane(map.getRoads().get(2));
+        map.getRoads().get(2).setMergeLane(map.getRoads().get(1));
+        map.getRoads().get(1).setMergeLane(map.getRoads().get(0));
+
+        // Eastbound overtake chain: 9 -> 8 -> 7 -> 6 -> 5
+        map.getRoads().get(9).setOvertakeLane(map.getRoads().get(8));
+        map.getRoads().get(8).setOvertakeLane(map.getRoads().get(7));
+        map.getRoads().get(7).setOvertakeLane(map.getRoads().get(6));
+        map.getRoads().get(6).setOvertakeLane(map.getRoads().get(5));
+        // Eastbound merge chain: 5 -> 6 -> 7 -> 8 -> 9
+        map.getRoads().get(5).setMergeLane(map.getRoads().get(6));
+        map.getRoads().get(6).setMergeLane(map.getRoads().get(7));
+        map.getRoads().get(7).setMergeLane(map.getRoads().get(8));
+        map.getRoads().get(8).setMergeLane(map.getRoads().get(9));
+
+        // Westbound: lane 0 = slow (+0), lane 4 = fast (+4)
+        for (int i = 0; i <= 4; i++) {
+            map.getRoads().get(i).setSpeedBonus(i);
+        }
+        // Eastbound: lane 9 = slow (+0), lane 5 = fast (+4)
+        for (int i = 5; i <= 9; i++) {
+            map.getRoads().get(i).setSpeedBonus(9 - i);
+        }
 
         return map;
     }
