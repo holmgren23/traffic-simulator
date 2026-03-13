@@ -27,6 +27,7 @@ public class TrafficSimulator {
           case "Highway" -> Map.createHighway(roadLength);
           case "One way street" -> Map.createOneWay(roadLength);
           case "T Intersection" -> Map.createTIntersection(roadLength);
+          case "Autobahn" -> Map.createAutobahn(roadLength);
           default -> Map.createHighway(roadLength); 
         };
 
