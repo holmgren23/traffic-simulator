@@ -30,20 +30,12 @@ public class Controller {
   public void createSimulation(InputParametersDTO params, MainView mainView) {
     this.setTimeScaling(params.timeScalingFactor());
 
-    Map selctedMap = switch (params.mapType()){
-      case "Highway" -> Map.createHighway(params.roadLength());
-      case "One way street" -> Map.createOneWay(params.roadLength());
-      case "T Intersection" -> Map.createTIntersection(params.roadLength());
-      case "Autobahn" -> Map.createAutobahn(params.roadLength());
-      default -> Map.createHighway(params.roadLength()); 
-    };
-
     ts = new TrafficSimulator(
       (int)(Constants.MAX_TICKS_PER_SPAWN - params.spawnRate() + 1),
       (int)params.roadLength(),
       (int)params.minSpeed(),
       (int)params.maxSpeed(),
-      selctedMap
+      params.mapType()
     );
     
     MainView.setModel(ts);
