@@ -53,7 +53,7 @@ public class MenuView extends GridPane {
   private void setupNavBtns() {
     Button startSimButton = new Button("Start");
     startSimButton.setOnAction(e -> {
-      this.controller.createSimulation(this.getInputValues(), this.mainView);
+      this.controller.createSimulation(this.getInputValues());
     });
     startSimButton.setTooltip(new Tooltip("Run the simulation"));
     this.add(startSimButton, this.getColumnCount() - 1, this.BTN_ROW);

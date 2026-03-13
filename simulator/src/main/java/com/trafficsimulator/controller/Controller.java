@@ -5,10 +5,13 @@ import com.trafficsimulator.utility.InputParametersDTO;
 import com.trafficsimulator.utility.Constants;
 import com.trafficsimulator.view.MainView;
 import com.trafficsimulator.view.SubView;
-import com.trafficsimulator.model.Map;
 
 import javafx.application.Platform;
 
+/**
+ * The controller handles the mechanics of the program: switch between modes,
+ * simulation loop, user input
+ */
 public class Controller {
   private double timeScaling = 1;
   private TrafficSimulator ts;
@@ -17,17 +20,32 @@ public class Controller {
   private boolean running;
   private boolean stopped;
   private int ticksTorun;
+  private MainView mainView;
   
-  public Controller() {
+  /**
+   * Creates a controller with a MainView object.
+   * @param mainView Program's main view
+   */
+  public Controller(MainView mainView) {
     this.setNextTick();
+    this.mainView = mainView;
   }
 
+  /**
+   * Creates a controller with a TrafficSimulator object. Kept for legacy reasons.
+   * @param ts Predefined TrafficSimulator model
+   */
   public Controller(TrafficSimulator ts) {
     this.ts = ts;
     this.setNextTick();
   }
   
-  public void createSimulation(InputParametersDTO params, MainView mainView) {
+  /**
+   * Creates a TrafficSimulator model with the received user settings,
+   * and start the simulation loop.
+   * @param params Data transfer object containing user settings
+   */
+  public void createSimulation(InputParametersDTO params) {
     this.setTimeScaling(params.timeScalingFactor());
 
     ts = new TrafficSimulator(
@@ -49,10 +67,20 @@ public class Controller {
     }
   }
   
+  /**
+   * Sets views to be updated while running the simulation.
+   * These views are used to show visuals of the simulation, among
+   * other things.
+   * @param subViews One or more views to be updated later by the loop
+   */
   public void setSubViews(SubView... subViews) {
     this.views = subViews;
   }
   
+  /**
+   * Main loop that handles the time of the traffic simulation.
+   * From here, all relevant parts of the simulation are updated.
+   */
   public void loop() {
     this.stopped = false;
     this.running = true;
@@ -73,12 +101,18 @@ public class Controller {
     }
   }
   
+  /**
+   * Loop for when running the simulation withou visuals.
+   */
   private void loopOffline() {
     for (int i = 0; i < this.ticksTorun; i++) {
       ts.tickUpdate();
     }
   }
   
+  /**
+   * Update views when a simulation is running.
+   */
   private void updateViews() {
     if (this.views.length <= 0) { return; }
     for (SubView sv : this.views) {
@@ -86,6 +120,10 @@ public class Controller {
     }
   }
 
+  /**
+   * A tick, or step, of the simulation. Waits for set time, then updates
+   * simulation (model) and views, in turn.
+   */
   private void tick() {
     long currentTime;
     do {
@@ -105,22 +143,38 @@ public class Controller {
     });
   }
   
+  /**
+   * Sets the time for when the next tick will happen. Used for
+   * waiting between ticks.
+   */
   private void setNextTick() {
     this.nextTick = System.currentTimeMillis() + (int)(Constants.TICK_LENGTH / this.timeScaling);
   }
 
+  /**
+   * Pauses/unpauses a running simulation.
+   */
   public void toggleRunning() {
     this.running = this.running ? false : true;
   }
   
+  /**
+   * Returns true if the simulation is running and false if the simulation is paused.
+   */
   public boolean isRunning() {
     return this.running;
   }
   
+  /**
+   * Stops a running simulation.
+   */
   public void stopSimulation() {
     this.stopped = true;
   }
   
+  /**
+   * Clears simulation and statistics and restarts with the same user settings.
+   */
   public void resetSimulation() {
     this.running = false;
 
@@ -143,6 +197,10 @@ public class Controller {
     this.running = true;
   }
 
+  /**
+   * Sets the time scaling for a running simulation.
+   * @param timeScaling Expects a value greater than 0, where 100 is 1x speed
+   */
   public void setTimeScaling(double timeScaling){
     this.timeScaling = (timeScaling / 100.0);
   }
