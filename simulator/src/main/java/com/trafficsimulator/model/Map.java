@@ -239,6 +239,11 @@ public class Map {
         map.addObstacle(new Intersection(position, bottomRoad, junctionCell, clearance), leftRoad);
         map.addObstacle(new Intersection(position, topRoad, junctionCell, clearance), rightRoad);
 
+        topRoad.setExit(rightRoad, roadLength / 3);
+        rightRoad.setExit(bottomRoad, roadLength / 3);
+        bottomRoad.setExit(leftRoad, roadLength / 3);
+        leftRoad.setExit(topRoad, roadLength / 3);
+
         map.addRoad(topRoad);
         map.addRoad(bottomRoad);
         map.addRoad(leftRoad);
