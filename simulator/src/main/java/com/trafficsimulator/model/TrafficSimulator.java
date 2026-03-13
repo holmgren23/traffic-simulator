@@ -16,14 +16,21 @@ public class TrafficSimulator {
     private double speedupProbability = 0;
 
     // Main constructor
-    public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, Map map) {
+    public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, String mapType) {
         this.rand = new Random();
         this.spawnRate = spawnRate;
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
         this.roadLength = roadLength;
 
-        this.initializeSimulation(map);
+        Map selectedMap = switch (mapType){
+          case "Highway" -> Map.createHighway(roadLength);
+          case "One way street" -> Map.createOneWay(roadLength);
+          case "T Intersection" -> Map.createTIntersection(roadLength);
+          default -> Map.createHighway(roadLength); 
+        };
+
+        this.initializeSimulation(selectedMap);
     }
 
     // Deterministic random constructor for testing of random functions.
