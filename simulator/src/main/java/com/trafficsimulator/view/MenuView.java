@@ -23,15 +23,13 @@ import javafx.scene.layout.VBox;
 
 public class MenuView extends GridPane {
   private final int BTN_ROW = 6;
-  private MainView mainView;
   private Controller controller;
   private SliderSection spawnRateSection, minSpeedSection, maxSpeedSection, timeScalingSection;
   private Spinner<Integer> roadLengthControl, ticksToRunControl;
   private ComboBox<String> mapSelector;
   private CheckBox offlineRunCheckBox;
   
-  public MenuView(MainView mainView, Controller controller) {
-    this.mainView = mainView;
+  public MenuView(Controller controller) {
     this.controller = controller;
 
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);

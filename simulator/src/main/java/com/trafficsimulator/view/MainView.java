@@ -63,7 +63,7 @@ public class MainView extends Application {
 
         
     public void showMenu() {
-        MenuView menuView = new MenuView(this, controller);
+        MenuView menuView = new MenuView(controller);
 
         StackPane root = new StackPane(menuView);
         root.setStyle("-fx-background-color: rgb(54, 66, 56);");
