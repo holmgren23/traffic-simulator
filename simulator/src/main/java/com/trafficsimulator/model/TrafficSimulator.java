@@ -90,7 +90,6 @@ public class TrafficSimulator {
 
             int gap = map.gap(road, position);
             speed = Math.min(speed, gap); // Brake
-            speed = Math.max(speed, Math.min(minSpeed, gap)); // Don't drop below minSpeed unless gap forces it
 
             RoadObject ahead = map.getObjectAhead(road, position);
             if (ahead instanceof Obstacle obs && !obs.isOpen() && gap == 0) {
