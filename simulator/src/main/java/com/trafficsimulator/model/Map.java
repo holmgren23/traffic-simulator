@@ -172,7 +172,7 @@ public class Map {
 
         Road road = new Road(roadLength, Direction.EAST, 0, 50, width, 50, laneWidth);
         map.addRoad(road);
-        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength/2), road);
+        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength / 2), road);
         return map;
     }
 
@@ -195,6 +195,39 @@ public class Map {
         map.addRoad(roadA);
         map.addRoad(roadB);
         map.addObstacle(intersection, roadB);
+
+        return map;
+    }
+
+    public static Map createAutobahn(int roadLength) {
+        Map map = new Map(MapType.AUTOBAHN);
+
+        int laneWidth = 8;
+        int width = roadLength * CELL_SIZE;
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 44, width, 44, laneWidth));
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 48, width, 48, laneWidth));// lane 2 nedre
+        map.addRoad(new Road(roadLength, Direction.WEST, 0, 52, width, 52, laneWidth));
+
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 56, width, 56, laneWidth));
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 60, width, 60, laneWidth));
+        map.addRoad(new Road(roadLength, Direction.EAST, 0, 64, width, 64, laneWidth));// lane 4 övre
+
+        map.getRoads().get(0).setNeighborLane(map.getRoads().get(1));
+        map.getRoads().get(1).setNeighborLane(map.getRoads().get(0));
+
+        map.getRoads().get(1).setNeighborLane(map.getRoads().get(2));
+        map.getRoads().get(2).setNeighborLane(map.getRoads().get(1));
+
+        map.getRoads().get(5).setNeighborLane(map.getRoads().get(4));
+        map.getRoads().get(4).setNeighborLane(map.getRoads().get(5));
+
+        map.getRoads().get(4).setNeighborLane(map.getRoads().get(3));
+        map.getRoads().get(3).setNeighborLane(map.getRoads().get(4));
+
+        map.getRoads().get(1).setSpawnRoad(false);
+        map.getRoads().get(2).setSpawnRoad(false);
+        map.getRoads().get(3).setSpawnRoad(false);
+        map.getRoads().get(4).setSpawnRoad(false);
 
         return map;
     }

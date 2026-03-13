@@ -198,7 +198,7 @@ public class TrafficSimulator {
         }
     }
 
-    //Tick update. Should be callable by controller
+    // Tick update. Should be callable by controller
     public void tickUpdate() {
         tickCount++;
         map.updateObstacles(tickCount);
@@ -223,7 +223,7 @@ public class TrafficSimulator {
         return stats.getSettingsReport();
     }
 
-    //Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic
+    // Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic
     public void resetSimulation() {
         map.clearVehicle();
         cars = new ArrayList<>();
