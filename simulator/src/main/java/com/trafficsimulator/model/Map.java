@@ -172,6 +172,7 @@ public class Map {
 
         Road road = new Road(roadLength, Direction.EAST, 0, 50, width, 50, laneWidth);
         map.addRoad(road);
+        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, roadLength/2), road);
         return map;
     }
 
