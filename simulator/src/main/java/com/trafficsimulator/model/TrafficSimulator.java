@@ -40,7 +40,7 @@ public class TrafficSimulator {
         cars = new ArrayList<>();
         tickCount = 0;
         nextID = 0;
-        stats = new Statistics(minSpeed, maxSpeed, spawnRate, roadLength);
+        stats = new Statistics(minSpeed, maxSpeed, spawnRate, roadLength, map.getType());
     }
 
     // Getters
@@ -229,6 +229,6 @@ public class TrafficSimulator {
         cars = new ArrayList<>();
         tickCount = 0;
         nextID = 0;
-        stats = new Statistics(minSpeed, maxSpeed, spawnRate, roadLength);
+        stats = new Statistics(minSpeed, maxSpeed, spawnRate, roadLength, map.getType());
     }
 }
