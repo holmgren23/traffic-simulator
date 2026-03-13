@@ -182,9 +182,9 @@ public class TrafficSimulator {
                 RoadObject behind = overtakeLane.getCell(position - gapBehind - 1);
                 speedBehind = (behind instanceof Car c) ? c.getCurrentSpeed() : 0;
             }
-            boolean blocked = gapAheadCurrent < speed;
+            boolean blocked = gapAheadCurrent < car.getMaxSpeed();
             boolean betterAhead = gapAhead > gapAheadCurrent;
-            if (blocked && betterAhead && gapAhead >= speed && gapBehind > speedBehind) {
+            if (blocked && betterAhead && gapAhead > 0 && gapBehind > speedBehind) {
                 executeChangeLane(car, currentRoad, overtakeLane, position, true);
             }
         }
