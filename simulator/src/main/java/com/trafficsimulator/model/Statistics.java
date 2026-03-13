@@ -14,14 +14,16 @@ public class Statistics {
     private int currentStationary = 0;
     private int currentCarCount = 0;
     private int minSpeed, maxSpeed, spawnRate, roadLength;
-    
+    private MapType mapType;
+
     public Statistics() {}
 
-    public Statistics(int minSpeed, int maxSpeed, int spawnRate, int roadLength) {
+    public Statistics(int minSpeed, int maxSpeed, int spawnRate, int roadLength, MapType mapType) {
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
         this.spawnRate = spawnRate;
         this.roadLength = roadLength;
+        this.mapType = mapType;
     }
 
     public void update(List<Car> cars, int totalSpawned) {
@@ -71,7 +73,8 @@ public class Statistics {
             minSpeed,
             maxSpeed,
             spawnRate,
-            roadLength
+            roadLength,
+            mapType
         );
     }
 
@@ -98,16 +101,15 @@ public class Statistics {
     public String getSettingsReport() {
         return String.format(
             "--- SETTINGS ---\n"+
+            "Map: %s\n" +
             "Min Speed: %d km/h\n" +
             "Max Speed: %d kmh/h\n" +
             "Spawn Rate: %d\n" +
             "Road Length: %d" +
             " \n" +
-            " \n" +
             " \n",
-            (int)HelperMethods.speedToKMH(minSpeed), (int)HelperMethods.speedToKMH(maxSpeed), spawnRate, roadLength
+            mapType, (int)HelperMethods.speedToKMH(minSpeed), (int)HelperMethods.speedToKMH(maxSpeed), spawnRate, roadLength
         );
     }
-
 
 }

@@ -13,5 +13,6 @@ public record StatSnapshot(
     int minSpeed,
     int maxSpeed,
     int spawnRate,
-    int roadLength
+    int roadLength,
+    MapType mapType
 ) {}
