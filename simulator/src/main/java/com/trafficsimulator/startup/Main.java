@@ -5,12 +5,16 @@ import com.trafficsimulator.view.*;
 import com.trafficsimulator.controller.Controller;
 
 /** 
- * Startup sequence. Creates the controller and main view.
+ * Class needed to start the program. Contains the startup sequence.
  * 
  * @see com.trafficsimulator.controller.Controller
  * @see com.trafficsimulator.view.MainView
  */
 public class Main {
+    /**
+     * Startup sequence. Creates the controller and main view.
+     * @param args not used
+     */
     public static void main(String[] args) {
         // Confirming that the main method has started
         System.out.println("Starting simulator program...");

@@ -12,6 +12,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+/**
+ * The main window of the program.
+ */
 public class MainView extends Application {
     //Dimensions for the window(pixels)
     private static int windowWidth = 0;
@@ -20,14 +23,20 @@ public class MainView extends Application {
     private static TrafficSimulator ts;
     private static Stage primaryStage;
 
-    //Constructor that allows setting custom window size
+    /**
+     * Creates a main view with the given width and height
+     * @param width Window width
+     * @param height Window height
+     */
     public MainView(int width, int height) {
         windowWidth = width;
         windowHeight = height;
     }
 
-    //Default constructor required by JavaFX, sets default window size if not
-    //provided by constructor
+    /**
+     * Default constructor required by JavaFX, sets default window size if not
+     * provided by constructor
+     */
     public MainView() {
         if (windowWidth == 0)
             windowWidth = 1280;
@@ -35,20 +44,36 @@ public class MainView extends Application {
             windowHeight = 720;
     }
 
+    /**
+     * Sets the controller to receive user input
+     * @param controller Used by any views that takes user input
+     */
     public static void setController(Controller controller) {
         MainView.controller = controller;
     }
 
+    /**
+     * Sets the simulation model. The model is created by the controller, 
+     * which allows different simulations to run without restarting the program.
+     * @param ts
+     */
     public static void setModel(TrafficSimulator ts) {
         MainView.ts = ts;
 
     }
 
-    //Launches the JavaFX application
+    /**
+     * Launches the JavaFX application
+     */
     public void startWindow() {
         launch();
     }
 
+    /**
+     * JavaFX uses this method to run the GUI thread.
+     * It sets the window size to fit the screen, then
+     * starts the settings menu.
+     */
     @Override
     public void start(Stage primaryStage) {
         MainView.primaryStage = primaryStage;
@@ -62,6 +87,9 @@ public class MainView extends Application {
     }
 
         
+    /**
+     * Creates and shows the user settings menu.
+     */
     public void showMenu() {
         MenuView menuView = new MenuView(controller);
 
@@ -72,6 +100,11 @@ public class MainView extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Creates and shows the simulation visuals. Started from
+     * the user settings menu.
+     * @param timeScaling
+     */
     public void showSimulation(double timeScaling) {
         RoadView roadView = new RoadView(ts, windowWidth, windowHeight - 100);
 
@@ -96,11 +129,15 @@ public class MainView extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Creates and shows the final statistics summary.
+     * Allows navigation back to settings menu.
+     */
     public void showSummaryScreen() {
-    // Skapa den nya rapportvyn
+    // Create report view
     ReportView reportView = new ReportView(this, ts);
     
-    // Skapa en ny scen och sätt den på huvudfönstret
+    // Create a new scene and set it to show in the main window
     Scene scene = new Scene(reportView, windowWidth, windowHeight);
     primaryStage.setScene(scene);
     primaryStage.show();

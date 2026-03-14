@@ -21,6 +21,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
+/**
+ * The menu for user settings
+ */
 public class MenuView extends GridPane {
   private final int BTN_ROW = 6;
   private Controller controller;
@@ -29,6 +32,10 @@ public class MenuView extends GridPane {
   private ComboBox<String> mapSelector;
   private CheckBox offlineRunCheckBox;
   
+  /**
+   * Defines styling, creates UI input elements and layout.
+   * @param controller Program controller, to send setting values to
+   */
   public MenuView(Controller controller) {
     this.controller = controller;
 
@@ -42,12 +49,21 @@ public class MenuView extends GridPane {
     this.setupNavBtns();
   }
   
+  /**
+   * An empty UI element to add space to the menu layout.
+   * @return An empty Pane element with a fixed height
+   */
   private Pane spacer() {
     Pane spacer = new Pane();
     spacer.setMinHeight(25);
     return spacer;
   }
   
+  /**
+   * Defines and creates buttons: start and exit.
+   * Start runs a new simulation with current settings.
+   * Exit quits to desktop.
+   */
   private void setupNavBtns() {
     Button startSimButton = new Button("Start");
     startSimButton.setOnAction(e -> {
@@ -64,6 +80,10 @@ public class MenuView extends GridPane {
     GridPane.setHalignment(exitButton, HPos.RIGHT);
   }
   
+  /**
+   * Defines and creates UI elements for user settings,
+   * and a layout for these.
+   */
   private void setupInputControls() {
     Label mapSelectorLabel = new Label("Select map");
     String[] maps = {"Highway", "One way street", "T Intersection", "Autobahn"};
@@ -103,10 +123,11 @@ public class MenuView extends GridPane {
       " %",
       0,
       1,
-      ((Math.log(100) - Math.log(30)) / (Math.log(800) - Math.log(30))),
+      ((Math.log(Constants.TIME_SCALING_DEFAULT_PERCENTAGE) - Math.log(Constants.TIME_SCALING_MIN_PERCENTAGE)) /
+      (Math.log(Constants.TIME_SCALING_MAX_PERCENTAGE) - Math.log(Constants.TIME_SCALING_MIN_PERCENTAGE))),
       v -> {
-        double offset = Math.log(30);
-        double scale = Math.log(800);
+        double offset = Math.log(Constants.TIME_SCALING_MIN_PERCENTAGE);
+        double scale = Math.log(Constants.TIME_SCALING_MAX_PERCENTAGE);
         return Math.round(Math.pow(Math.E, (offset + v * (scale - offset))));
       },
       false
@@ -166,6 +187,10 @@ public class MenuView extends GridPane {
     );
   }
 
+  /**
+   * Collect user settings into a data transfer object.
+   * @return Data transfer object (DTO) with user set values.
+   */
   private InputParametersDTO getInputValues() {
     return new InputParametersDTO(
       this.mapSelector.getValue(),
