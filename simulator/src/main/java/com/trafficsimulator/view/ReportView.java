@@ -2,9 +2,11 @@ package com.trafficsimulator.view;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Locale;
 
 import com.trafficsimulator.model.StatSnapshot;
 import com.trafficsimulator.model.TrafficSimulator;
+import com.trafficsimulator.utility.Constants;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,7 +21,11 @@ public class ReportView extends VBox {
         // Layout and styling
         this.setAlignment(Pos.CENTER);
         this.setSpacing(30);
-        this.setStyle("-fx-background-color: rgb(54, 66, 56); -fx-padding: 50;");
+        this.setStyle(
+            "-fx-background-color: rgba(0, 0, 0, 0.30);" +
+            "-fx-background-radius: 20;" +
+            "-fx-padding: 40;"
+        );
 
         // Label
         Label title = new Label("SIMULATION SUMMARY");
@@ -44,18 +50,18 @@ public class ReportView extends VBox {
         contentContainer.setAlignment(Pos.CENTER);
         // Buttons
         Button menuBtn = new Button("Back to Menu");
-        menuBtn.setPrefWidth(150);
-        menuBtn.setStyle("-fx-base: #164e0e;");
+        menuBtn.setPrefWidth(Constants.BTN_WIDTH);
+        menuBtn.setStyle(Constants.BTN_STYLE_GREEN);
         menuBtn.setOnAction(e -> mainView.showMenu());
 
         Button exportBtn = new Button("Export to CSV");
-        exportBtn.setPrefWidth(150);
-        exportBtn.setStyle("-fx-base: #252a72;"); 
+        exportBtn.setPrefWidth(Constants.BTN_WIDTH);
+        exportBtn.setStyle(Constants.BTN_STYLE_BLUE);
         exportBtn.setOnAction(e -> exportToCSV(ts));
 
         Button exitBtn = new Button("Exit Program");
-        exitBtn.setPrefWidth(150);
-        exitBtn.setStyle("-fx-base: #b31111;");
+        exitBtn.setPrefWidth(Constants.BTN_WIDTH);
+        exitBtn.setStyle(Constants.BTN_STYLE_RED);
         exitBtn.setOnAction(e -> javafx.application.Platform.exit());
 
         HBox buttonContainer = new HBox(20, menuBtn,exportBtn, exitBtn);
@@ -91,9 +97,9 @@ public class ReportView extends VBox {
                 writer.println("Total Ticks;" + stats.totalTicks() + ";;Max Speed;" + stats.maxSpeed());
                 writer.println("Total Cars Spawned;" + stats.totalSpawned() + ";;Road Length;" + stats.roadLength());
                 writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars()) + ";; Spawn Rate;" + stats.spawnRate());
-                writer.println("Average Speed (km/h);" + String.format("%.2f", stats.currentAvgSpeedKmh()));
-                writer.println("Average Inflow (veh/m);" + String.format("%.2f", stats.avgInFlow()));
-                writer.println("Average Outflow (veh/m);" + String.format("%.2f", stats.avgOutFlow()));
+                writer.println("Average Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.currentAvgSpeedKmh()));
+                writer.println("Average Inflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgInFlow()));
+                writer.println("Average Outflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgOutFlow()));
                 
             } catch (Exception e) {
                 System.err.println("Failed to save CSV: " + e.getMessage());

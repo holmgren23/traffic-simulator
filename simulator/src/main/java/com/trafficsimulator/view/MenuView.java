@@ -9,7 +9,6 @@ import com.trafficsimulator.utility.InputParametersDTO;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -72,14 +71,18 @@ public class MenuView extends GridPane {
       this.controller.createSimulation(this.getInputValues());
     });
     startSimButton.setTooltip(new Tooltip("Run the simulation"));
-    this.add(startSimButton, this.getColumnCount() - 1, this.BTN_ROW);
-    GridPane.setHalignment(startSimButton, HPos.LEFT);
-    
+    startSimButton.setPrefWidth(Constants.BTN_WIDTH);
+    startSimButton.setStyle(Constants.BTN_STYLE_GREEN);
+
     Button exitButton = new Button("Exit");
     exitButton.setOnAction(e -> Platform.exit());
     exitButton.setTooltip(new Tooltip("Quit the program and return to desktop"));
-    this.add(exitButton, this.getColumnCount() - 1, this.BTN_ROW);
-    GridPane.setHalignment(exitButton, HPos.RIGHT);
+    exitButton.setPrefWidth(Constants.BTN_WIDTH);
+    exitButton.setStyle(Constants.BTN_STYLE_RED);
+
+    HBox btnRow = new HBox(20, startSimButton, exitButton);
+    btnRow.setAlignment(Pos.CENTER);
+    this.add(btnRow, 0, this.BTN_ROW, this.getColumnCount(), 1);
   }
   
   /**
