@@ -15,7 +15,7 @@ public class Vehicle implements RoadObject {
     private boolean wantsToTurn;
     private int turnIntentCooldown;
     private double turnProbability;
-    private int laneChangeCooldown = 0;
+    private int laneChangeCooldown;
     private static final Color[] CAR_COLORS = {
             Color.RED,
             Color.BLUE,
@@ -33,6 +33,7 @@ public class Vehicle implements RoadObject {
         this.currentSpeed = maxSpeed;
         this.color = CAR_COLORS[id % CAR_COLORS.length];
         this.turnProbability = turnProbability;
+        this.laneChangeCooldown = 0;
     }
 
     // Setters and Getters
@@ -88,6 +89,8 @@ public class Vehicle implements RoadObject {
         this.laneChangeCooldown = cooldown;
     }
 
+    //Update conditions for vehicles intent to turn at next turn option.
+    //Currently a random probability calculate every couple of ticks
     public void updateTurnIntent(Random rand, int tickCount) {
         if (turnIntentCooldown <= 0) {
             wantsToTurn = rand.nextDouble() < turnProbability;
@@ -97,6 +100,7 @@ public class Vehicle implements RoadObject {
         }
     }
 
+    //Vechiles current intent to turn
     public boolean wantsToTurn() { 
         return wantsToTurn; 
     }

@@ -71,6 +71,7 @@ public class Map {
         return i - position - 1;
     }
 
+    //Returns the gap to vehicles behind the given position on given road
     public int gapBehind(Road road, int position) {
         int i = position - 1;
         while (i >= 0) {
@@ -112,7 +113,6 @@ public class Map {
                 Math.max(r.getStartX(), r.getEndX())))
             .max().orElse(800);
     }
-
     public int getMapHeight() {
         return roads.stream()
             .mapToInt(r -> Math.max(r.getStartY(), r.getEndY()))
@@ -141,6 +141,7 @@ public class Map {
         }
     }
 
+    //Overload method for cars wanting to exit thier current road onto an new road with ExitLane
     public void transferCar(Car car, ExitLane exit) {
         Road fromRoad = car.getRoad();
         Road targetRoad = exit.getExitRoad();
@@ -157,7 +158,7 @@ public class Map {
         }
     }
 
-    // Two way road constructor with traffic light on each side
+    //Two way road constructor with traffic light on each side
     public static Map createHighway(int roadLength) {
         Map map = new Map(MapType.HIGHWAY);
 
@@ -181,7 +182,7 @@ public class Map {
         return map;
     }
 
-    // Creates a one way road
+    //Creates a one way road
     public static Map createOneWay(int roadLength) {
         Map map = new Map(MapType.ONE_WAY);
         int laneWidth = 8;
@@ -217,6 +218,7 @@ public class Map {
         return map;
     }
 
+    //Two-way directional road with multiple lanes for each direction
     public static Map createAutobahn(int roadLength) {
         Map map = new Map(MapType.AUTOBAHN);
 
@@ -271,6 +273,7 @@ public class Map {
         return map;
     }
 
+    //Loop of intersections in a circle. Does not have any exit. will fill up with cars eventually
     public static Map createLoop(int roadLength) {
         Map map = new Map(MapType.INTERSECTION_LOOP);
         int laneWidth = 8;

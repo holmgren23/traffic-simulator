@@ -33,7 +33,7 @@ public class Obstacle implements RoadObject {
     public boolean isOpen() {
         return open;
     }
-
+    //Override of isOpen(), used by certain obstacles
     public boolean isOpenFor(Car car) {
         return isOpen();
     }
@@ -42,10 +42,11 @@ public class Obstacle implements RoadObject {
     public void calculatePriority(int tickCount) {
         switch (type) {
             case TRAFFIC_LIGHT -> calculateTrafficLight(tickCount); //Single road traffic light
-            case INTERSECTION, EXIT_LANE -> {}
+            case INTERSECTION, EXIT_LANE -> {} //
         }
     }
 
+    // !!! The other obstacles override calcPrio. Maybe traffic light should too, or all of this should be changed
     //Single road traffic light priority rule
     private void calculateTrafficLight(int tickCount) {
         int greenDuration = 20;

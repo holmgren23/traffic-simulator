@@ -155,7 +155,7 @@ public class TrafficSimulator {
                 car.setCurrentSpeed(newSpeed);
                 road.setCell(newPos, car);
             } else {
-                // Collision detected — stop car and put back
+                //Collision detected, stop car and put back
                 car.setCurrentSpeed(0);
                 road.setCell(car.getPosition(), car);
             }
@@ -164,7 +164,7 @@ public class TrafficSimulator {
         cars.removeAll(carsToRemove);
     }
 
-    // Function to overtake
+    //Function to overtake
     private void tryChangeLanes() {
         for (Car car : cars) {
             if (car.getLaneChangeCooldown() > 0) {
@@ -242,6 +242,7 @@ public class TrafficSimulator {
         }
     }
 
+    //Update check for cars on obstacles that are not triggered at start/end of road
     private void handleMidRoadObstacles() {
         for (Car car : cars) {
             Road road = car.getRoad();
