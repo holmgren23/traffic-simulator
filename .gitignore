@@ -2,6 +2,6 @@ simulator/target/
 simulator/mktestfiles.sh
 .vscode/settings.json
 simulator/target/classes/module-info.class
-"user manual/*.aux"
-"user manual/*.log"
-"user manual/*.toc"
+*.aux
+*.log
+*.toc
