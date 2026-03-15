@@ -296,7 +296,7 @@ public class Map {
         //Junction cells of roads
         int junctionCell = roadLength / 4;
 
-        int clearance = 10;
+        int clearance = 5;
 
         //Horizontal roads intersects the into the vertical roads
         map.addObstacle(new Intersection(position, rightRoad, junctionCell, clearance), topRoad);
