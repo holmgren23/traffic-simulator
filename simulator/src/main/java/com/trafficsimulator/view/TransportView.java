@@ -61,7 +61,7 @@ public class TransportView extends GridPane {
   public TransportView(MainView mainView, Controller controller, double timeScaling) {
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setMaxHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
-    this.setStyle("-fx-padding: 5;");
+    this.setStyle(Constants.BACKGROUND_CARD_STYLE);
     this.setHgap(4);
     this.setVgap(8);
     
