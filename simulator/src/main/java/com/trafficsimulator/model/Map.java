@@ -49,6 +49,7 @@ public class Map {
 
     // Finds and returns the distance to the Road Object ahead.
     public int gap(Road road, int position) {
+        Car car = (road.getCell(position) instanceof Car c) ? c : null;
         int i = position + 1;
         // Find gap to the next car
         while (i < road.getLength()) {
@@ -58,7 +59,7 @@ public class Map {
             if (vehicle != null) {
                 break; // Find vehicle onbject
             }
-            if (obstacle instanceof Obstacle obs && !obs.isOpen()) {
+            if (obstacle instanceof Obstacle obs && !obs.isOpenFor(car)) {
                 break; // Find obstacle object
             }
             i++;
@@ -137,6 +138,22 @@ public class Map {
             targetRoad.setCell(targetPos, car);
         } else {
             carsToRemove.add(car);
+        }
+    }
+
+    public void transferCar(Car car, ExitLane exit) {
+        Road fromRoad = car.getRoad();
+        Road targetRoad = exit.getExitRoad();
+        int targetPos = exit.getExitPosition();
+
+        fromRoad.setCell(car.getPosition(), null);
+
+        if (targetRoad.getCell(targetPos) == null) {
+            car.setPosition(targetPos);
+            car.setRoad(targetRoad);
+            targetRoad.setCell(targetPos, car);
+        } else {
+            fromRoad.setCell(car.getPosition(), car);
         }
     }
 

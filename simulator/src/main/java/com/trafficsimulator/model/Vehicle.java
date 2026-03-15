@@ -1,5 +1,7 @@
 package com.trafficsimulator.model;
 
+import java.util.Random;
+
 import javafx.scene.paint.Color;
 
 public class Vehicle implements RoadObject {
@@ -12,6 +14,9 @@ public class Vehicle implements RoadObject {
     private int position;
     private Color color;
     private Road road;
+    private boolean wantsToTurn;
+    private int turnIntentCooldown;
+    private double turnProbability;
     private int laneChangeCooldown = 0;
     private static final Color[] CAR_COLORS = {
             Color.RED,
@@ -22,13 +27,14 @@ public class Vehicle implements RoadObject {
     };
 
     // Standard vehicle contructor
-    public Vehicle(int id, int startPosition, int maxSpeed) {
+    public Vehicle(int id, int startPosition, int maxSpeed, double turnProbability) {
         this.id = id;
         this.position = startPosition;
         this.length = 1;
         this.maxSpeed = maxSpeed;
         this.currentSpeed = maxSpeed;
         this.color = CAR_COLORS[id % CAR_COLORS.length];
+        this.turnProbability = turnProbability;
     }
 
     // Setters and Getters
@@ -84,4 +90,16 @@ public class Vehicle implements RoadObject {
         this.laneChangeCooldown = cooldown;
     }
 
+    public void updateTurnIntent(Random rand, int tickCount) {
+        if (turnIntentCooldown <= 0) {
+            wantsToTurn = rand.nextDouble() < turnProbability;
+            turnIntentCooldown = 10; //recalculate intent
+        } else {
+            turnIntentCooldown--;
+        }
+    }
+
+    public boolean wantsToTurn() { 
+        return wantsToTurn; 
+    }
 }

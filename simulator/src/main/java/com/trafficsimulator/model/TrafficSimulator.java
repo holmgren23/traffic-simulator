@@ -14,6 +14,7 @@ public class TrafficSimulator {
     private Statistics stats;
     private double slowProbability = 0;
     private double speedupProbability = 0;
+    private double turnProbability = 0.5;
 
     // Main constructor
     public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, Map map) {
@@ -105,7 +106,7 @@ public class TrafficSimulator {
         ArrayList<Car> carsToRemove = new ArrayList<>();
         HashMap<Car, Integer> resolvedPositions = new HashMap<>();
 
-        // Phase 1 — calculate all new positions and clear old cells
+        //calculate all new positions and clear old cells
         for (Car car : cars) {
             Road road = car.getRoad();
             int oldPos = car.getPosition();
@@ -123,7 +124,7 @@ public class TrafficSimulator {
             }
         }
 
-        // Phase 2 — place all cars in new positions
+        //place all cars in new positions
         for (Car car : cars) {
             Road road = car.getRoad();
             int newPos = resolvedPositions.get(car);
@@ -208,11 +209,22 @@ public class TrafficSimulator {
             if (!road.isSpawnRoad())
                 continue;
             if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
-                Car newCar = new Car(nextID, 0, rand.nextInt(this.minSpeed, this.maxSpeed + 1));
+                Car newCar = new Car(nextID, 0, rand.nextInt(this.minSpeed, this.maxSpeed + 1), turnProbability);
                 newCar.setRoad(road);
                 cars.add(newCar);
                 road.setCell(0, newCar);
                 nextID++;
+            }
+        }
+    }
+
+    private void handleMidRoadObstacles() {
+        for (Car car : cars) {
+            Road road = car.getRoad();
+            RoadObject obstacle = road.getObstacle(car.getPosition());
+            if (obstacle instanceof ExitLane exit && car.wantsToTurn()) {
+                car.setCurrentSpeed(0);
+                map.transferCar(car, exit);
             }
         }
     }
@@ -224,6 +236,7 @@ public class TrafficSimulator {
         tryChangeLanes();
         HashMap<Car, Integer> newSpeeds = updateSpeeds();
         moveCars(newSpeeds);
+        handleMidRoadObstacles();
         spawnCar();
         stats.update(cars, nextID);
     }
