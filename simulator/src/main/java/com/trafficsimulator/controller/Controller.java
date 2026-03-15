@@ -49,7 +49,7 @@ public class Controller {
     this.setTimeScaling(params.timeScalingFactor());
 
     ts = new TrafficSimulator(
-      (int)(Constants.MAX_TICKS_PER_SPAWN - params.spawnRate() + 1),
+      (int)(params.spawnRate()),
       (int)params.roadLength(),
       (int)params.minSpeed(),
       (int)params.maxSpeed(),

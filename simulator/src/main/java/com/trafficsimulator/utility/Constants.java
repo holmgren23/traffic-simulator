@@ -1,9 +1,11 @@
 package com.trafficsimulator.utility;
 
+import java.util.Map;
+
 import javafx.scene.paint.Color;
 
 /**
- * Constans values needed by multiple packages
+ * Constant values needed by multiple packages
  */
 public class Constants {
   // Ticks and time
@@ -19,4 +21,12 @@ public class Constants {
   // Styling
   public static final Color TEXT_COLOR = Color.SILVER;
   public static final int V_GAP = 12;
+  
+  // Maps
+  public static final Map<String, Boolean> MAP_HAS_ADJUSTABLE_ROAD_LENGTH = Map.of(
+    "Highway", true,
+    "One way street", true,
+    "T Intersection", false,
+    "Autobahn", true
+  );
 }

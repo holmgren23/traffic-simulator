@@ -1,9 +1,11 @@
 package com.trafficsimulator.view;
 
+import java.util.Arrays;
+
 import com.trafficsimulator.controller.Controller;
-import com.trafficsimulator.utility.InputParametersDTO;
-import com.trafficsimulator.utility.HelperMethods;
 import com.trafficsimulator.utility.Constants;
+import com.trafficsimulator.utility.HelperMethods;
+import com.trafficsimulator.utility.InputParametersDTO;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -86,12 +88,20 @@ public class MenuView extends GridPane {
    */
   private void setupInputControls() {
     Label mapSelectorLabel = new Label("Select map");
-    String[] maps = {"Highway", "One way street", "T Intersection", "Autobahn"};
+    String[] maps = Arrays.copyOf(
+      Constants.MAP_HAS_ADJUSTABLE_ROAD_LENGTH.keySet().toArray(),
+      Constants.MAP_HAS_ADJUSTABLE_ROAD_LENGTH.keySet().size(),
+      String[].class
+    );
+    Arrays.sort(maps);
     this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(maps));
     if (maps.length > 0) { this.mapSelector.setValue(maps[0]); };
     Tooltip mapSelectorTooltip = new Tooltip("Select the type of map to simulate");
     mapSelectorLabel.setTooltip(mapSelectorTooltip);
     this.mapSelector.setTooltip(mapSelectorTooltip);
+    this.mapSelector.setOnAction(e -> this.roadLengthControl.setDisable(
+      ! Constants.MAP_HAS_ADJUSTABLE_ROAD_LENGTH.get(this.mapSelector.getValue())
+    ));
     VBox mapSelectorSection = new VBox(Constants.V_GAP, mapSelectorLabel, mapSelector);
     
     Label roadLengthLabel = new Label("Road length");

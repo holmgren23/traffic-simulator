@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import com.trafficsimulator.utility.Constants;
+
 public class TrafficSimulator {
     private ArrayList<Car> cars;
     private Map map;
     private int tickCount;
     private int spawnRate, minSpeed, maxSpeed, roadLength;
+    private double spawnChance;
     private int nextID;
     private Random rand;
     private Statistics stats;
@@ -19,6 +22,7 @@ public class TrafficSimulator {
     public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, String mapType) {
         this.rand = new Random();
         this.spawnRate = spawnRate;
+        this.spawnChance = (spawnRate * 0.8) / Constants.MAX_TICKS_PER_SPAWN;
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
         this.roadLength = roadLength;
@@ -196,13 +200,18 @@ public class TrafficSimulator {
         to.setCell(position, car);
         car.setLaneChangeCooldown(5);
     }
+    
+    private boolean spawnCondition(RoadObject cell) {
+        double randomValue = this.rand.nextDouble(0, 1);
+        return cell == null && randomValue < this.spawnChance;
+    }
 
     // Function spawns cars based on spawnrate per tick.
     private void spawnCar() {
         for (Road road : map.getRoads()) {
             if (!road.isSpawnRoad())
                 continue;
-            if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
+            if (this.spawnCondition(road.getCell(0))) {
                 Car newCar = new Car(nextID, 0, rand.nextInt(this.minSpeed, this.maxSpeed + 1));
                 newCar.setRoad(road);
                 cars.add(newCar);
