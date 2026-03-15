@@ -150,7 +150,10 @@ public class MenuView extends GridPane {
     
     Label offlineRunLabel = new Label("Run simulation\noffline (no visuals)");
     this.offlineRunCheckBox = new CheckBox();
-    this.offlineRunCheckBox.setOnAction(e -> this.ticksToRunControl.setDisable(! this.offlineRunCheckBox.isSelected()));
+    this.offlineRunCheckBox.setOnAction(e -> {
+      this.ticksToRunControl.setDisable(! this.offlineRunCheckBox.isSelected());
+      this.timeScalingSection.setDisable(this.offlineRunCheckBox.isSelected());
+    });
     HBox offlineRunSection = new HBox(Constants.V_GAP, offlineRunLabel, offlineRunCheckBox);
     offlineRunSection.setAlignment(Pos.CENTER);
     
