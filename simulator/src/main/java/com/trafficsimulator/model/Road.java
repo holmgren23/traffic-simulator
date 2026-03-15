@@ -65,6 +65,8 @@ public class Road {
         return exitRoad != null;
     }
 
+    //Start and end positions for roads. Could possibly be combined to 2 start and end variables.
+    //Reuse these for creating curving roads
     public int getStartX() {return startX;}
     public int getStartY() {return startY;}
     public int getEndX() {return endX;}
@@ -101,19 +103,19 @@ public class Road {
     public Road getMergeLane() {
         return mergeLane;
     }
-
+    
     public boolean isSpawnRoad(){
         return isSpawnRoad;
     }
-
+    
     public void setSpawnRoad(boolean isSpawnRoad){
         this.isSpawnRoad = isSpawnRoad;
     }
-
+    
     public int getSpeedBonus() {
         return speedBonus;
     }
-
+    
     public void setSpeedBonus(int speedBonus) {
         this.speedBonus = speedBonus;
     }

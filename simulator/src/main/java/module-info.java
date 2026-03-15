@@ -11,6 +11,5 @@ module com.trafficsimulator {
     exports com.trafficsimulator.view;
     exports com.trafficsimulator.startup;
     exports com.trafficsimulator.utility;
-    
 
 }
