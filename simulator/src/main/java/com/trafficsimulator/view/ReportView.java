@@ -15,8 +15,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 
+/**
+ * Displays the final simulation summary after a run has completed.
+ * Shows key statistics alongside simulation settings, and provides
+ * buttons to export results to CSV, return to the menu, or exit.
+ */
 public class ReportView extends VBox {
 
+    /**
+     * Creates the report screen with statistics and action buttons.
+     * @param mainView Reference to the main window, used to navigate back to the menu
+     * @param ts       The completed simulation to read final results from
+     */
     public ReportView(MainView mainView, TrafficSimulator ts) {
         // Layout and styling
         this.setAlignment(Pos.CENTER);
@@ -70,6 +80,11 @@ public class ReportView extends VBox {
         this.getChildren().addAll(title, contentContainer, buttonContainer);
     }
 
+    /**
+     * Opens a file save dialog and exports the simulation results to a CSV file.
+     * Uses semicolon as delimiter and Swedish locale for decimal formatting (comma separator).
+     * @param ts The simulation whose statistics are exported
+     */
     private void exportToCSV(TrafficSimulator ts) {
         StatSnapshot stats = ts.getStats().getSnapshot();
 

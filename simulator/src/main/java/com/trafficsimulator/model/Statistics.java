@@ -5,6 +5,11 @@ import java.util.List;
 import com.trafficsimulator.utility.Constants;
 import com.trafficsimulator.utility.HelperMethods;
 
+/**
+ * Tracks and calculates traffic statistics during a simulation.
+ * Updated every tick via {@link #update(java.util.List, int)},
+ * and can produce a {@link StatSnapshot} at any point in time.
+ */
 public class Statistics {
     private int totalCarsSpawned = 0;
     private int totalCarsExited = 0;
@@ -16,8 +21,17 @@ public class Statistics {
     private int minSpeed, maxSpeed, spawnRate, roadLength;
     private MapType mapType;
 
+    /** Creates an empty Statistics object with no simulation settings. */
     public Statistics() {}
 
+    /**
+     * Creates a Statistics object with the given simulation settings.
+     * @param minSpeed   Minimum maxspeed when spawning cars (cells/tick)
+     * @param maxSpeed   Maximum maxspeed when spawning cars (cells/tick)
+     * @param spawnRate  Tickrate interval for spawning new cars
+     * @param roadLength Length of each road segment in cells
+     * @param mapType    The map layout used in current simulation
+     */
     public Statistics(int minSpeed, int maxSpeed, int spawnRate, int roadLength, MapType mapType) {
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
@@ -26,6 +40,12 @@ public class Statistics {
         this.mapType = mapType;
     }
 
+    /**
+     * Updates statistics for the current tick.
+     * Increments tick count, recalculates average speed, and counts stationary cars.
+     * @param cars         All cars currently active on the map
+     * @param totalSpawned Total number of cars spawned since simulation start
+     */
     public void update(List<Car> cars, int totalSpawned) {
 
         totalTicks++;
@@ -54,7 +74,11 @@ public class Statistics {
         this.currentAvgSpeed = speedSum / cars.size();
     }
 
-    // Generates a snapshot of the current statistics
+    /**
+     * Creates an immutable snapshot of the current statistics.
+     * Inflow and outflow rates are calculated as vehicles per minute.
+     * @return A {@link StatSnapshot} representing the current state
+     */
     public StatSnapshot getSnapshot() {
         double totalMinutes = (totalElapsedTimeMS) / 60000.0;
         // Calculate average inflow and outflow rates
@@ -78,7 +102,11 @@ public class Statistics {
         );
     }
 
-    // Generates a final report string summarizing the simulation results
+    /**
+     * Generates a formatted multi-line report string with final simulation results.
+     * Includes elapsed time, car counts, average speed, and flow rates.
+     * @return A human-readable report string
+     */
     public String getFinalReport() {
         StatSnapshot s = getSnapshot();
         long totalSeconds = totalElapsedTimeMS / 1000;
@@ -98,6 +126,11 @@ public class Statistics {
         );
     }
     
+    /**
+     * Generates a formatted multi-line string listing the simulation settings.
+     * Speeds are converted to km/h for readability.
+     * @return A human-readable settings string
+     */
     public String getSettingsReport() {
         return String.format(
             "--- SETTINGS ---\n"+
