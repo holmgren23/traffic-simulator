@@ -186,9 +186,7 @@ public class RoadView extends Canvas implements SubView {
                 double poleCenterX = x + cellSize / 2 + poleWidth / 2;
                 gc.fillOval(poleCenterX - lightSize / 2, y - poleHeight - lightSize / 2, lightSize, lightSize);
             }
-            case INTERSECTION -> {
-                
-            }
+            case INTERSECTION, EXIT_LANE -> {}
         }
     }
 }

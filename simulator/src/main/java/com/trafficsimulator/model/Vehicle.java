@@ -9,8 +9,6 @@ public class Vehicle implements RoadObject {
     private int length;
     private int maxSpeed;
     private int currentSpeed;
-    private int acceleration;
-    private int deceleration;
     private int position;
     private Color color;
     private Road road;
