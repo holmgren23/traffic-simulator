@@ -68,7 +68,7 @@ public class MenuView extends GridPane {
   
   private void setupInputControls() {
     Label mapSelectorLabel = new Label("Select map");
-    String[] maps = {"Highway", "One way street", "T Intersection"};
+    String[] maps = {"Highway", "One way street", "T Intersection", "Intersection Loop"};
     this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(maps));
     if (maps.length > 0) { this.mapSelector.setValue(maps[0]); };
     Tooltip mapSelectorTooltip = new Tooltip("Select the type of map to simulate");

@@ -34,11 +34,15 @@ public class Obstacle implements RoadObject {
         return open;
     }
 
+    public boolean isOpenFor(Car car) {
+        return isOpen();
+    }
+
     //Calculates which connected roads should be closed or open based on priority rules for that obstacle type
     public void calculatePriority(int tickCount) {
         switch (type) {
             case TRAFFIC_LIGHT -> calculateTrafficLight(tickCount); //Single road traffic light
-            case INTERSECTION -> calculatePriority(tickCount);
+            case INTERSECTION, EXIT_LANE -> {}
         }
     }
 

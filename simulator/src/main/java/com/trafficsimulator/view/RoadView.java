@@ -50,15 +50,15 @@ public class RoadView extends Canvas implements SubView {
         double y2 = road.getEndY() * scaleY();
 
         boolean horizontal = road.getDirection() == Direction.EAST || road.getDirection() == Direction.WEST;
-        double roadThickness = road.getLaneWidth() * scaleY();
+        double roadThickness = Math.max(road.getLaneWidth() * scaleY(), 8);
 
         gc.setFill(Color.BLACK);
         if (horizontal) {
-            gc.fillRect(x1, y1 - roadThickness / 2, x2 - x1, roadThickness);
+            gc.fillRect(Math.min(x1, x2), y1 - roadThickness / 2, Math.abs(x2 - x1), roadThickness);
         }
 
         else {
-            gc.fillRect(x1 - roadThickness / 2, y1, roadThickness, y2 - y1);
+            gc.fillRect(x1 - roadThickness / 2, Math.min(y1, y2), roadThickness, Math.abs(y2 - y1));
         }
 
     }
@@ -112,11 +112,13 @@ public class RoadView extends Canvas implements SubView {
     }
 
     private boolean areAdjacent(Road a, Road b) {
+        if (Math.abs(a.getStartY() - b.getStartY()) > 20) return false;
+        
         for (Road other : map.getRoads()) {
             if (other == a || other == b) continue;
-            if (other.getStartY() > Math.min(a.getStartY(), b.getStartY()) 
+            if (other.getStartY() > Math.min(a.getStartY(), b.getStartY())
                 && other.getStartY() < Math.max(a.getStartY(), b.getStartY())) {
-                return false; //another road sits between them
+                return false;
             }
         }
         return true;
@@ -133,15 +135,18 @@ public class RoadView extends Canvas implements SubView {
         boolean horizontal = road.getDirection() == Direction.EAST || road.getDirection() == Direction.WEST;
         boolean reversed = road.getDirection() == Direction.WEST || road.getDirection() == Direction.NORTH;
 
-        double roadLength = horizontal ? (x2 - x1) : (y2 - y1);
+        double roadLength = horizontal ? Math.abs(x2 - x1) : Math.abs(y2 - y1);
         double cellSize = roadLength / cells;
+
+        double drawStartX = horizontal ? Math.min(x1, x2) : x1;
+        double drawStartY = horizontal ? y1 : Math.min(y1, y2);
 
         for (int i = 0; i < cells; i++) {
             int cellIndex = reversed ? cells - 1 - i : i;
 
             double cellStart = i * cellSize;
-            double x = horizontal ? x1 + cellStart : x1;
-            double y = horizontal ? y1 : y1 + cellStart;
+            double x = horizontal ? drawStartX + cellStart : drawStartX;
+            double y = horizontal ? drawStartY : drawStartY + cellStart;
 
             //Draw obstacles
             RoadObject obstacle = road.getObstacle(cellIndex);
@@ -153,11 +158,11 @@ public class RoadView extends Canvas implements SubView {
             RoadObject vehicle = road.getCell(cellIndex);
             if (vehicle instanceof Car car) {
                 gc.setFill(car.getColor());
-                double carThickness = cellSize * 0.8;
+                double carThickness = road.getLaneWidth() * Math.min(scaleX(), scaleY()) * 0.8;
                 if (horizontal) {
                     gc.fillRect(x + 1, y - carThickness, cellSize, carThickness);
                 } else {
-                    gc.fillRect(x - carThickness , y + 1, carThickness, cellSize);
+                    gc.fillRect(x - carThickness, y + 1, carThickness, cellSize);   
                 }
             }
         }
@@ -182,8 +187,7 @@ public class RoadView extends Canvas implements SubView {
                 gc.fillOval(poleCenterX - lightSize / 2, y - poleHeight - lightSize / 2, lightSize, lightSize);
             }
             case INTERSECTION -> {
-                gc.setFill(obs.isOpen() ? Color.GREEN : Color.RED);
-                gc.fillOval(x - lightSize / 2, y - lightSize / 2, lightSize, lightSize);
+                
             }
         }
     }

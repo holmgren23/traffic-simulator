@@ -34,6 +34,7 @@ public class Controller {
       case "Highway" -> Map.createHighway(params.roadLength());
       case "One way street" -> Map.createOneWay(params.roadLength());
       case "T Intersection" -> Map.createTIntersection(params.roadLength());
+      case "Intersection Loop" -> Map.createLoop(params.roadLength());
       default -> Map.createHighway(params.roadLength()); 
     };
 

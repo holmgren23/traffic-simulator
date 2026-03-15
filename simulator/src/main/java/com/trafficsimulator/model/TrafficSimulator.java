@@ -14,6 +14,7 @@ public class TrafficSimulator {
     private Statistics stats;
     private double slowProbability = 0;
     private double speedupProbability = 0;
+    private double turnProbability = 0.5;
 
     // Main constructor
     public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, Map map) {
@@ -103,30 +104,49 @@ public class TrafficSimulator {
     // Moves all the cars to their new positons and removes cars that leave the road
     private void moveCars(HashMap<Car, Integer> newSpeeds) {
         ArrayList<Car> carsToRemove = new ArrayList<>();
+        HashMap<Car, Integer> resolvedPositions = new HashMap<>();
 
-        // Moves cars to new positions
+        //calculate all new positions and clear old cells
         for (Car car : cars) {
             Road road = car.getRoad();
             int oldPos = car.getPosition();
             int newSpeed = newSpeeds.get(car);
             int newPos = oldPos + newSpeed;
 
-            // Remove from old cell
             if (road.getCell(oldPos) == car) {
                 road.setCell(oldPos, null);
-
             }
-            // If car exits road - Currently removes, can be changed to loop
+
             if (newPos >= road.getLength()) {
-                map.transferCar(car, road, carsToRemove); // Collects all cars that should be removed
+                resolvedPositions.put(car, -1); // mark for transfer
+            } else {
+                resolvedPositions.put(car, newPos);
+            }
+        }
+
+        //place all cars in new positions
+        for (Car car : cars) {
+            Road road = car.getRoad();
+            int newPos = resolvedPositions.get(car);
+            int newSpeed = newSpeeds.get(car);
+
+            if (newPos == -1) {
+                map.transferCar(car, road, carsToRemove);
                 continue;
             }
-            // Place in new cell
-            car.setPosition(newPos);
-            car.setCurrentSpeed(newSpeed);
-            road.setCell(newPos, car);
+
+            if (road.getCell(newPos) == null) {
+                car.setPosition(newPos);
+                car.setCurrentSpeed(newSpeed);
+                road.setCell(newPos, car);
+            } else {
+                // Collision detected — stop car and put back
+                car.setCurrentSpeed(0);
+                road.setCell(car.getPosition(), car);
+            }
         }
-        cars.removeAll(carsToRemove); // Removes cars outside road
+
+        cars.removeAll(carsToRemove);
     }
 
     // Function to overtake
@@ -189,11 +209,22 @@ public class TrafficSimulator {
             if (!road.isSpawnRoad())
                 continue;
             if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
-                Car newCar = new Car(nextID, 0, rand.nextInt(this.minSpeed, this.maxSpeed + 1));
+                Car newCar = new Car(nextID, 0, rand.nextInt(this.minSpeed, this.maxSpeed + 1), turnProbability);
                 newCar.setRoad(road);
                 cars.add(newCar);
                 road.setCell(0, newCar);
                 nextID++;
+            }
+        }
+    }
+
+    private void handleMidRoadObstacles() {
+        for (Car car : cars) {
+            Road road = car.getRoad();
+            RoadObject obstacle = road.getObstacle(car.getPosition());
+            if (obstacle instanceof ExitLane exit && car.wantsToTurn()) {
+                car.setCurrentSpeed(0);
+                map.transferCar(car, exit);
             }
         }
     }
@@ -205,6 +236,7 @@ public class TrafficSimulator {
         tryChangeLanes();
         HashMap<Car, Integer> newSpeeds = updateSpeeds();
         moveCars(newSpeeds);
+        handleMidRoadObstacles();
         spawnCar();
         stats.update(cars, nextID);
     }
