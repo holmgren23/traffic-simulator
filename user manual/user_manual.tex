@@ -1,0 +1,106 @@
+\documentclass[titlepage]{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[normalem]{ulem}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18} 
+
+\title{
+    \textbf{Traffic Simulator} \\ [0.4 em]
+    \large User Manual
+}
+\begin{document}
+
+\pagenumbering{gobble} 
+\maketitle
+
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+\pagenumbering{arabic} 
+
+\section{About}
+
+This document describes how to use
+Traffic Simulator %%
+. The software was developed as part of the course
+System- och programvaruutveckling (DT117G) at Örebro University.
+
+\section{Simulation}
+
+Traffic Simulator %%
+uses a simulation model based on the Nagel-Schreckenberger
+traffic simulation model. The model uses discrete time, and hence
+moves in textbf{steps} or textbf{ticks}.
+
+\subsection{Maps} \label{maps}
+
+The following maps are implemented*
+
+\begin{itemize}
+    \item \textbf{One way street}: A simple one way street. The first
+        map made for this simulator.
+    \item \textbf{T Intersection}: A one way street with a connecting
+        one way street in the middle.
+    \item \textbf{Highway}: Simple highway with two lanes in each
+        direction. Overtakes are implemented, to allow faster driving
+        vehicles to pass slower driving ones.
+    \item \textbf{Autobahn}: A large highway with five lanes
+        in each direction. Supports overtakes in all lanes, and
+        outer lanes has an extra speed up, to ensure the overtaking
+        car does not get stuck in the outer lane.
+\end{itemize}
+
+*more will be added in the future, as well as the possibility to create
+custom maps. %%
+
+\section{Settings Menu}
+
+%% Insert image of the settings menu, with numbers for each setting
+
+\begin{enumerate}
+    \item \textbf{Map selector}
+        Select the map, or scenario, to run a simulation on
+        (see section \ref{maps} on page \pageref{maps}).
+    \item \textbf{Road length}
+        Set the number of cells in the main road.
+        Only applicable to certain maps. Also note the scaling of vehicles
+        may be very small for large values.
+    \item \textbf{Offline simulation toggle}
+        Allows for running simulations without visuals, and get the
+        statistics summary at the end. Useful for large simulations since
+        it greatly speeds up the simulation time.
+    \item \textbf{Min speed}
+        Set the minimum ideal speed on vehicles.
+    \item \textbf{Max speed}
+        Set the maximum ideal speed on vehicles.
+    \item \textbf{Number of ticks}
+        Only active when running offline simulations. This decides for how
+        long the simulation will run.
+    \item \textbf{Spawn rate}
+        Set the chance of a vehicle spawning each tick.
+    \item \textbf{Time scaling}
+        Set the initial time scaling for the simulation. Not active for
+        offline mode.
+    \item \textbf{Start simulation}
+        Start a new simulation with the current settings.
+    \item \textbf{Exit program}
+        Quit to desktop.
+\end{enumerate}
+
+\section{Simulation Visuals}
+
+\subsection{Live Statistics}
+
+\subsection{Playback Controls}
+
+\section{Statistics}
+
+\end{document}

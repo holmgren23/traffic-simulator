@@ -1,6 +1,9 @@
 package com.trafficsimulator.view;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import java.awt.Desktop;
 
 import com.trafficsimulator.controller.Controller;
 import com.trafficsimulator.utility.Constants;
@@ -79,8 +82,22 @@ public class MenuView extends GridPane {
     exitButton.setTooltip(new Tooltip("Quit the program and return to desktop"));
     exitButton.setPrefWidth(Constants.BTN_WIDTH);
     exitButton.setStyle(Constants.BTN_STYLE_RED);
+    
+    Button helpButton = new Button("Help");
+    helpButton.setOnAction(e -> new Thread( () -> {
+        try {
+          File pdfFile = new File("user manual/user_manual.pdf");
+          Desktop.getDesktop().open(pdfFile);
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      }).start()
+    );
+    helpButton.setTooltip(new Tooltip("Open the user manual PDF file"));
+    helpButton.setPrefWidth(Constants.BTN_WIDTH);
+    helpButton.setStyle(Constants.BTN_STYLE_BLUE);
 
-    HBox btnRow = new HBox(20, startSimButton, exitButton);
+    HBox btnRow = new HBox(20, startSimButton, helpButton, exitButton);
     btnRow.setAlignment(Pos.CENTER);
     this.add(btnRow, 0, this.BTN_ROW, this.getColumnCount(), 1);
   }
