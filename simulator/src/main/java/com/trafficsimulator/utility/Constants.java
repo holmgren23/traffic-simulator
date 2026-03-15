@@ -23,10 +23,10 @@ public class Constants {
   public static final int V_GAP = 12;
 
   // Button styles
-  public static final String BTN_STYLE_GREEN   = "-fx-base: #164e0e;"; // green  – start/pause/resume
-  public static final String BTN_STYLE_BLUE = "-fx-base: #252a72;"; // blue   – export
+  public static final String BTN_STYLE_GREEN  = "-fx-base: #164e0e;"; // green  – start/pause/resume
+  public static final String BTN_STYLE_BLUE   = "-fx-base: #252a72;"; // blue   – export
   public static final String BTN_STYLE_RED    = "-fx-base: #b31111;"; // red    – exit
-  public static final String BTN_STYLE_ORANGE     = "-fx-base: #b38600;"; // orange – reset 
+  public static final String BTN_STYLE_ORANGE = "-fx-base: #b38600;"; // orange – reset 
   public static final double BTN_WIDTH = 150;
   
   // Maps
