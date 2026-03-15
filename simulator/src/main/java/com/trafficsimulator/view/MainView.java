@@ -8,7 +8,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -93,7 +97,21 @@ public class MainView extends Application {
     public void showMenu() {
         MenuView menuView = new MenuView(controller);
 
-        StackPane root = new StackPane(menuView);
+        Label title = new Label("Trafficsimulator");
+        title.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
+        title.setFont(new Font("Arial", 42));
+
+        VBox card = new VBox(24, title, menuView);
+        card.setAlignment(Pos.CENTER);
+        card.setStyle(
+            "-fx-background-color: rgba(0, 0, 0, 0.30);" +
+            "-fx-background-radius: 20;" +
+            "-fx-padding: 40;"
+        );
+        card.setMaxWidth(Region.USE_PREF_SIZE);
+        card.setMaxHeight(Region.USE_PREF_SIZE);
+
+        StackPane root = new StackPane(card);
         root.setStyle("-fx-background-color: rgb(54, 66, 56);");
         Scene window = new Scene(root, windowWidth, windowHeight);
         primaryStage.setScene(window);
@@ -134,13 +152,15 @@ public class MainView extends Application {
      * Allows navigation back to settings menu.
      */
     public void showSummaryScreen() {
-    // Create report view
-    ReportView reportView = new ReportView(this, ts);
-    
-    // Create a new scene and set it to show in the main window
-    Scene scene = new Scene(reportView, windowWidth, windowHeight);
-    primaryStage.setScene(scene);
-    primaryStage.show();
-}
+        ReportView reportView = new ReportView(this, ts);
+        reportView.setMaxWidth(Region.USE_PREF_SIZE);
+        reportView.setMaxHeight(Region.USE_PREF_SIZE);
+
+        StackPane root = new StackPane(reportView);
+        root.setStyle("-fx-background-color: rgb(54, 66, 56);");
+        Scene scene = new Scene(root, windowWidth, windowHeight);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 
 }

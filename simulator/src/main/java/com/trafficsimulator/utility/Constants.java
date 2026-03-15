@@ -21,6 +21,19 @@ public class Constants {
   // Styling
   public static final Color TEXT_COLOR = Color.SILVER;
   public static final int V_GAP = 12;
+
+  // Card/panel background style
+  public static final String BACKGROUND_CARD_STYLE =
+      "-fx-background-color: rgba(0, 0, 0, 0.40);" +
+      "-fx-background-radius: 14;" +
+      "-fx-padding: 12;";
+
+  // Button styles
+  public static final String BTN_STYLE_GREEN  = "-fx-base: #164e0e;"; // start/pause/resume/backtomenu
+  public static final String BTN_STYLE_BLUE   = "-fx-base: #252a72;"; // export
+  public static final String BTN_STYLE_RED    = "-fx-base: #b31111;"; // exit/stop
+  public static final String BTN_STYLE_ORANGE = "-fx-base: #b38600;"; // reset 
+  public static final double BTN_WIDTH = 150;
   
   // Maps
   public static final Map<String, Boolean> MAP_HAS_ADJUSTABLE_ROAD_LENGTH = Map.of(

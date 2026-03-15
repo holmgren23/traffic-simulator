@@ -2,6 +2,7 @@ package com.trafficsimulator.view;
 
 import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.model.StatSnapshot;
+import com.trafficsimulator.utility.Constants;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -27,12 +28,7 @@ public class StatisticsView extends VBox implements SubView {
         this.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         this.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
  
-        this.setStyle(
-            "-fx-background-color: rgba(0, 0, 0, 0.7);" +
-            "-fx-background-radius: 8;" +
-            "-fx-border-color: #666;" +
-            "-fx-border-width: 1;"
-        );
+        this.setStyle(Constants.BACKGROUND_CARD_STYLE);
         
         // GridPane for layout 
         GridPane grid = new GridPane();

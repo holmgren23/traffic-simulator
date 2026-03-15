@@ -12,6 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.GridPane;
+import javafx.geometry.Insets;
 
 /**
  * Contains user controls of a running simulation.
@@ -60,7 +61,7 @@ public class TransportView extends GridPane {
   public TransportView(MainView mainView, Controller controller, double timeScaling) {
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setMaxHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
-    this.setStyle("-fx-padding: 5;");
+    this.setStyle(Constants.BACKGROUND_CARD_STYLE);
     this.setHgap(4);
     this.setVgap(8);
     
@@ -88,9 +89,10 @@ public class TransportView extends GridPane {
     timeScalingSection.getSlider().setBlockIncrement(0.025f);
     timeScalingSection.setTooltip("Set the playback speed of the simulation [+/-]");
 
-    this.add(buttonRow, 0, 0);
-    this.add(timeScalingSection, 0, 1);
+    this.add(buttonRow, 0, 1);
+    this.add(timeScalingSection, 0, 0);
     GridPane.setHalignment(timeScalingSection, HPos.CENTER);
+    GridPane.setMargin(timeScalingSection, new Insets(0,0,0,80));
   }
   
   /**
@@ -121,6 +123,13 @@ public class TransportView extends GridPane {
       }
     );
     
+    this.pause.setPrefWidth(100);
+    this.pause.setStyle(Constants.BTN_STYLE_GREEN);
+    this.reset.setPrefWidth(100);
+    this.reset.setStyle(Constants.BTN_STYLE_ORANGE);
+    this.stop.setPrefWidth(100);
+    this.stop.setStyle(Constants.BTN_STYLE_RED);
+
     this.buttonRow = new HBox(pause, reset, stop);
     this.buttonRow.setSpacing(4);
   }
