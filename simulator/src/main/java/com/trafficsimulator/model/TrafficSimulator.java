@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import com.trafficsimulator.utility.Constants;
+
 public class TrafficSimulator {
     private ArrayList<Car> cars;
     private Map map;
     private int tickCount;
     private int spawnRate, minSpeed, maxSpeed, roadLength;
+    private double spawnChance;
     private int nextID;
     private Random rand;
     private Statistics stats;
@@ -17,14 +20,23 @@ public class TrafficSimulator {
     private double turnProbability = 0.5;
 
     // Main constructor
-    public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, Map map) {
+    public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, String mapType) {
         this.rand = new Random();
         this.spawnRate = spawnRate;
+        this.spawnChance = (spawnRate * 0.8) / Constants.MAX_TICKS_PER_SPAWN;
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
         this.roadLength = roadLength;
 
-        this.initializeSimulation(map);
+        Map selectedMap = switch (mapType){
+          case "Highway" -> Map.createHighway(roadLength);
+          case "One way street" -> Map.createOneWay(roadLength);
+          case "T Intersection" -> Map.createTIntersection(roadLength);
+          case "Autobahn" -> Map.createAutobahn(roadLength);
+          default -> Map.createHighway(roadLength); 
+        };
+
+        this.initializeSimulation(selectedMap);
     }
 
     // Deterministic random constructor for testing of random functions.
@@ -80,18 +92,20 @@ public class TrafficSimulator {
             int position = car.getPosition();
 
             // New Speed calculation
-            speed = Math.min(speed + 1, maxSpeed); // Speed up
+            int effectiveMaxSpeed = maxSpeed + road.getSpeedBonus();
+            speed = Math.min(speed + 1, effectiveMaxSpeed); // Speed up
 
             if (speed > 0 && rand.nextDouble() < slowProbability) {
                 speed -= 1; // Random speed change
-            } else if (speed < maxSpeed && rand.nextDouble() < speedupProbability) {
-                speed = Math.min(speed + 1, maxSpeed); // Random speed change
+            } else if (speed < effectiveMaxSpeed && rand.nextDouble() < speedupProbability) {
+                speed = Math.min(speed + 1, effectiveMaxSpeed); // Random speed change
             }
 
-            speed = Math.min(speed, map.gap(road, position)); // Break
+            int gap = map.gap(road, position);
+            speed = Math.min(speed, gap); // Brake
 
             RoadObject ahead = map.getObjectAhead(road, position);
-            if (ahead instanceof Obstacle obs && !obs.isOpen() && map.gap(road, position) == 0) {
+            if (ahead instanceof Obstacle obs && !obs.isOpen() && gap == 0) {
                 speed = 0;
             }
 
@@ -162,45 +176,54 @@ public class TrafficSimulator {
 
     private void tryChangeLane(Car car) {
         Road currentRoad = car.getRoad();
-        Road neighbor = currentRoad.getNeighborLane();
-        if (neighbor == null)
-            return;
-
         int position = car.getPosition();
         int speed = car.getCurrentSpeed();
-
         int gapAheadCurrent = map.gap(currentRoad, position);
-        int gapAheadNeighbor = map.gap(neighbor, position);
-        int gapBehindNeighbor = map.gapBehind(neighbor, position);
 
-        int speedBehindNeighbor = 0;
-        if (gapBehindNeighbor != Integer.MAX_VALUE) {
-            RoadObject behind = neighbor.getCell(position - gapBehindNeighbor - 1);
-            speedBehindNeighbor = (behind instanceof Car c) ? c.getCurrentSpeed() : 0;
-        }
-
-        boolean safeAhead = gapAheadNeighbor >= speed;
-        boolean safeBehind = gapBehindNeighbor > speedBehindNeighbor;
-
-        if (currentRoad.isSpawnRoad()) {
-            // On right lane: move to passing lane to overtake
-            boolean blocked = gapAheadCurrent < speed;
-            boolean betterAhead = gapAheadNeighbor > gapAheadCurrent;
-            if (blocked && betterAhead && safeAhead && safeBehind) {
-                currentRoad.setCell(position, null);
-                car.setRoad(neighbor);
-                neighbor.setCell(position, car);
-                car.setLaneChangeCooldown(5);
+        // Prefer merging back toward the slow/spawn lane when safe
+        Road mergeLane = currentRoad.getMergeLane();
+        if (mergeLane != null) {
+            int gapAhead = map.gap(mergeLane, position);
+            int gapBehind = map.gapBehind(mergeLane, position);
+            int speedBehind = 0;
+            if (gapBehind != Integer.MAX_VALUE) {
+                RoadObject behind = mergeLane.getCell(position - gapBehind - 1);
+                speedBehind = (behind instanceof Car c) ? c.getCurrentSpeed() : 0;
             }
-        } else {
-            // On passing lane: merge back to right lane when safe
-            if (safeAhead && safeBehind) {
-                currentRoad.setCell(position, null);
-                car.setRoad(neighbor);
-                neighbor.setCell(position, car);
-                car.setLaneChangeCooldown(5);
+            if (gapAhead >= speed && gapBehind > speedBehind) {
+                executeChangeLane(car, currentRoad, mergeLane, position, false);
+                return;
             }
         }
+
+        // Move to the faster/overtake lane when blocked and it's better
+        Road overtakeLane = currentRoad.getOvertakeLane();
+        if (overtakeLane != null) {
+            int gapAhead = map.gap(overtakeLane, position);
+            int gapBehind = map.gapBehind(overtakeLane, position);
+            int speedBehind = 0;
+            if (gapBehind != Integer.MAX_VALUE) {
+                RoadObject behind = overtakeLane.getCell(position - gapBehind - 1);
+                speedBehind = (behind instanceof Car c) ? c.getCurrentSpeed() : 0;
+            }
+            boolean blocked = gapAheadCurrent < car.getMaxSpeed();
+            boolean betterAhead = gapAhead > gapAheadCurrent;
+            if (blocked && betterAhead && gapAhead > 0 && gapBehind > speedBehind) {
+                executeChangeLane(car, currentRoad, overtakeLane, position, true);
+            }
+        }
+    }
+
+    private void executeChangeLane(Car car, Road from, Road to, int position, boolean overtaking) {
+        from.setCell(position, null);
+        car.setRoad(to);
+        to.setCell(position, car);
+        car.setLaneChangeCooldown(5);
+    }
+    
+    private boolean spawnCondition(RoadObject cell) {
+        double randomValue = this.rand.nextDouble(0, 1);
+        return cell == null && randomValue < this.spawnChance;
     }
 
     // Function spawns cars based on spawnrate per tick.
@@ -208,7 +231,7 @@ public class TrafficSimulator {
         for (Road road : map.getRoads()) {
             if (!road.isSpawnRoad())
                 continue;
-            if (tickCount % spawnRate == 0 && road.getCell(0) == null) {
+            if (this.spawnCondition(road.getCell(0))) {
                 Car newCar = new Car(nextID, 0, rand.nextInt(this.minSpeed, this.maxSpeed + 1), turnProbability);
                 newCar.setRoad(road);
                 cars.add(newCar);
@@ -229,7 +252,7 @@ public class TrafficSimulator {
         }
     }
 
-    //Tick update. Should be callable by controller
+    // Tick update. Should be callable by controller
     public void tickUpdate() {
         tickCount++;
         map.updateObstacles(tickCount);
@@ -255,7 +278,7 @@ public class TrafficSimulator {
         return stats.getSettingsReport();
     }
 
-    //Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic
+    // Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic
     public void resetSimulation() {
         map.clearVehicle();
         cars = new ArrayList<>();

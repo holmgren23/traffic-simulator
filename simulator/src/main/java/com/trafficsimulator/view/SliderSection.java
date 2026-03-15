@@ -8,6 +8,10 @@ import javafx.geometry.HPos;
 
 import com.trafficsimulator.utility.Constants;
 
+/**
+ * Layout and common functionality of a slider
+ * with labels for name and current value.
+ */
 public class SliderSection extends GridPane {
   private Slider inputSlider;
   private Label descriptionLabel, valueLabel;
@@ -17,10 +21,29 @@ public class SliderSection extends GridPane {
   private boolean onlyScaleLabel;
   private PassableAction changeAction;
 
+  /**
+   * Shortcut for creating a standard slider section without a unit for its value.
+   * @param labelText Setting name/description
+   * @param min Minimum slider value
+   * @param max Maximum slider value
+   * @param initVal Initial slider value
+   */
   public SliderSection(String labelText, double min, double max, double initVal) {
     this(labelText, "", min, max, initVal);
   }
   
+  /**
+   * 
+   * @param labelText Setting name/description
+   * @param labelUnit Suffix for the value label, commonly used to display a unit
+   * @param min Minimum slider value
+   * @param max Maximum slider value
+   * @param initVal Initial slider value
+   * @param scaler Lambda expression for scaling the output value (for
+   * example to use a logarithmic scale)
+   * @param onlyScaleLabel Set true to scale the label value, but not the 
+   * output value used by the model.
+   */
   public SliderSection(
     String labelText,
     String labelUnit,
@@ -35,6 +58,14 @@ public class SliderSection extends GridPane {
     this(labelText, labelUnit, min, max, initVal);
   }
 
+  /**
+   * Creates a standard slider section.
+   * @param labelText Setting name/description
+   * @param labelUnit Suffix for the value label, commonly used to display a unit
+   * @param min Minimum slider value
+   * @param max Maximum slider value
+   * @param initVal Initial slider value
+   */
   public SliderSection(String labelText, String labelUnit, double min, double max, double initVal) {
     this.setStyle("-fx-padding: 2;");
     this.setHgap(0);
@@ -56,9 +87,14 @@ public class SliderSection extends GridPane {
     this.add(inputSlider, 0, 1);
 
     GridPane.setHalignment(valueLabel, HPos.RIGHT);
-    //GridPane.setHgrow(inputSlider, Priority.ALWAYS);
   }
   
+  /**
+   * Defines the quantize behavior of the slider. Commonly used to
+   * make the slider jump to integer values.
+   * @param expr A lambda expression to operate on the slider value
+   * before the slider, value and label are changed.
+   */
   public void setBehavior(UnaryNumericOperation expr) {
     this.inputSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
       double rounded = expr.operate(newVal.doubleValue());
@@ -72,10 +108,23 @@ public class SliderSection extends GridPane {
     });
   }
   
+  /**
+   * Sets a custom action that runs after the input behavior
+   * defined in the {@link #setBehaviour() setBehavior} method.
+   * Used by the transport controls for setting the time
+   * scaling while a simulation is running.
+   * @param a Action to run when slider is changed.
+   */
   public void setChangeAction(PassableAction a) {
     this.changeAction = a;
   }
   
+  /**
+   * Scales the slider value only if a scaler is set.
+   * @param v Value to be scaled.
+   * @return Scaled value if a scaler is set, otherwise 
+   * same value as input.
+   */
   private double scaleValue(double v) {
     if (this.scaler == null) {
       return v;
@@ -85,28 +134,60 @@ public class SliderSection extends GridPane {
     }
   }
   
+  /**
+   * Converts the slider section value to a string
+   * to use in the value label.
+   * @param v Value to show as string.
+   * @return String representation of v, with a
+   * value suffix if set.
+   */
   private String valueToLabel(double v) {
     return String.valueOf((int)v) + this.labelUnit; 
   }
 
+  /**
+   * Set a scaler for the input value. Useful to get
+   * for example logarithmic behavior of the slider.
+   * @param expr Lambda expression for scaling the input value.
+   */
   public void setScaling(UnaryNumericOperation expr) {
     this.scaler = expr;
   }
   
+  /**
+   * For direct access to the slider.
+   * @return Slider in the SliderSection
+   */
   public Slider getSlider() {
     return this.inputSlider;
   }
   
+  /**
+   * The user input value.
+   * @return The slider value after quantize and scaler.
+   */
   public double getValue() {
     return this.value;
   }
   
+  /**
+   * Set a tooltip for all UI elements in the SliderSection.
+   * Useful to give a more detailed description of the input
+   * value.
+   * @param tooltip For slider and labels.
+   */
   public void setTooltip(Tooltip tooltip) {
     this.inputSlider.setTooltip(tooltip);
     this.descriptionLabel.setTooltip(tooltip);
     this.valueLabel.setTooltip(tooltip);
   }
 
+  /**
+   * Override of {@Link #setTooltip() setTooltip} method
+   * that takes a String as input.
+   * @param text String to show as tooltip for slider and
+   * labels.
+   */
   public void setTooltip(String text) {
     this.setTooltip(new Tooltip(text));
   }

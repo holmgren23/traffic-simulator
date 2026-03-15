@@ -9,8 +9,10 @@ public class Road {
     private Road exitRoad;
     private int exitPosition;
     private int laneWidth;
-    private Road neighborLane;
+    private Road overtakeLane;  // faster lane to move to when blocked
+    private Road mergeLane;     // slower lane to return to when clear
     private boolean isSpawnRoad = true;
+    private int speedBonus = 0;
     public enum Direction {
         EAST, WEST, NORTH, SOUTH
     }
@@ -84,13 +86,20 @@ public class Road {
         obstacles[index] = obj;
     }
 
-    //Overtake lane
-    public void setNeighborLane(Road neighbor){
-        this.neighborLane = neighbor;
+    public void setOvertakeLane(Road lane) {
+        this.overtakeLane = lane;
     }
 
-    public Road getNeighborLane(){
-        return neighborLane;
+    public Road getOvertakeLane() {
+        return overtakeLane;
+    }
+
+    public void setMergeLane(Road lane) {
+        this.mergeLane = lane;
+    }
+
+    public Road getMergeLane() {
+        return mergeLane;
     }
 
     public boolean isSpawnRoad(){
@@ -99,5 +108,13 @@ public class Road {
 
     public void setSpawnRoad(boolean isSpawnRoad){
         this.isSpawnRoad = isSpawnRoad;
+    }
+
+    public int getSpeedBonus() {
+        return speedBonus;
+    }
+
+    public void setSpeedBonus(int speedBonus) {
+        this.speedBonus = speedBonus;
     }
 }

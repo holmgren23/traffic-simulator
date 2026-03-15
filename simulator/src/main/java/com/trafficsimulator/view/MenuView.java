@@ -1,13 +1,14 @@
 package com.trafficsimulator.view;
 
+import java.util.Arrays;
+
 import com.trafficsimulator.controller.Controller;
-import com.trafficsimulator.utility.InputParametersDTO;
-import com.trafficsimulator.utility.HelperMethods;
 import com.trafficsimulator.utility.Constants;
+import com.trafficsimulator.utility.HelperMethods;
+import com.trafficsimulator.utility.InputParametersDTO;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -21,17 +22,22 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
+/**
+ * The menu for user settings
+ */
 public class MenuView extends GridPane {
   private final int BTN_ROW = 6;
-  private MainView mainView;
   private Controller controller;
   private SliderSection spawnRateSection, minSpeedSection, maxSpeedSection, timeScalingSection;
   private Spinner<Integer> roadLengthControl, ticksToRunControl;
   private ComboBox<String> mapSelector;
   private CheckBox offlineRunCheckBox;
   
-  public MenuView(MainView mainView, Controller controller) {
-    this.mainView = mainView;
+  /**
+   * Defines styling, creates UI input elements and layout.
+   * @param controller Program controller, to send setting values to
+   */
+  public MenuView(Controller controller) {
     this.controller = controller;
 
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
@@ -44,36 +50,61 @@ public class MenuView extends GridPane {
     this.setupNavBtns();
   }
   
+  /**
+   * An empty UI element to add space to the menu layout.
+   * @return An empty Pane element with a fixed height
+   */
   private Pane spacer() {
     Pane spacer = new Pane();
     spacer.setMinHeight(25);
     return spacer;
   }
   
+  /**
+   * Defines and creates buttons: start and exit.
+   * Start runs a new simulation with current settings.
+   * Exit quits to desktop.
+   */
   private void setupNavBtns() {
     Button startSimButton = new Button("Start");
     startSimButton.setOnAction(e -> {
-      this.controller.createSimulation(this.getInputValues(), this.mainView);
+      this.controller.createSimulation(this.getInputValues());
     });
     startSimButton.setTooltip(new Tooltip("Run the simulation"));
-    this.add(startSimButton, this.getColumnCount() - 1, this.BTN_ROW);
-    GridPane.setHalignment(startSimButton, HPos.LEFT);
-    
+    startSimButton.setPrefWidth(Constants.BTN_WIDTH);
+    startSimButton.setStyle(Constants.BTN_STYLE_GREEN);
+
     Button exitButton = new Button("Exit");
     exitButton.setOnAction(e -> Platform.exit());
     exitButton.setTooltip(new Tooltip("Quit the program and return to desktop"));
-    this.add(exitButton, this.getColumnCount() - 1, this.BTN_ROW);
-    GridPane.setHalignment(exitButton, HPos.RIGHT);
+    exitButton.setPrefWidth(Constants.BTN_WIDTH);
+    exitButton.setStyle(Constants.BTN_STYLE_RED);
+
+    HBox btnRow = new HBox(20, startSimButton, exitButton);
+    btnRow.setAlignment(Pos.CENTER);
+    this.add(btnRow, 0, this.BTN_ROW, this.getColumnCount(), 1);
   }
   
+  /**
+   * Defines and creates UI elements for user settings,
+   * and a layout for these.
+   */
   private void setupInputControls() {
     Label mapSelectorLabel = new Label("Select map");
-    String[] maps = {"Highway", "One way street", "T Intersection", "Intersection Loop"};
+    String[] maps = Arrays.copyOf(
+      Constants.MAP_HAS_ADJUSTABLE_ROAD_LENGTH.keySet().toArray(),
+      Constants.MAP_HAS_ADJUSTABLE_ROAD_LENGTH.keySet().size(),
+      String[].class
+    );
+    Arrays.sort(maps);
     this.mapSelector = new ComboBox<String>(FXCollections.observableArrayList(maps));
     if (maps.length > 0) { this.mapSelector.setValue(maps[0]); };
     Tooltip mapSelectorTooltip = new Tooltip("Select the type of map to simulate");
     mapSelectorLabel.setTooltip(mapSelectorTooltip);
     this.mapSelector.setTooltip(mapSelectorTooltip);
+    this.mapSelector.setOnAction(e -> this.roadLengthControl.setDisable(
+      ! Constants.MAP_HAS_ADJUSTABLE_ROAD_LENGTH.get(this.mapSelector.getValue())
+    ));
     VBox mapSelectorSection = new VBox(Constants.V_GAP, mapSelectorLabel, mapSelector);
     
     Label roadLengthLabel = new Label("Road length");
@@ -105,10 +136,11 @@ public class MenuView extends GridPane {
       " %",
       0,
       1,
-      ((Math.log(100) - Math.log(30)) / (Math.log(800) - Math.log(30))),
+      ((Math.log(Constants.TIME_SCALING_DEFAULT_PERCENTAGE) - Math.log(Constants.TIME_SCALING_MIN_PERCENTAGE)) /
+      (Math.log(Constants.TIME_SCALING_MAX_PERCENTAGE) - Math.log(Constants.TIME_SCALING_MIN_PERCENTAGE))),
       v -> {
-        double offset = Math.log(30);
-        double scale = Math.log(800);
+        double offset = Math.log(Constants.TIME_SCALING_MIN_PERCENTAGE);
+        double scale = Math.log(Constants.TIME_SCALING_MAX_PERCENTAGE);
         return Math.round(Math.pow(Math.E, (offset + v * (scale - offset))));
       },
       false
@@ -168,6 +200,10 @@ public class MenuView extends GridPane {
     );
   }
 
+  /**
+   * Collect user settings into a data transfer object.
+   * @return Data transfer object (DTO) with user set values.
+   */
   private InputParametersDTO getInputValues() {
     return new InputParametersDTO(
       this.mapSelector.getValue(),
