@@ -229,15 +229,15 @@ public class Map {
         //Junction cells of roads
         int junctionCell = roadLength / 4;
 
-        int clearance = 5;
+        int clearance = 10;
 
         //Horizontal roads intersects the into the vertical roads
         map.addObstacle(new Intersection(position, rightRoad, junctionCell, clearance), topRoad);
         map.addObstacle(new Intersection(position, leftRoad, junctionCell, clearance), bottomRoad);
 
         //Vertical roads intersects the into the horizontal roads
-        map.addObstacle(new Intersection(position, bottomRoad, junctionCell, clearance), leftRoad);
-        map.addObstacle(new Intersection(position, topRoad, junctionCell, clearance), rightRoad);
+        map.addObstacle(new Intersection(position, topRoad, junctionCell, clearance), leftRoad);
+        map.addObstacle(new Intersection(position, bottomRoad, junctionCell, clearance), rightRoad);
 
         topRoad.setExit(rightRoad, roadLength / 3);
         rightRoad.setExit(bottomRoad, roadLength / 3);
