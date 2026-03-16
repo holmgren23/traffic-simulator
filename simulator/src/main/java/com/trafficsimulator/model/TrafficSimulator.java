@@ -17,7 +17,7 @@ public class TrafficSimulator {
     private Statistics stats;
     private double slowProbability = 0;
     private double speedupProbability = 0;
-    private double turnProbability = 0.7;
+    private double turnProbability = 0.9;
 
     // Main constructor
     public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, String mapType) {

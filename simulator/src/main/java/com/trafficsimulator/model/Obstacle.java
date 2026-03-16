@@ -50,8 +50,8 @@ public class Obstacle implements RoadObject {
     // !!! The other obstacles override calcPrio. Maybe traffic light should too, or all of this should be changed
     //Single road traffic light priority rule
     private void calculateTrafficLight(int tickCount) {
-        int greenDuration = 20;
-        int redDuration = 20;
+        int greenDuration = 30;
+        int redDuration = 30;
         //This is maths out to a boolean that is true and false equal to greens/reds duration
         int cycleLength = greenDuration + redDuration;
         open = (tickCount % cycleLength) < greenDuration;

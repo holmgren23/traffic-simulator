@@ -312,7 +312,7 @@ public class Map {
         int position = roadLength - 1;
         
         //Junction cells of roads
-        int junctionCell = roadLength / 4;
+        int junctionCell = roadLength / 3;
 
         int clearance = 5;
 
@@ -344,6 +344,7 @@ public class Map {
         int width = roadLength * CELL_SIZE;
         int height = width * 3 / 5;
         int clearance = 5; //Clearance distance for all intersections
+        int redLightDistance = -2;
 
         int yHorizontal1 = height / 4;
         int yHorizontal2 = height / 2;
@@ -384,11 +385,11 @@ public class Map {
         map.addObstacle(new Intersection(roadLengthVmid - 1, horizontal2, entrenceCellV3, clearance, horizontal2, entrenceCellV3), vertical3);
         map.addObstacle(new Intersection(roadLengthVmid - 1, horizontal2, entrenceCellV4, clearance, horizontal2, entrenceCellV4), vertical4);
         map.addObstacle(new Intersection(roadLengthVbot - 1, horizontal3, entrenceCellV5, clearance, horizontal3, entrenceCellV5), vertical5);
-        map.addObstacle(new Intersection(roadLengthVedge - 1, horizontal3, entrenceCellV6, clearance, horizontal3, entrenceCellV6), vertical6);
+        map.addObstacle(new Intersection(roadLengthVedge - 1, horizontal3, entrenceCellV6, redLightDistance, horizontal3, entrenceCellV6), vertical6);
         
         int exitCellH1V2 = roadLength * 2 / 3;
-        int exitCellH1V3 = roadLength * 3 / 4;
-        int exitCellH1V4 = roadLength / 4;
+        int exitCellH1V3 = roadLength / 4;
+        int exitCellH1V4 = roadLength * 3 / 4;
         int exitCellH2V5 = roadLength / 2;
         int exitCellH3V7 = roadLength * 5 / 6;
         
@@ -397,6 +398,8 @@ public class Map {
         map.addObstacle(new ExitLane(exitCellH1V4, vertical4, 0), horizontal1);
         map.addObstacle(new ExitLane(exitCellH2V5, vertical5, 0), horizontal2);
         map.addObstacle(new ExitLane(exitCellH3V7, vertical7, 0), horizontal3);
+
+        map.addObstacle(new Obstacle(ObstacleType.TRAFFIC_LIGHT, entrenceCellV6 + redLightDistance), horizontal3);
 
         vertical2.setSpawnRoad(false);
         vertical3.setSpawnRoad(false);
