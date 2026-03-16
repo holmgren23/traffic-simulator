@@ -107,7 +107,7 @@ public class Controller {
   public void loopOffline() {
     for (int i = 0; i < this.ticksTorun; i++) {
       ts.tickUpdate();
-      if (i % 1000 == 0) { this.updateViews(); }
+      if (i % Constants.PROGRESS_UPDATE_TICKS == 0) { this.updateViews(); }
     }
     Platform.runLater(() -> mainView.showSummaryScreen());
   }

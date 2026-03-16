@@ -11,7 +11,9 @@ public class Constants {
   // Ticks and time
   public static final int TICK_LENGTH = 100;
   public static final int TICK_TIME_FACTOR = 10; // use this for more realistic speeds ??
+  public static final int PROGRESS_UPDATE_TICKS = 1000;
   
+  // Spawn probability
   public static final int SPAWN_PROBABILITY_MIN = 2;
   public static final int SPAWN_PROBABILITY_MAX = 80;
   public static final int SPAWN_PROBABILITY_DEFATULT = 25;
