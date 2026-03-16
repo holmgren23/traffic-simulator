@@ -14,7 +14,7 @@ package com.trafficsimulator.model;
  * @param totalElapsedTimeMS Total real-world time elapsed in milliseconds
  * @param minSpeed           Minimum car ideal speed (cells/tick)
  * @param maxSpeed           Maximum car ideal speed (cells/tick)
- * @param spawnRate          Probability of spawning a car each tick (0–100)
+ * @param spawnProbability   Probability of spawning a car each tick (0–1)
  * @param roadLength         Length of each road segment in cells
  * @param mapType            The type of map layout used in this simulation
  * @param peakCarCount       Highest number of cars simultaneously on the map
@@ -32,7 +32,7 @@ public record StatSnapshot(
     long totalElapsedTimeMS,
     int minSpeed,
     int maxSpeed,
-    int spawnRate,
+    double spawnProbability,
     int roadLength,
     MapType mapType,
     int peakCarCount,
