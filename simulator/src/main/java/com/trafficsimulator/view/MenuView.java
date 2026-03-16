@@ -147,11 +147,13 @@ public class MenuView extends GridPane {
     maxSpeedSection.setBehavior(limitByMin);
     minSpeedSection.setTooltip("Set the minimum ideal speed for vehicles in the simulation");
     maxSpeedSection.setTooltip("Set the maximum ideal speed for vehicles in the simulation");
+    Region spacer1 = new Region();
     Region spacer16 = new Region();
     Region spacer17 = new Region();
+    spacer1.setPrefHeight(2);
     spacer16.setPrefHeight(16);
-    spacer17.setPrefHeight(18);
-    VBox speedColumn = new VBox(0, idealSpeedLabel, spacer16, minSpeedSection, spacer17, maxSpeedSection);
+    spacer17.setPrefHeight(16);
+    VBox speedColumn = new VBox(0, spacer1, idealSpeedLabel, spacer16, minSpeedSection, spacer17, maxSpeedSection);
 
     spawnRateSection = new SliderSection(
       "Spawn chance",
