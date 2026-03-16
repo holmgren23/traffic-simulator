@@ -60,6 +60,7 @@ public class Map {
                 break; // Find vehicle onbject
             }
             if (obstacle instanceof Obstacle obs && !obs.isOpenFor(car)) {
+                System.out.println("braking for: " + obs.getType() + " isOpen=" + obs.isOpen() + " wantsToTurn=" + car.wantsToTurn() + " road.length=" + road.getLength());
                 break; // Find obstacle object
             }
             i++;
@@ -122,6 +123,21 @@ public class Map {
     // For transfering cars at the end of a road to an other road object
     public void transferCar(Car car, Road fromRoad, ArrayList<Car> carsToRemove) {
         fromRoad.setCell(car.getPosition(), null);
+
+        RoadObject obs = fromRoad.getObstacle(fromRoad.getLength() - 1);
+        if (obs instanceof Intersection intersection && intersection.hasExit()) {
+            Road targetRoad = intersection.getExitRoad();
+            int targetPos = intersection.getExitPosition();
+            if (targetRoad.getCell(targetPos) == null) {
+                car.setPosition(targetPos);
+                car.setCurrentSpeed(0);
+                car.setRoad(targetRoad);
+                targetRoad.setCell(targetPos, car);
+            } else {
+                carsToRemove.add(car);
+            }
+            return;
+        }   
 
         // default — remove car
         if (!fromRoad.hasExit()) {
@@ -318,6 +334,87 @@ public class Map {
         map.addRoad(bottomRoad);
         map.addRoad(leftRoad);
         map.addRoad(rightRoad);
+
+        return map;
+    }
+
+    public static Map CreateGridOfRoads(int roadLength) {
+        Map map = new Map(MapType.GRID_OF_ROADS);
+
+        int laneWidth = 8;
+        int width = roadLength * CELL_SIZE;
+        int height = width * 3 / 5;
+        int clearance = 5; //Clearance distance for all intersections
+
+        int yHorizontal1 = height / 4;
+        int yHorizontal2 = height / 2;
+        int yHorizontal3 = height * 3 / 4;
+
+        int xVertical1 = width / 3;
+        int xVertical2 = width * 2 / 3;
+        int xVertical3 = width / 4;
+        int xVertical4 = width * 3 / 4;
+        int xVertical5 = width / 2;
+        int xVertical6 = width / 6;
+        int xVertical7 = width * 5 / 6;
+
+        int roadLengthV1 = yHorizontal1 / CELL_SIZE; //top to h1
+        int roadLengthVmid = (yHorizontal2 - yHorizontal1) / CELL_SIZE; //h1 to h2
+        int roadLengthVbot = (yHorizontal3 - yHorizontal2) / CELL_SIZE; //h2 to h3
+        int roadLengthVedge = (height - yHorizontal3) / CELL_SIZE; //h3 to bottom
+
+        Road horizontal1 = new Road(roadLength, Direction.EAST, 0, yHorizontal1, width, yHorizontal1, laneWidth);
+        Road horizontal2 = new Road(roadLength, Direction.WEST, width, yHorizontal2, 0, yHorizontal2, laneWidth);
+        Road horizontal3 = new Road(roadLength, Direction.EAST, 0, yHorizontal3, width, yHorizontal3, laneWidth);
+
+        Road vertical1 = new Road(roadLengthV1, Direction.SOUTH, xVertical1, 0, xVertical1, yHorizontal1, laneWidth);
+        Road vertical2 = new Road(roadLengthV1, Direction.NORTH, xVertical2, yHorizontal1, xVertical2, 0, laneWidth);
+        Road vertical3 = new Road(roadLengthVmid, Direction.SOUTH, xVertical3, yHorizontal1, xVertical3, yHorizontal2, laneWidth);
+        Road vertical4 = new Road(roadLengthVmid, Direction.SOUTH, xVertical4, yHorizontal1, xVertical4, yHorizontal2, laneWidth);
+        Road vertical5 = new Road(roadLengthVbot, Direction.SOUTH, xVertical5, yHorizontal2, xVertical5, yHorizontal3, laneWidth);
+        Road vertical6 = new Road(roadLengthVedge, Direction.NORTH, xVertical6, height, xVertical6, yHorizontal3, laneWidth);
+        Road vertical7 = new Road(roadLengthVedge, Direction.SOUTH, xVertical7, yHorizontal3, xVertical7, height, laneWidth);
+
+        int entrenceCellV1 = roadLength / 3;
+        int entrenceCellV2 = roadLength / 4;
+        int entrenceCellV4 = roadLength * 3 / 4;
+        int entrenceCellV5 = roadLength / 2;
+        int entrenceCellV6 = roadLength / 6;
+
+        map.addObstacle(new Intersection(roadLengthV1 - 1, horizontal1, entrenceCellV1, clearance, horizontal1, entrenceCellV1), vertical1);
+        map.addObstacle(new Intersection(roadLengthVmid - 1, horizontal2, entrenceCellV2, clearance, horizontal2, entrenceCellV2), vertical3);
+        map.addObstacle(new Intersection(roadLengthVmid - 1, horizontal2, entrenceCellV4, clearance, horizontal2, entrenceCellV4), vertical4);
+        map.addObstacle(new Intersection(roadLengthVbot - 1, horizontal3, entrenceCellV5, clearance, horizontal3, entrenceCellV5), vertical5);
+        map.addObstacle(new Intersection(roadLengthVedge - 1, horizontal3, entrenceCellV6, clearance, horizontal3, entrenceCellV6), vertical6);
+        
+        int exitCellH1V2 = roadLength / 3;
+        int exitCellH1V3 = roadLength * 2 / 3;
+        int exitCellH1V4 = roadLength * 3 / 4;
+        int exitCellH2V5 = roadLength / 2;
+        int exitCellH3V7 = roadLength * 5 / 6;
+        
+        map.addObstacle(new ExitLane(exitCellH1V2, vertical2, 0), horizontal1);
+        map.addObstacle(new ExitLane(exitCellH1V3, vertical3, 0), horizontal1);
+        map.addObstacle(new ExitLane(exitCellH1V4, vertical4, 0), horizontal1);
+        map.addObstacle(new ExitLane(exitCellH2V5, vertical5, 0), horizontal2);
+        map.addObstacle(new ExitLane(exitCellH3V7, vertical7, 0), horizontal3);
+
+        vertical2.setSpawnRoad(false);
+        vertical3.setSpawnRoad(false);
+        vertical4.setSpawnRoad(false);
+        vertical5.setSpawnRoad(false);
+        vertical7.setSpawnRoad(false);
+
+        map.addRoad(horizontal1);
+        map.addRoad(horizontal2);
+        map.addRoad(horizontal3);
+        map.addRoad(vertical1);
+        map.addRoad(vertical2);
+        map.addRoad(vertical3);
+        map.addRoad(vertical4);
+        map.addRoad(vertical5);
+        map.addRoad(vertical6);
+        map.addRoad(vertical7);
 
         return map;
     }

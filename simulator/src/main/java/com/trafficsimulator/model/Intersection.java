@@ -4,6 +4,8 @@ public class Intersection extends Obstacle {
     private Road mainRoad;
     private int junctionPosition;
     private int clearanceDistance;
+    private Road exitRoad;
+    private int exitPosition;
 
     //Intersection object that closes the road if the junctions point has cars in clearance distance
     public Intersection(int position, Road mainRoad, int junctionPosition, int clearanceDistance) {
@@ -11,6 +13,15 @@ public class Intersection extends Obstacle {
         this.mainRoad = mainRoad;
         this.junctionPosition = junctionPosition;
         this.clearanceDistance = clearanceDistance;
+    }
+
+    public Intersection(int position, Road mainRoad, int junctionPosition, int clearanceDistance, Road exitRoad, int exitPosition) {
+        super(ObstacleType.INTERSECTION, position);
+        this.mainRoad = mainRoad;
+        this.junctionPosition = junctionPosition;
+        this.clearanceDistance = clearanceDistance;
+        this.exitRoad = exitRoad;
+        this.exitPosition = exitPosition;
     }
 
     //Priority check for closing and opening the road
@@ -30,4 +41,15 @@ public class Intersection extends Obstacle {
         }
         return true;
     }
+
+    //In Intersection
+    public boolean hasExit() { 
+        return exitRoad != null; 
+    }
+    public Road getExitRoad() { 
+        return exitRoad; 
+    }
+    public int getExitPosition() { 
+        return exitPosition; 
+    }   
 }

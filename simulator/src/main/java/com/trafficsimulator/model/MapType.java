@@ -5,5 +5,6 @@ public enum MapType {
     ONE_WAY,
     T_INTERSECTION,
     INTERSECTION_LOOP,
-    AUTOBAHN
+    AUTOBAHN,
+    GRID_OF_ROADS
 }

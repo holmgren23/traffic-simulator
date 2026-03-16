@@ -34,6 +34,7 @@ public class TrafficSimulator {
           case "T Intersection" -> Map.createTIntersection(roadLength);
           case "Autobahn" -> Map.createAutobahn(roadLength);
           case "Intersection Loop" -> Map.createLoop(roadLength);
+          case "Grid of roads" -> Map.CreateGridOfRoads(roadLength);
           default -> Map.createHighway(roadLength); 
         };
 
@@ -246,7 +247,9 @@ public class TrafficSimulator {
     private void handleMidRoadObstacles() {
         for (Car car : cars) {
             Road road = car.getRoad();
-            RoadObject obstacle = road.getObstacle(car.getPosition());
+            int position = car.getPosition();
+            if (position >= road.getLength()) continue; // skip invalid positions
+            RoadObject obstacle = road.getObstacle(position);
             if (obstacle instanceof ExitLane exit && car.wantsToTurn()) {
                 car.setCurrentSpeed(0);
                 map.transferCar(car, exit);
@@ -254,14 +257,23 @@ public class TrafficSimulator {
         }
     }
 
+    //Update conditions for vehicles intent to turn at next turn option.
+    private void updateTurnIntents() {
+        for (Car car : cars) {
+            car.updateTurnIntent(rand, tickCount);
+        }
+    }
+
+
     // Tick update. Should be callable by controller
     public void tickUpdate() {
         tickCount++;
         map.updateObstacles(tickCount);
+        updateTurnIntents();
         tryChangeLanes();
         HashMap<Car, Integer> newSpeeds = updateSpeeds();
-        moveCars(newSpeeds);
         handleMidRoadObstacles();
+        moveCars(newSpeeds);
         spawnCar();
         stats.update(cars, nextID);
     }
