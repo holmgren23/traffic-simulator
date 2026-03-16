@@ -11,7 +11,7 @@ public class RoadTest {
 
     @BeforeEach
     public void setup() {
-        road = new Road(100);
+        road = new Road(100, Road.Direction.EAST, 0, 50, 500, 50, 8);
     }
     @AfterEach
     public void tearDown() {
@@ -30,7 +30,7 @@ public class RoadTest {
     
     @Test
     public void testsetCellgetCell() {
-        RoadObject car = new Car(1, 0, 0);
+        RoadObject car = new Car(1, 0, 0, 0.5);
         road.setCell(10, car);
         assertEquals(car, road.getCell(10));
     }

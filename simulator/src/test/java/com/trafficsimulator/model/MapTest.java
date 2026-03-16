@@ -13,7 +13,7 @@ class MapTest {
     @BeforeEach
     void setUp() {
         map = new Map(MapType.ONE_WAY);
-        road = new Road(200);
+        road = new Road(200, Road.Direction.EAST, 0, 50, 1000, 50, 8);
         map.addRoad(road);
     }
 
@@ -45,7 +45,7 @@ class MapTest {
 
     @Test
     void testGetObjectAhead_returnsCorrectObject() {
-        Car car = new Car(0, 5, 5);
+        Car car = new Car(0, 5, 5, 0.5);
         road.setCell(5, car);
         assertEquals(car, map.getObjectAhead(road, 0));
     }
