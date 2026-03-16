@@ -119,12 +119,12 @@ public class MainView extends Application {
         primaryStage.show();
     }
     
-    public void showOfflineRender() {
+    public void showOfflineRender(int ticksToRun) {
         Label title = new Label("Running simulation...");
         title.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
         title.setFont(new Font("Arial", 42));
 
-        OfflineView offlineView = new OfflineView();
+        OfflineView offlineView = new OfflineView(ticksToRun);
 
         VBox card = new VBox(24, title, offlineView);
         card.setAlignment(Pos.CENTER);
@@ -135,6 +135,11 @@ public class MainView extends Application {
         );
         card.setMaxWidth(Region.USE_PREF_SIZE);
         card.setMaxHeight(Region.USE_PREF_SIZE);
+        
+        controller.setSubViews(offlineView);
+        Thread simThread = new Thread(() -> controller.loopOffline());
+        simThread.setDaemon(true);
+        simThread.start();
 
         StackPane root = new StackPane(card);
         root.setStyle("-fx-background-color: rgb(54, 66, 56);");

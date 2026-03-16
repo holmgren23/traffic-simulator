@@ -60,8 +60,7 @@ public class Controller {
     MainView.setModel(ts);
     if (params.runOffline()) {
       this.ticksTorun = (int)params.ticksToRun();
-      this.loopOffline();
-      mainView.showSummaryScreen();
+      mainView.showOfflineRender(this.ticksTorun);
     }
     else {
       mainView.showSimulation(params.timeScalingRaw());
@@ -105,10 +104,12 @@ public class Controller {
   /**
    * Loop for when running the simulation withou visuals.
    */
-  private void loopOffline() {
+  public void loopOffline() {
     for (int i = 0; i < this.ticksTorun; i++) {
       ts.tickUpdate();
+      if (i % 1000 == 0) { this.updateViews(); }
     }
+    Platform.runLater(() -> mainView.showSummaryScreen());
   }
   
   /**
