@@ -14,8 +14,8 @@ public class TrafficSimulator {
     private ArrayList<Car> cars;
     private Map map;
     private int tickCount;
-    private int spawnRate, minSpeed, maxSpeed, roadLength;
-    private double spawnChance;
+    private int minSpeed, maxSpeed, roadLength;
+    private double spawnProbability;
     private int nextID;
     private Random rand;
     private Statistics stats;
@@ -25,16 +25,15 @@ public class TrafficSimulator {
 
     /**
      * Creates a simulation with the given settings and map type.
-     * @param spawnRate Target number of cars spawned per interval
+     * @param spawnProbability The likelyhood that a new car spawns every tick for every spawn location
      * @param roadLength Length of roads in the map
      * @param minSpeed Minimum speed a car can be assigned on spawn
      * @param maxSpeed Maximum speed a car can be assigned on spawn
      * @param mapType Name of the map layout to use
      */
-    public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, String mapType) {
+    public TrafficSimulator(double spawnProbability, int roadLength, int minSpeed, int maxSpeed, String mapType) {
         this.rand = new Random();
-        this.spawnRate = spawnRate;
-        this.spawnChance = (spawnRate * 0.8) / Constants.MAX_TICKS_PER_SPAWN;
+        this.spawnProbability = spawnProbability;
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
         this.roadLength = roadLength;
@@ -58,7 +57,7 @@ public class TrafficSimulator {
      * @param map Pre-built map to simulate on
      */
     public TrafficSimulator(Random rand, Map map) {
-        this.spawnRate = 5;
+        this.spawnProbability = 0.5;
         this.minSpeed = 2;
         this.maxSpeed = 6;
         this.rand = rand;
@@ -74,7 +73,7 @@ public class TrafficSimulator {
         cars = new ArrayList<>();
         tickCount = 0;
         nextID = 0;
-        stats = new Statistics(minSpeed, maxSpeed, spawnRate, roadLength, map.getType());
+        stats = new Statistics(minSpeed, maxSpeed, spawnProbability, roadLength, map.getType());
     }
 
     /**
@@ -92,17 +91,17 @@ public class TrafficSimulator {
     }
 
     /**
-     * @return Target number of cars spawned per interval
+     * @return The probability to spawn a new car every tick, in each spawn location
      */
-    public int getSpawnRate() {
-        return spawnRate;
+    public double getSpawnProbability() {
+        return spawnProbability;
     }
 
     /**
-     * @param spawnRate New target spawn rate
+     * @param spawnProbability New target spawn probability
      */
-    public void setSpawnRate(int spawnRate) {
-        this.spawnRate = spawnRate;
+    public void setSpawnProbability(double spawnProbability) {
+        this.spawnProbability = spawnProbability;
     }
 
     /**
@@ -292,7 +291,7 @@ public class TrafficSimulator {
      */
     private boolean spawnCondition(RoadObject cell) {
         double randomValue = this.rand.nextDouble(0, 1);
-        return cell == null && randomValue < this.spawnChance;
+        return cell == null && randomValue < this.spawnProbability;
     }
 
     /**
@@ -374,6 +373,6 @@ public class TrafficSimulator {
         cars = new ArrayList<>();
         tickCount = 0;
         nextID = 0;
-        stats = new Statistics(minSpeed, maxSpeed, spawnRate, roadLength, map.getType());
+        stats = new Statistics(minSpeed, maxSpeed, spawnProbability, roadLength, map.getType());
     }
 }

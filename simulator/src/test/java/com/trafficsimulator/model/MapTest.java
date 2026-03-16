@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.trafficsimulator.model.Road.Direction;
+
 class MapTest {
     private Map map;
     private Road road;
@@ -45,7 +47,7 @@ class MapTest {
 
     @Test
     void testGetObjectAhead_returnsCorrectObject() {
-        Car car = new Car(0, 5, 5, 0.5);
+        Car car = new Car(0, 5, 5, 0.2);
         road.setCell(5, car);
         assertEquals(car, map.getObjectAhead(road, 0));
     }

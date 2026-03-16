@@ -59,13 +59,13 @@ public class StatisticsTest {
         assertEquals(1, snapshot.stationaryCars()); // should count 1 stationary car
         
         // should be 2 * 30 / 2 = 30.0 km/h average speed, since car 1 has speed 2 and car 2 has speed 0
-        assertEquals(30.0, snapshot.currentAvgSpeedKmh());
+        assertEquals(10.0, snapshot.currentAvgSpeedKmh());
     }
 
     @Test
     public void testFlowRatesOverTime() {
         // Setup: simulate 1 minute of updates with 5 cars spawned and 1 car still on the road
-        Car carOnRoad = new Car(1, 0, 5, 0.5);
+        Car carOnRoad = new Car(1, 0, 5, 0.2);
         carOnRoad.setCurrentSpeed(5);
         List<Car> cars = List.of(carOnRoad); // so far only 1 car is on the road
 

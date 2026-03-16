@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.trafficsimulator.model.Road.Direction;
+
 import java.util.Random;
 
 
@@ -67,9 +70,8 @@ class TrafficSimulatorTest {
 
     @Test
     void testSpawnCar_spawnOnCorrectTick() {
-        for (int i = 0; i < simulator.getSpawnRate(); i++) {
-            simulator.tickUpdate();
-        }
+        simulator.setSpawnProbability(1);
+        simulator.tickUpdate();
 
         assertNotNull(mainRoad.getCell(0));
     }
@@ -88,7 +90,7 @@ class TrafficSimulatorTest {
 
     @Test
     void testMoveCars_carMovesForwardOnOpenRoad() {
-        Car car = new Car(0, 0, 5, 0.5);
+        Car car = new Car(0, 0, 5, 0.2);
         mainRoad.setCell(0, car);
         car.setRoad(mainRoad);
         simulator.getCars().add(car);
@@ -121,7 +123,7 @@ class TrafficSimulatorTest {
 
     @Test
     void updateSpeeds_speedCannotExceedMaxSpeed() {
-        Car car = new Car(0, 0, 3, 0.5);
+        Car car = new Car(0, 0, 3, 0.2);
         car.setRoad(mainRoad);
         car.setCurrentSpeed(3); //already at max
         mainRoad.setCell(0, car);
