@@ -282,6 +282,7 @@ public class TrafficSimulator {
         car.setRoad(to);
         to.setCell(position, car);
         car.setLaneChangeCooldown(5);
+        stats.registerLaneChange();
     }
     
     /**
