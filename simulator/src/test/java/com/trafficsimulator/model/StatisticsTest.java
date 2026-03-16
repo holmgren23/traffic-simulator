@@ -39,10 +39,10 @@ public class StatisticsTest {
     @Test
     public void testAverageSpeedAndStationaryCars() {
         // Setup of cars with different speeds
-        Car car1 = new Car(1, 5, 5);
+        Car car1 = new Car(1, 5, 5, 0.5);
         car1.setCurrentSpeed(2); // speed 2
 
-        Car car2 = new Car(2, 0, 5);
+        Car car2 = new Car(2, 0, 5, 0.5);
         car2.setCurrentSpeed(0); // speed 0
 
         List<Car> cars = List.of(car1, car2);
@@ -65,7 +65,7 @@ public class StatisticsTest {
     @Test
     public void testFlowRatesOverTime() {
         // Setup: simulate 1 minute of updates with 5 cars spawned and 1 car still on the road
-        Car carOnRoad = new Car(1, 0, 5);
+        Car carOnRoad = new Car(1, 0, 5, 0.5);
         carOnRoad.setCurrentSpeed(5);
         List<Car> cars = List.of(carOnRoad); // so far only 1 car is on the road
 
