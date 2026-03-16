@@ -46,6 +46,13 @@ uses a simulation model based on the Nagel-Schreckenberger
 traffic simulation model. The model uses discrete time, and hence
 moves in textbf{steps} or textbf{ticks}.
 
+\subsection{Offline Simulation}
+
+Traffic Simulator allows for running simulations without any visuals. This
+is much faster than running simulations "real time". Such a feature can be
+useful for running very long simulations or multiple simulations quickly.
+The statistics summary is still shown and can be exported to a CSV file.
+
 \subsection{Simulation Visuals}
 
 \begin{table}[h]
@@ -76,10 +83,10 @@ The following maps are implemented*
         car does not get stuck in the outer lane.
 \end{itemize}
 
-*more will be added in the future, as well as the possibility to create
+*more maps will be added in the future, as well as the possibility to create
 custom maps. %%
 
-\subsection{Live Statistics}
+\subsection{Live Statistics} \label{live_stats}
 
 \begin{enumerate}
     \item \textbf{Simulated time} from when the simulation started.
@@ -93,7 +100,25 @@ custom maps. %%
 
 \subsection{Playback Controls}
 
+These are the controls available when showing the visuals of a running
+simulation.
+
+%% Insert image of transport controls
+
+\begin{enumerate}
+    \item \textbf{Pause}/\textbf{Resume} the simulation (and the visuals).
+    \item \textbf{Reset} simulation. This will abort the running simulation
+        and start a new one (even if paused) with the same settings.
+    \item \textbf{Stop} the simulation and show statistics summary.
+    \item \textbf{Time scaling} can be adjusted while the simulation is
+        running.
+\end{enumerate}
+
 \section{Settings Menu}
+
+Traffic simulator %%
+allows for a number of user settings before starting a simulation.
+How to use them is described below.
 
 %% Insert image of the settings menu, with numbers for each setting
 
@@ -121,12 +146,30 @@ custom maps. %%
     \item \textbf{Time scaling}
         Set the initial time scaling for the simulation. Not active for
         offline mode.
-    \item \textbf{Start simulation}
+    \item \textbf{Start} simulation
         Start a new simulation with the current settings.
-    \item \textbf{Exit program}
+    \item \textbf{Help}
+        Open this document in your default PDF viewer.
+    \item \textbf{Exit} program
         Quit to desktop.
 \end{enumerate}
 
-\section{Statistics}
+\section{Statistics Page}
+
+A brief description of the Statistics Page shown after each simulation.
+
+\subsection{Statistics Summary}
+
+For explanations of 1-6, see \ref{live_stats} (page \pageref{live_stats}).
+
+\subsection{Navigation Buttons}
+
+\begin{enumerate}
+    \item \textbf{Back to Menu} shows the settings menu, where a new simulation
+        can be started.
+    \item \textbf{Export to CSV} lets you export simulation statistics to a CSV
+        file, for further processing or importing to a spreadsheet.
+    \item \textbf{Exit Program} quits to desktop.
+\end{enumerate}
 
 \end{document}
