@@ -14,7 +14,7 @@ public class VehicleTest {
 
     @BeforeEach
     public void setUp() {
-        vehicle = new Vehicle(1, 2, 3);
+        vehicle = new Vehicle(1, 2, 3, 0.2);
     }
 
     @AfterEach

@@ -26,6 +26,7 @@ public class MainView extends Application {
     private static Controller controller;
     private static TrafficSimulator ts;
     private static Stage primaryStage;
+    private String title = "Traffic Simulator";
 
     /**
      * Creates a main view with the given width and height
@@ -81,7 +82,7 @@ public class MainView extends Application {
     @Override
     public void start(Stage primaryStage) {
         MainView.primaryStage = primaryStage;
-        primaryStage.setTitle("Traffic Simulator");
+        primaryStage.setTitle(this.title);
 
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         windowWidth = (int)screenBounds.getWidth();
@@ -97,7 +98,7 @@ public class MainView extends Application {
     public void showMenu() {
         MenuView menuView = new MenuView(controller);
 
-        Label title = new Label("Trafficsimulator");
+        Label title = new Label(this.title);
         title.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
         title.setFont(new Font("Arial", 42));
 

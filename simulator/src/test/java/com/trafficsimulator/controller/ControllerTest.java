@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.trafficsimulator.model.TrafficSimulator;
+import com.trafficsimulator.model.Road.Direction;
 import com.trafficsimulator.model.Car;
 
 public class ControllerTest {
@@ -29,7 +30,7 @@ public class ControllerTest {
   @BeforeEach
   public void setUp() {
     map = new Map(MapType.ONE_WAY);
-    map.addRoad(new Road(200));
+    map.addRoad(new Road(200, Direction.EAST, 0, 0, 100, 100, 5));
     ts = new TrafficSimulator(new Random(), map);
     controller = new Controller(ts);
     t = new Thread(() -> controller.loop());
@@ -63,7 +64,7 @@ public class ControllerTest {
     @BeforeEach
     public void setUp() {
       Map map = new Map(MapType.ONE_WAY);
-      map.addRoad(new Road(200));
+      map.addRoad(new Road(200, Direction.EAST, 0, 0, 100, 100, 5));
       ts = new TrafficSimulator(new Random(), map);
       controller = new Controller(ts);
       t = new Thread(() -> controller.loop());

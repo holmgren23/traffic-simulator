@@ -3,6 +3,7 @@ package com.trafficsimulator.controller;
 import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.utility.InputParametersDTO;
 import com.trafficsimulator.utility.Constants;
+import com.trafficsimulator.utility.HelperMethods;
 import com.trafficsimulator.view.MainView;
 import com.trafficsimulator.view.SubView;
 
@@ -49,7 +50,7 @@ public class Controller {
     this.setTimeScaling(params.timeScalingFactor());
 
     ts = new TrafficSimulator(
-      (int)(params.spawnRate()),
+      HelperMethods.percentToProbability((int)params.spawnPercent()),
       (int)params.roadLength(),
       (int)params.minSpeed(),
       (int)params.maxSpeed(),
