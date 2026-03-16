@@ -60,7 +60,6 @@ public class Map {
                 break; // Find vehicle onbject
             }
             if (obstacle instanceof Obstacle obs && !obs.isOpenFor(car)) {
-                System.out.println("braking for: " + obs.getType() + " isOpen=" + obs.isOpen() + " wantsToTurn=" + car.wantsToTurn() + " road.length=" + road.getLength());
                 break; // Find obstacle object
             }
             i++;
@@ -340,8 +339,8 @@ public class Map {
 
     public static Map CreateGridOfRoads(int roadLength) {
         Map map = new Map(MapType.GRID_OF_ROADS);
-
-        int laneWidth = 8;
+        roadLength = 500;
+        int laneWidth = 16;
         int width = roadLength * CELL_SIZE;
         int height = width * 3 / 5;
         int clearance = 5; //Clearance distance for all intersections
@@ -387,8 +386,8 @@ public class Map {
         map.addObstacle(new Intersection(roadLengthVbot - 1, horizontal3, entrenceCellV5, clearance, horizontal3, entrenceCellV5), vertical5);
         map.addObstacle(new Intersection(roadLengthVedge - 1, horizontal3, entrenceCellV6, clearance, horizontal3, entrenceCellV6), vertical6);
         
-        int exitCellH1V2 = roadLength / 3;
-        int exitCellH1V3 = roadLength * 2 / 3;
+        int exitCellH1V2 = roadLength * 2 / 3;
+        int exitCellH1V3 = roadLength / 4;
         int exitCellH1V4 = roadLength * 3 / 4;
         int exitCellH2V5 = roadLength / 2;
         int exitCellH3V7 = roadLength * 5 / 6;
@@ -405,9 +404,6 @@ public class Map {
         vertical5.setSpawnRoad(false);
         vertical7.setSpawnRoad(false);
 
-        map.addRoad(horizontal1);
-        map.addRoad(horizontal2);
-        map.addRoad(horizontal3);
         map.addRoad(vertical1);
         map.addRoad(vertical2);
         map.addRoad(vertical3);
@@ -415,6 +411,9 @@ public class Map {
         map.addRoad(vertical5);
         map.addRoad(vertical6);
         map.addRoad(vertical7);
+        map.addRoad(horizontal1);
+        map.addRoad(horizontal2);
+        map.addRoad(horizontal3);
 
         return map;
     }

@@ -17,7 +17,7 @@ public class TrafficSimulator {
     private Statistics stats;
     private double slowProbability = 0;
     private double speedupProbability = 0;
-    private double turnProbability = 0.5;
+    private double turnProbability = 0.7;
 
     // Main constructor
     public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, String mapType) {
@@ -105,6 +105,15 @@ public class TrafficSimulator {
 
             int gap = map.gap(road, position);
             speed = Math.min(speed, gap); // Brake
+
+            // Turn clamp
+            if (car.wantsToTurn()) {
+                RoadObject ahead = map.getObjectAhead(road, position);
+
+                if (ahead instanceof ExitLane) {
+                    speed = Math.min(speed, 1);
+                }
+            }
 
             RoadObject ahead = map.getObjectAhead(road, position);
             if (ahead instanceof Obstacle obs && !obs.isOpen() && gap == 0) {
@@ -250,9 +259,11 @@ public class TrafficSimulator {
             int position = car.getPosition();
             if (position >= road.getLength()) continue; // skip invalid positions
             RoadObject obstacle = road.getObstacle(position);
-            if (obstacle instanceof ExitLane exit && car.wantsToTurn()) {
-                car.setCurrentSpeed(0);
-                map.transferCar(car, exit);
+          
+            if (obstacle instanceof ExitLane exit) {
+                if (exit.tryTurn(car, map)) {
+                    return;
+                }
             }
         }
     }

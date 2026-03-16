@@ -42,7 +42,8 @@ public class Obstacle implements RoadObject {
     public void calculatePriority(int tickCount) {
         switch (type) {
             case TRAFFIC_LIGHT -> calculateTrafficLight(tickCount); //Single road traffic light
-            case INTERSECTION, EXIT_LANE -> {} //
+            case INTERSECTION -> {}
+            case EXIT_LANE -> {}
         }
     }
 
