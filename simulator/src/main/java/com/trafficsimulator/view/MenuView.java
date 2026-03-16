@@ -36,6 +36,12 @@ public class MenuView extends GridPane {
   private Spinner<Integer> roadLengthControl, ticksToRunControl;
   private ComboBox<String> mapSelector;
   private CheckBox offlineRunCheckBox;
+  private int roadLengthMin = 100;
+  private int roadLengthMax = 10000;
+  private int roadLengthDefault = 200;
+  private int offlineTicksMin = 1000;
+  private int offlineTicksMax = 10000000;
+  private int offlineTicksDefault = 10000;
   
   /**
    * Defines styling, creates UI input elements and layout.
@@ -52,6 +58,7 @@ public class MenuView extends GridPane {
     
     this.setupInputControls();
     this.setupNavBtns();
+    this.restoreSettings();
   }
   
   /**
@@ -129,7 +136,7 @@ public class MenuView extends GridPane {
     this.roadLengthControl = new Spinner<Integer>();
     this.roadLengthControl.setEditable(true);
     this.roadLengthControl.setValueFactory(
-      new SpinnerValueFactory.IntegerSpinnerValueFactory(100, 10000, 200)
+      new SpinnerValueFactory.IntegerSpinnerValueFactory(this.roadLengthMin, this.roadLengthMax, this.roadLengthDefault)
     );
     Tooltip roadLengthTooltip = new Tooltip("Set the length of the road (in number of cells)");
     roadLengthLabel.setTooltip(roadLengthTooltip);
@@ -195,7 +202,7 @@ public class MenuView extends GridPane {
     this.ticksToRunControl = new Spinner<Integer>();
     this.ticksToRunControl.setEditable(true);
     this.ticksToRunControl.setValueFactory(
-      new SpinnerValueFactory.IntegerSpinnerValueFactory(1000, 10000000, 10000)
+      new SpinnerValueFactory.IntegerSpinnerValueFactory(this.offlineTicksMin, this.offlineTicksMax, this.offlineTicksDefault)
     );
     this.ticksToRunControl.setDisable(true);
     Tooltip ticksToRunTooltip = new Tooltip("Set the length of the road (in number of cells)");
@@ -252,5 +259,31 @@ public class MenuView extends GridPane {
       this.offlineRunCheckBox.isSelected(),
       this.ticksToRunControl.getValue()
     );
+  }
+  
+  private void restoreSettings() {
+    InputParametersDTO userSettings = this.controller.getUserSettings();
+    if (userSettings != null) {
+      this.mapSelector.setValue(userSettings.mapType());
+      this.roadLengthControl.setDisable(
+        ! Constants.MAP_HAS_ADJUSTABLE_ROAD_LENGTH.get(this.mapSelector.getValue())
+      );
+      this.roadLengthControl.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
+        this.roadLengthMin, this.roadLengthMax, userSettings.roadLength())
+      );
+
+      this.minSpeedSection.setValue(userSettings.minSpeed());
+      this.maxSpeedSection.setValue(userSettings.maxSpeed());
+
+      this.spawnRateSection.setValue(userSettings.spawnPercent());
+      this.timeScalingSection.setDisable(userSettings.runOffline());
+      this.timeScalingSection.setValue(userSettings.timeScalingRaw());
+
+      this.offlineRunCheckBox.setSelected(userSettings.runOffline());
+      this.ticksToRunControl.setDisable(! userSettings.runOffline());
+      this.ticksToRunControl.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
+        this.offlineTicksMin, this.offlineTicksMax, (int)userSettings.ticksToRun())
+      );
+    }
   }
 }

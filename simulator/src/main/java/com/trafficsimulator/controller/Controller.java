@@ -22,6 +22,7 @@ public class Controller {
   private boolean stopped;
   private int ticksTorun;
   private MainView mainView;
+  private InputParametersDTO userSettings;
   
   /**
    * Creates a controller with a MainView object.
@@ -47,6 +48,7 @@ public class Controller {
    * @param params Data transfer object containing user settings
    */
   public void createSimulation(InputParametersDTO params) {
+    this.userSettings = params;
     this.setTimeScaling(params.timeScalingFactor());
 
     ts = new TrafficSimulator(
@@ -205,5 +207,13 @@ public class Controller {
    */
   public void setTimeScaling(double timeScaling){
     this.timeScaling = (timeScaling / 100.0);
+  }
+  
+  /**
+   * Gets the previous user settings, for restoring settings in the menu view
+   * @return A data transfer object containing the previous settings
+   */
+  public InputParametersDTO getUserSettings() {
+    return this.userSettings;
   }
 }
