@@ -35,10 +35,28 @@ System- och programvaruutveckling (DT117G) at Örebro University.
 
 \section{Simulation}
 
+This section describes the everything related to the simulation mode, from
+the inner workings of the simulation engine to its visual represation
+and available user controls.
+
+\subsection{Simulation engine}
+
 Traffic Simulator %%
 uses a simulation model based on the Nagel-Schreckenberger
 traffic simulation model. The model uses discrete time, and hence
 moves in textbf{steps} or textbf{ticks}.
+
+\subsection{Simulation Visuals}
+
+\begin{table}[h]
+    \begin{center}
+        \begin{tabular}{c p{0.8\textwidth}}
+            \textit{car image} & A simulated car \\
+            \textit{road image} & A piece of the road \\
+            \textit{traffic light image} & Traffic light \\
+        \end{tabular}
+    \end{center}
+\end{table}
 
 \subsection{Maps} \label{maps}
 
@@ -60,6 +78,20 @@ The following maps are implemented*
 
 *more will be added in the future, as well as the possibility to create
 custom maps. %%
+
+\subsection{Live Statistics}
+
+\begin{enumerate}
+    \item \textbf{Simulated time} from when the simulation started.
+    \item \textbf{Total cars spawned} during the simulation.
+    \item The number of currently \textbf{stationary cars}.
+    \item The current \textbf{number of cars} in the simulation.
+    \item Current \textbf{average speed}.
+    \item Current \textbf{inflow} and \textbf{outflow} of cars,
+        respectively. Shown in vehicles per simulated minute.
+\end{enumerate}
+
+\subsection{Playback Controls}
 
 \section{Settings Menu}
 
@@ -94,12 +126,6 @@ custom maps. %%
     \item \textbf{Exit program}
         Quit to desktop.
 \end{enumerate}
-
-\section{Simulation Visuals}
-
-\subsection{Live Statistics}
-
-\subsection{Playback Controls}
 
 \section{Statistics}
 
