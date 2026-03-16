@@ -7,6 +7,11 @@ public class Intersection extends Obstacle {
     private Road exitRoad;
     private int exitPosition;
 
+    //****************************************************************************************************
+    //To check for Traffic lights in connecting lane. Set Clearance Distance to negative to traffic light
+    //i.e. If trafic light is 2 cells from intersection, clearanceDistance = -2
+    //****************************************************************************************************
+
     //Intersection object that closes the road if the junctions point has cars in clearance distance
     public Intersection(int position, Road mainRoad, int junctionPosition, int clearanceDistance) {
         super(ObstacleType.INTERSECTION, position);
@@ -45,7 +50,7 @@ public class Intersection extends Obstacle {
         return true;
     }
 
-
+    //Check for cars on an intersection to see the status of traffic light on main road 
     private boolean isMainRoadRed() {
         int searchDistance = Math.abs(clearanceDistance);
         for (int i = junctionPosition - searchDistance; i <= junctionPosition + searchDistance; i++) {
@@ -63,7 +68,6 @@ public class Intersection extends Obstacle {
         return junctionPosition;
     }
 
-    //In Intersection
     public boolean hasExit() { 
         return exitRoad != null; 
     }

@@ -104,10 +104,12 @@ public class Road {
         return mergeLane;
     }
     
+    //Check if a road can spawn cars
     public boolean isSpawnRoad(){
         return isSpawnRoad;
     }
     
+    //Set if a road should spawn cars
     public void setSpawnRoad(boolean isSpawnRoad){
         this.isSpawnRoad = isSpawnRoad;
     }
