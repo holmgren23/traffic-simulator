@@ -32,14 +32,18 @@ public class Intersection extends Obstacle {
 
     //Checks clearance on the connected road
     private boolean isJunctionClear() {
-        for (int i = junctionPosition - clearanceDistance; i <= junctionPosition + clearanceDistance; i++) {
+        for (int i = junctionPosition - clearanceDistance; i < junctionPosition; i++) {
             if (i >= 0 && i < mainRoad.getLength()) {
-                if (mainRoad.getCell(i) != null) {
+                if (mainRoad.getCell(i) instanceof Car) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    public int getJunctionPosition() {
+        return junctionPosition;
     }
 
     //In Intersection
