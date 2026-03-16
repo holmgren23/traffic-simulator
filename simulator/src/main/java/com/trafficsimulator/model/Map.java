@@ -375,20 +375,20 @@ public class Map {
         Road vertical7 = new Road(roadLengthVedge, Direction.SOUTH, xVertical7, yHorizontal3, xVertical7, height, laneWidth);
 
         int entrenceCellV1 = roadLength / 3;
-        int entrenceCellV2 = roadLength / 4;
-        int entrenceCellV4 = roadLength * 3 / 4;
+        int entrenceCellV3 = roadLength * 3 / 4;
+        int entrenceCellV4 = roadLength / 4;
         int entrenceCellV5 = roadLength / 2;
         int entrenceCellV6 = roadLength / 6;
 
         map.addObstacle(new Intersection(roadLengthV1 - 1, horizontal1, entrenceCellV1, clearance, horizontal1, entrenceCellV1), vertical1);
-        map.addObstacle(new Intersection(roadLengthVmid - 1, horizontal2, entrenceCellV2, clearance, horizontal2, entrenceCellV2), vertical3);
+        map.addObstacle(new Intersection(roadLengthVmid - 1, horizontal2, entrenceCellV3, clearance, horizontal2, entrenceCellV3), vertical3);
         map.addObstacle(new Intersection(roadLengthVmid - 1, horizontal2, entrenceCellV4, clearance, horizontal2, entrenceCellV4), vertical4);
         map.addObstacle(new Intersection(roadLengthVbot - 1, horizontal3, entrenceCellV5, clearance, horizontal3, entrenceCellV5), vertical5);
         map.addObstacle(new Intersection(roadLengthVedge - 1, horizontal3, entrenceCellV6, clearance, horizontal3, entrenceCellV6), vertical6);
         
         int exitCellH1V2 = roadLength * 2 / 3;
-        int exitCellH1V3 = roadLength / 4;
-        int exitCellH1V4 = roadLength * 3 / 4;
+        int exitCellH1V3 = roadLength * 3 / 4;
+        int exitCellH1V4 = roadLength / 4;
         int exitCellH2V5 = roadLength / 2;
         int exitCellH3V7 = roadLength * 5 / 6;
         
