@@ -6,6 +6,10 @@ import java.util.Random;
 
 import com.trafficsimulator.utility.Constants;
 
+/**
+ * The core simulation model. Manages cars, the map, and
+ * advances the simulation one tick at a time.
+ */
 public class TrafficSimulator {
     private ArrayList<Car> cars;
     private Map map;
@@ -19,7 +23,14 @@ public class TrafficSimulator {
     private double speedupProbability = 0;
     private double turnProbability = 0.5;
 
-    // Main constructor
+    /**
+     * Creates a simulation with the given settings and map type.
+     * @param spawnRate Target number of cars spawned per interval
+     * @param roadLength Length of roads in the map
+     * @param minSpeed Minimum speed a car can be assigned on spawn
+     * @param maxSpeed Maximum speed a car can be assigned on spawn
+     * @param mapType Name of the map layout to use
+     */
     public TrafficSimulator(int spawnRate, int roadLength, int minSpeed, int maxSpeed, String mapType) {
         this.rand = new Random();
         this.spawnRate = spawnRate;
@@ -40,7 +51,12 @@ public class TrafficSimulator {
         this.initializeSimulation(selectedMap);
     }
 
-    // Deterministic random constructor for testing of random functions.
+    /**
+     * Creates a simulation with a seeded random instance and a pre-built map.
+     * Used for deterministic testing of random behaviour.
+     * @param rand Seeded random instance
+     * @param map Pre-built map to simulate on
+     */
     public TrafficSimulator(Random rand, Map map) {
         this.spawnRate = 5;
         this.minSpeed = 2;
@@ -49,6 +65,10 @@ public class TrafficSimulator {
         this.initializeSimulation(map);
     }
 
+    /**
+     * Sets up the shared state for both constructors.
+     * @param map Map to run the simulation on
+     */
     private void initializeSimulation(Map map) {
         this.map = map;
         cars = new ArrayList<>();
@@ -57,32 +77,54 @@ public class TrafficSimulator {
         stats = new Statistics(minSpeed, maxSpeed, spawnRate, roadLength, map.getType());
     }
 
-    // Getters
+    /**
+     * @return All cars currently active in the simulation
+     */
     public ArrayList<Car> getCars() {
         return cars;
     }
 
+    /**
+     * @return Number of ticks elapsed since the simulation started or was last reset
+     */
     public int getCurrentTick() {
         return tickCount;
     }
 
+    /**
+     * @return Target number of cars spawned per interval
+     */
     public int getSpawnRate() {
         return spawnRate;
     }
 
+    /**
+     * @param spawnRate New target spawn rate
+     */
     public void setSpawnRate(int spawnRate) {
         this.spawnRate = spawnRate;
     }
 
+    /**
+     * @param map New map to use in the simulation
+     */
     public void setMap(Map map) {
         this.map = map;
     }
 
+    /**
+     * @return The map currently used by the simulation
+     */
     public Map getMap() {
         return map;
     }
 
-    // Calculates Positions for cars, Does not move
+    /**
+     * Calculates new speeds for all cars based on their gap ahead,
+     * road speed bonus, and random slow/speedup probabilities.
+     * Does not move any car.
+     * @return Map of each car to its calculated new speed
+     */
     private HashMap<Car, Integer> updateSpeeds() {
         HashMap<Car, Integer> newSpeeds = new HashMap<>();
 
@@ -116,7 +158,11 @@ public class TrafficSimulator {
         return newSpeeds;
     }
 
-    // Moves all the cars to their new positons and removes cars that leave the road
+    /**
+     * Moves all cars to their new positions using the pre-calculated speeds.
+     * Cars that reach the end of their road are transferred or removed.
+     * @param newSpeeds Map of each car to its new speed from {@link #updateSpeeds()}
+     */
     private void moveCars(HashMap<Car, Integer> newSpeeds) {
         ArrayList<Car> carsToRemove = new ArrayList<>();
         HashMap<Car, Integer> resolvedPositions = new HashMap<>();
@@ -164,7 +210,10 @@ public class TrafficSimulator {
         cars.removeAll(carsToRemove);
     }
 
-    //Function to overtake
+    /**
+     * Iterates over all cars and attempts a lane change for each one
+     * that is not on lane-change cooldown.
+     */
     private void tryChangeLanes() {
         for (Car car : cars) {
             if (car.getLaneChangeCooldown() > 0) {
@@ -175,6 +224,11 @@ public class TrafficSimulator {
         }
     }
 
+    /**
+     * Evaluates whether a single car should merge back to its slow lane
+     * or move to an overtake lane, then executes the change if safe.
+     * @param car Car to evaluate
+     */
     private void tryChangeLane(Car car) {
         Road currentRoad = car.getRoad();
         int position = car.getPosition();
@@ -215,6 +269,15 @@ public class TrafficSimulator {
         }
     }
 
+    /**
+     * Moves a car from one road to another at the same position
+     * and starts its lane-change cooldown.
+     * @param car Car performing the lane change
+     * @param from Road the car is leaving
+     * @param to Road the car is moving to
+     * @param position Cell index where the lane change occurs
+     * @param overtaking True if moving to an overtake lane, false if merging back
+     */
     private void executeChangeLane(Car car, Road from, Road to, int position, boolean overtaking) {
         from.setCell(position, null);
         car.setRoad(to);
@@ -222,12 +285,20 @@ public class TrafficSimulator {
         car.setLaneChangeCooldown(5);
     }
     
+    /**
+     * Determines whether a car should spawn at a given cell this tick.
+     * @param cell The road cell at spawn position 0
+     * @return True if the cell is empty and a random roll passes the spawn chance
+     */
     private boolean spawnCondition(RoadObject cell) {
         double randomValue = this.rand.nextDouble(0, 1);
         return cell == null && randomValue < this.spawnChance;
     }
 
-    // Function spawns cars based on spawnrate per tick.
+    /**
+     * Attempts to spawn a new car at position 0 of each spawn road,
+     * using a probability derived from the configured spawn rate.
+     */
     private void spawnCar() {
         for (Road road : map.getRoads()) {
             if (!road.isSpawnRoad())
@@ -242,7 +313,10 @@ public class TrafficSimulator {
         }
     }
 
-    //Update check for cars on obstacles that are not triggered at start/end of road
+    /**
+     * Checks all cars against mid-road obstacles such as exit lanes.
+     * Cars that want to turn are transferred to the exit lane immediately.
+     */
     private void handleMidRoadObstacles() {
         for (Car car : cars) {
             Road road = car.getRoad();
@@ -254,7 +328,11 @@ public class TrafficSimulator {
         }
     }
 
-    // Tick update. Should be callable by controller
+    /**
+     * Advances the simulation by one tick. Runs obstacle updates,
+     * lane changes, speed calculations, movement, mid-road obstacle
+     * handling, spawning, and statistics in that order.
+     */
     public void tickUpdate() {
         tickCount++;
         map.updateObstacles(tickCount);
@@ -266,21 +344,31 @@ public class TrafficSimulator {
         stats.update(cars, nextID);
     }
 
-    // Returns the statistics of the current tick
+    /**
+     * @return The statistics object tracking the current simulation run
+     */
     public Statistics getStats() {
         return stats;
     }
 
-    // Gets the final state of statistics for the termination of the simulation
+    /**
+     * @return Formatted final statistics report for the completed simulation
+     */
     public String getFinalStats() {
         return stats.getFinalReport();
     }
 
+    /**
+     * @return Formatted report of the simulation's initial settings
+     */
     public String getSettingsReport() {
         return stats.getSettingsReport();
     }
 
-    // Clears all cars of the map. Resets Cars, tickcount, car ID and Statistic
+    /**
+     * Clears all cars from the map and resets the tick count,
+     * car ID counter, and statistics to their initial state.
+     */
     public void resetSimulation() {
         map.clearVehicle();
         cars = new ArrayList<>();
