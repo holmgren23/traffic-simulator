@@ -10,7 +10,7 @@ public record InputParametersDTO(
     Integer roadLength,
     double minSpeed,
     double maxSpeed,
-    double spawnRate,
+    double spawnPercent,
     double timeScalingFactor,
     double timeScalingRaw,
     boolean runOffline,

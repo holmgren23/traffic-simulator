@@ -4,38 +4,61 @@ import java.util.ArrayList;
 
 import com.trafficsimulator.model.Road.Direction;
 
+/**
+ * Holds all roads in a simulation layout and provides
+ * utility methods for querying gaps, transferring cars,
+ * and updating obstacles. Also contains factory methods
+ * for creating pre-configured map layouts.
+ */
 public class Map {
     private ArrayList<Road> roads;
     private MapType type;
     private static final int CELL_SIZE = 5;
 
-    // initialize a new map that can hold roads
+    /**
+     * Creates an empty map of the given type.
+     * Roads must be added separately via {@link #addRoad(Road)}.
+     * @param type The layout type this map represents
+     */
     public Map(MapType type) {
         this.type = type;
         roads = new ArrayList<>();
     }
 
-    // Add a road to a map
+    /**
+     * @param road Road to add to this map
+     */
     public void addRoad(Road road) {
         roads.add(road);
     }
 
-    // Get roads from a map
+    /**
+     * @return All roads in this map
+     */
     public ArrayList<Road> getRoads() {
         return roads;
     }
 
-    // add an obstacle to a road based on the obstacles position
+    /**
+     * Places an obstacle on a road at the obstacle's own position.
+     * @param obstacle Obstacle to add
+     * @param road Road to place the obstacle on
+     */
     public void addObstacle(Obstacle obstacle, Road road) {
         road.setObstacle(obstacle.getPosition(), obstacle);
     }
 
-    // Returns preconfigured standard map types
+    /**
+     * @return The layout type of this map
+     */
     public MapType getType() {
         return type;
     }
 
-    // Update all obstacles for all roads.
+    /**
+     * Recalculates the open/closed state of every obstacle on every road.
+     * @param tickCount Current simulation tick
+     */
     public void updateObstacles(int tickCount) {
         for (Road road : roads) {
             for (int i = 0; i < road.getLength(); i++) {
@@ -47,8 +70,16 @@ public class Map {
         }
     }
 
-    // Finds and returns the distance to the Road Object ahead.
+    /**
+     * Returns the number of empty cells between the given position
+     * and the next blocking object (vehicle or closed obstacle) ahead.
+     * Returns {@link Integer#MAX_VALUE} if the road end is reached first.
+     * @param road Road to check
+     * @param position Cell position of the car asking for the gap
+     * @return Number of free cells ahead, or MAX_VALUE if nothing blocks before the road end
+     */
     public int gap(Road road, int position) {
+        Car car = (road.getCell(position) instanceof Car c) ? c : null;
         int i = position + 1;
         // Find gap to the next car
         while (i < road.getLength()) {
@@ -58,7 +89,7 @@ public class Map {
             if (vehicle != null) {
                 break; // Find vehicle onbject
             }
-            if (obstacle instanceof Obstacle obs && !obs.isOpen()) {
+            if (obstacle instanceof Obstacle obs && !obs.isOpenFor(car)) {
                 break; // Find obstacle object
             }
             i++;
@@ -70,6 +101,14 @@ public class Map {
         return i - position - 1;
     }
 
+    /**
+     * Returns the number of empty cells between the given position
+     * and the nearest vehicle behind it on the same road.
+     * Returns {@link Integer#MAX_VALUE} if no vehicle is found.
+     * @param road Road to check
+     * @param position Cell position to check behind
+     * @return Number of free cells behind, or MAX_VALUE if nothing is behind
+     */
     public int gapBehind(Road road, int position) {
         int i = position - 1;
         while (i >= 0) {
@@ -85,7 +124,12 @@ public class Map {
         return position - i - 1;
     }
 
-    // Gets the Road object that is ahead
+    /**
+     * Returns the first blocking road object ahead of the given position.
+     * @param road Road to check
+     * @param position Cell position to look ahead from
+     * @return The blocking {@link RoadObject} ahead, or null if the road end is reached first
+     */
     public RoadObject getObjectAhead(Road road, int position) {
         int gapAhead = gap(road, position);
         if (gapAhead == Integer.MAX_VALUE) {
@@ -94,7 +138,9 @@ public class Map {
         return road.getCell(position + gapAhead + 1);
     }
 
-    // Clears all vehicles from the map
+    /**
+     * Removes all vehicles from every cell on every road.
+     */
     public void clearVehicle() {
         for (Road road : roads) {
             for (int i = 0; i < road.getLength(); i++) {
@@ -103,16 +149,33 @@ public class Map {
         }
     }
 
-    // Fucntions for finding how much space the map needs in the window
+    /**
+     * @return The maximum x-coordinate used by any road, used to size the view
+     */
     public int getMapWidth() {
-        return roads.stream().mapToInt(r -> Math.max(r.getStartX(), r.getEndX())).max().orElse(800);
+        return roads.stream()
+            .mapToInt(r -> Math.max(
+                Math.max(r.getStartX(), r.getEndX()),
+                Math.max(r.getStartX(), r.getEndX())))
+            .max().orElse(800);
     }
-
+    /**
+     * @return The maximum y-coordinate used by any road, plus padding, used to size the view
+     */
     public int getMapHeight() {
-        return roads.stream().mapToInt(r -> Math.max(r.getStartY(), r.getEndY())).max().orElse(100) + 30;
+        return roads.stream()
+            .mapToInt(r -> Math.max(r.getStartY(), r.getEndY()))
+            .max().orElse(200) + 30;
     }
 
-    // For transfering cars at the end of a road to an other road object
+    /**
+     * Transfers a car that has reached the end of its road to the
+     * connected exit road, or removes it if no exit exists or the
+     * target cell is occupied.
+     * @param car Car that has reached the end of its road
+     * @param fromRoad Road the car is leaving
+     * @param carsToRemove List to add the car to if it should be removed from the simulation
+     */
     public void transferCar(Car car, Road fromRoad, ArrayList<Car> carsToRemove) {
         fromRoad.setCell(car.getPosition(), null);
 
@@ -134,7 +197,35 @@ public class Map {
         }
     }
 
-    // Two way road constructor with traffic light on each side
+    /**
+     * Transfers a car onto an exit road via a mid-road {@link ExitLane} obstacle.
+     * If the target cell is occupied the car stays in place.
+     * @param car Car that wants to exit
+     * @param exit The exit lane the car is turning into
+     */
+    public void transferCar(Car car, ExitLane exit) {
+        Road fromRoad = car.getRoad();
+        Road targetRoad = exit.getExitRoad();
+        int targetPos = exit.getExitPosition();
+
+        fromRoad.setCell(car.getPosition(), null);
+
+        if (targetRoad.getCell(targetPos) == null) {
+            car.setPosition(targetPos);
+            car.setRoad(targetRoad);
+            targetRoad.setCell(targetPos, car);
+        } else {
+            fromRoad.setCell(car.getPosition(), car);
+        }
+    }
+
+    /**
+     * Creates a two-way highway with two lanes per direction.
+     * The outer lane in each direction is the slow/spawn lane,
+     * the inner lane is the overtake lane.
+     * @param roadLength Number of cells per road
+     * @return Configured highway map
+     */
     public static Map createHighway(int roadLength) {
         Map map = new Map(MapType.HIGHWAY);
 
@@ -158,7 +249,11 @@ public class Map {
         return map;
     }
 
-    // Creates a one way road
+    /**
+     * Creates a single one-way road with a traffic light at its midpoint.
+     * @param roadLength Number of cells on the road
+     * @return Configured one-way map
+     */
     public static Map createOneWay(int roadLength) {
         Map map = new Map(MapType.ONE_WAY);
         int laneWidth = 8;
@@ -171,7 +266,11 @@ public class Map {
         return map;
     }
 
-    // Creates a map with a one road intersecting into an other road
+    /**
+     * Creates a T-intersection where a vertical road merges into a horizontal road at its midpoint.
+     * @param roadLength Number of cells for the main horizontal road
+     * @return Configured T-intersection map
+     */
     public static Map createTIntersection(int roadLength) {
         Map map = new Map(MapType.T_INTERSECTION);
         int width = roadLength * CELL_SIZE;
@@ -194,6 +293,12 @@ public class Map {
         return map;
     }
 
+    /**
+     * Creates a two-way road with five lanes per direction.
+     * Each lane has a speed bonus that increases toward the fast lane.
+     * @param roadLength Number of cells per road
+     * @return Configured autobahn map
+     */
     public static Map createAutobahn(int roadLength) {
         Map map = new Map(MapType.AUTOBAHN);
 
@@ -244,6 +349,60 @@ public class Map {
         for (int i = 5; i <= 9; i++) {
             map.getRoads().get(i).setSpeedBonus(9 - i);
         }
+
+        return map;
+    }
+
+    /**
+     * Creates four roads connected in a clockwise loop via intersections.
+     * Has no exits, so cars circulate indefinitely and the map fills up over time.
+     * @param roadLength Number of cells per road segment
+     * @return Configured intersection loop map
+     */
+    public static Map createLoop(int roadLength) {
+        Map map = new Map(MapType.INTERSECTION_LOOP);
+        int laneWidth = 8;
+        int width = roadLength * CELL_SIZE * 4 / 3;
+        int height = width;
+
+        int junctionLeft = width / 4;
+        int junctionRight = width * 3 / 4;
+        int junctionTop = height / 4;
+        int junctionBottom = height * 3 / 4;
+
+        //Horizontal roads spanning up to the side vertical roads
+        Road topRoad = new Road(roadLength, Direction.EAST, 0, junctionTop, junctionRight, junctionTop, laneWidth);
+        Road bottomRoad = new Road(roadLength, Direction.WEST, width, junctionBottom, junctionLeft, junctionBottom, laneWidth);
+
+        //Vertical roads spanning up to the horizontal roads
+        Road leftRoad = new Road(roadLength, Direction.NORTH, junctionLeft, height, junctionLeft, junctionTop, laneWidth);
+        Road rightRoad = new Road(roadLength, Direction.SOUTH, junctionRight, 0, junctionRight, junctionBottom, laneWidth);
+
+        //Exit cell of all roads
+        int position = roadLength - 1;
+        
+        //Junction cells of roads
+        int junctionCell = roadLength / 4;
+
+        int clearance = 5;
+
+        //Horizontal roads intersects the into the vertical roads
+        map.addObstacle(new Intersection(position, rightRoad, junctionCell, clearance), topRoad);
+        map.addObstacle(new Intersection(position, leftRoad, junctionCell, clearance), bottomRoad);
+
+        //Vertical roads intersects the into the horizontal roads
+        map.addObstacle(new Intersection(position, topRoad, junctionCell, clearance), leftRoad);
+        map.addObstacle(new Intersection(position, bottomRoad, junctionCell, clearance), rightRoad);
+
+        topRoad.setExit(rightRoad, roadLength / 3);
+        rightRoad.setExit(bottomRoad, roadLength / 3);
+        bottomRoad.setExit(leftRoad, roadLength / 3);
+        leftRoad.setExit(topRoad, roadLength / 3);
+
+        map.addRoad(topRoad);
+        map.addRoad(bottomRoad);
+        map.addRoad(leftRoad);
+        map.addRoad(rightRoad);
 
         return map;
     }

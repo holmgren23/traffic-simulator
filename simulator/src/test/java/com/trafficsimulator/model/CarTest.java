@@ -12,7 +12,7 @@ public class CarTest {
 
     @BeforeEach
     public void setUp() {
-        car = new Car(1, 2, 3);
+        car = new Car(1, 2, 3, 0.2);
     }
     
     @AfterEach void cleanUp() {

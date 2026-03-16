@@ -14,6 +14,7 @@ public class Intersection extends Obstacle {
     }
 
     //Priority check for closing and opening the road
+    @Override
     public void calculatePriority(int tickCount) {
         setOpen(isJunctionClear());
     }

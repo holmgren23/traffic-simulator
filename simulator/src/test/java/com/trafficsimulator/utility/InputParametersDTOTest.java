@@ -51,8 +51,8 @@ public class InputParametersDTOTest {
   }
    
   @Test
-  public void testGetSpawnRate() {
-    assertEquals(6, dto.spawnRate());
+  public void testGetSpawnPercent() {
+    assertEquals(6, dto.spawnPercent());
   }
   
   @Test

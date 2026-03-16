@@ -22,7 +22,7 @@ public class Statistics {
     private double currentAvgSpeed = 0;
     private int currentStationary = 0;
     private int currentCarCount = 0;
-    private int minSpeed, maxSpeed, spawnRate, roadLength;
+    private int minSpeed, maxSpeed, spawnProbability, roadLength;
     private MapType mapType;
     private int peakCarCount = 0;
     private double minAvgSpeed = Double.MAX_VALUE;
@@ -35,14 +35,14 @@ public class Statistics {
      * Creates a Statistics object with the given simulation settings.
      * @param minSpeed   Minimum maxspeed when spawning cars (cells/tick)
      * @param maxSpeed   Maximum maxspeed when spawning cars (cells/tick)
-     * @param spawnRate  Tickrate interval for spawning new cars
+     * @param spawnProbability  Probability of spawning new cars each tick
      * @param roadLength Length of each road segment in cells
      * @param mapType    The map layout used in current simulation
      */
-    public Statistics(int minSpeed, int maxSpeed, int spawnRate, int roadLength, MapType mapType) {
+    public Statistics(int minSpeed, int maxSpeed, double spawnProbability, int roadLength, MapType mapType) {
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
-        this.spawnRate = spawnRate;
+        this.spawnProbability = HelperMethods.probabilityToPercent(spawnProbability);
         this.roadLength = roadLength;
         this.mapType = mapType;
     }
@@ -120,7 +120,7 @@ public class Statistics {
             totalElapsedTimeMS,
             minSpeed,
             maxSpeed,
-            spawnRate,
+            spawnProbability,
             roadLength,
             mapType,
             peakCarCount,
@@ -168,7 +168,7 @@ public class Statistics {
             " \n" +
             " \n" +
             " \n",
-            mapType, (int)HelperMethods.speedToKMH(minSpeed), (int)HelperMethods.speedToKMH(maxSpeed), spawnRate, roadLength
+            mapType, (int)HelperMethods.speedToKMH(minSpeed), (int)HelperMethods.speedToKMH(maxSpeed), spawnProbability, roadLength
         );
     }
 
