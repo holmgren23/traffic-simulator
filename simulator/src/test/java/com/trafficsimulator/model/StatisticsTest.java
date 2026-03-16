@@ -89,6 +89,67 @@ public class StatisticsTest {
         assertEquals(4.0, snapshot.avgOutFlow());
     }
 
+    // Verify that peak car count is updated when more cars are added
+    @Test
+    public void testPeakCarCount_increasesWithMoreCars() {
+        Car car1 = new Car(1, 0, 5);
+        Car car2 = new Car(2, 1, 5);
+
+        stats.update(List.of(car1), 1);
+        assertEquals(1, stats.getSnapshot().peakCarCount());
+
+        stats.update(List.of(car1, car2), 2);
+        assertEquals(2, stats.getSnapshot().peakCarCount());
+    }
+
+    // Verify that peak car count does not decrease when cars leave
+    @Test
+    public void testPeakCarCount_doesNotDecrease() {
+        Car car1 = new Car(1, 0, 5);
+        Car car2 = new Car(2, 1, 5);
+
+        stats.update(List.of(car1, car2), 2);
+        assertEquals(2, stats.getSnapshot().peakCarCount());
+
+        // One car leaves, peak should still be 2
+        stats.update(List.of(car1), 2);
+        assertEquals(2, stats.getSnapshot().peakCarCount());
+    }
+
+    // Verify that min average speed is tracked correctly
+    @Test
+    public void testMinAvgSpeed_recordsLowestSpeed() {
+        Car fastCar = new Car(1, 0, 5);
+        fastCar.setCurrentSpeed(4);
+        stats.update(List.of(fastCar), 1);
+
+        Car slowCar = new Car(2, 0, 5);
+        slowCar.setCurrentSpeed(1);
+        stats.update(List.of(slowCar), 2);
+
+        // Min avg speed should reflect the tick where the slow car was alone (speed 1 → 30 km/h)
+        assertEquals(30.0, stats.getSnapshot().minAvgSpeedKmh());
+    }
+
+    // Verify that min avg speed is zero when no cars are present
+    @Test
+    public void testMinAvgSpeed_isZeroWithNoCars() {
+        stats.update(List.of(), 0);
+        assertEquals(0.0, stats.getSnapshot().minAvgSpeedKmh());
+    }
+
+    // Verify that registerLaneChange increments the total lane change counter
+    @Test
+    public void testRegisterLaneChange_incrementsCounter() {
+        assertEquals(0, stats.getSnapshot().totalLaneChanges());
+
+        stats.registerLaneChange();
+        stats.registerLaneChange();
+        stats.registerLaneChange();
+
+        assertEquals(3, stats.getSnapshot().totalLaneChanges());
+    }
+
     @Test
     public void testFinalReportFormat() {
         // setup with some cars and stats

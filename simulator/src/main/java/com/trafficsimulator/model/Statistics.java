@@ -9,10 +9,14 @@ import com.trafficsimulator.utility.HelperMethods;
  * Tracks and calculates traffic statistics during a simulation.
  * Updated every tick via {@link #update(java.util.List, int)},
  * and can produce a {@link StatSnapshot} at any point in time.
+ * <p>
+ * In addition to current-state metrics, this class tracks peak values
+ * and cumulative counters such as peak car count, minimum average speed,
+ * and total number of lane changes performed.
  */
 public class Statistics {
-    private int totalCarsSpawned = 0;
-    private int totalCarsExited = 0;
+    private long totalCarsSpawned = 0;
+    private long totalCarsExited = 0;
     private long totalTicks = 0;
     private long totalElapsedTimeMS = 0;
     private double currentAvgSpeed = 0;
@@ -20,6 +24,9 @@ public class Statistics {
     private int currentCarCount = 0;
     private int minSpeed, maxSpeed, spawnRate, roadLength;
     private MapType mapType;
+    private int peakCarCount = 0;
+    private double minAvgSpeed = Double.MAX_VALUE;
+    private long totalLaneChanges = 0;
 
     /** Creates an empty Statistics object with no simulation settings. */
     public Statistics() {}
@@ -42,7 +49,8 @@ public class Statistics {
 
     /**
      * Updates statistics for the current tick.
-     * Increments tick count, recalculates average speed, and counts stationary cars.
+     * Increments tick count, recalculates average speed, counts stationary cars,
+     * and updates peak car count and minimum average speed records.
      * @param cars         All cars currently active on the map
      * @param totalSpawned Total number of cars spawned since simulation start
      */
@@ -53,7 +61,10 @@ public class Statistics {
         this.currentCarCount = cars.size();
         this.totalCarsSpawned = totalSpawned;
         this.totalCarsExited = totalSpawned - this.currentCarCount;
-        
+
+        // Track peak number of simultaneous cars
+        if (currentCarCount > peakCarCount) peakCarCount = currentCarCount;
+
        // If there are no cars, average speed and stationary count is zero
         if (cars.isEmpty()) {
             this.currentAvgSpeed = 0;
@@ -72,11 +83,23 @@ public class Statistics {
         // Update current stats
         this.currentStationary = stoppedCount;
         this.currentAvgSpeed = speedSum / cars.size();
+
+        // Track minimum average speed seen during the simulation
+        if (currentAvgSpeed < minAvgSpeed) minAvgSpeed = currentAvgSpeed;
+    }
+
+    /**
+     * Registers a single lane change event.
+     * Should be called each time a car successfully switches lanes.
+     */
+    public void registerLaneChange() {
+        totalLaneChanges++;
     }
 
     /**
      * Creates an immutable snapshot of the current statistics.
      * Inflow and outflow rates are calculated as vehicles per minute.
+     * Includes peak car count, minimum average speed, and total lane changes.
      * @return A {@link StatSnapshot} representing the current state
      */
     public StatSnapshot getSnapshot() {
@@ -84,6 +107,7 @@ public class Statistics {
         // Calculate average inflow and outflow rates
         double avgInFlow = (totalMinutes > 0) ? (totalCarsSpawned / totalMinutes) : 0;
         double avgOutFlow = (totalMinutes > 0) ? (totalCarsExited / totalMinutes) : 0;
+        double resolvedMinAvgSpeed = (minAvgSpeed == Double.MAX_VALUE) ? 0 : minAvgSpeed;
         // Create and return a snapshot of the current statistics
         return new StatSnapshot(
             totalCarsSpawned,
@@ -98,7 +122,10 @@ public class Statistics {
             maxSpeed,
             spawnRate,
             roadLength,
-            mapType
+            mapType,
+            peakCarCount,
+            HelperMethods.speedToKMH(resolvedMinAvgSpeed),
+            totalLaneChanges
         );
     }
 
@@ -135,10 +162,10 @@ public class Statistics {
         return String.format(
             "--- SETTINGS ---\n"+
             "Map: %s\n" +
-            "Min Speed: %d km/h\n" +
-            "Max Speed: %d kmh/h\n" +
+            "Speed Range: %d-%d km/h\n" +
             "Spawn Rate: %d\n" +
             "Road Length: %d" +
+            " \n" +
             " \n" +
             " \n",
             mapType, (int)HelperMethods.speedToKMH(minSpeed), (int)HelperMethods.speedToKMH(maxSpeed), spawnRate, roadLength

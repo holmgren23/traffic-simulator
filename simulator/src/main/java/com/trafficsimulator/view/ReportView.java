@@ -7,6 +7,8 @@ import java.util.Locale;
 import com.trafficsimulator.model.StatSnapshot;
 import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.utility.Constants;
+import com.trafficsimulator.utility.HelperMethods;
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -108,13 +110,16 @@ public class ReportView extends VBox {
                 writer.println("Metric;Value;;Settings:");
                 
                 // Data rows
-                writer.println("Total Elapsed Time;" + timeFormatted + ";;Min Speed;" + stats.minSpeed());
-                writer.println("Total Ticks;" + stats.totalTicks() + ";;Max Speed;" + stats.maxSpeed());
-                writer.println("Total Cars Spawned;" + stats.totalSpawned() + ";;Road Length;" + stats.roadLength());
-                writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars()) + ";; Spawn Rate;" + stats.spawnRate());
-                writer.println("Average Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.currentAvgSpeedKmh()));
+                writer.println("Total Elapsed Time;" + timeFormatted + ";;Map;" + stats.mapType());
+                writer.println("Total Ticks;" + stats.totalTicks() + ";;Speed Range;" + (int)HelperMethods.speedToKMH(stats.minSpeed()) + " - " + (int)HelperMethods.speedToKMH(stats.maxSpeed()) + " km/h");
+                writer.println("Total Cars Spawned;" + stats.totalSpawned());
+                writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars()) + ";;Road Length;" + stats.roadLength());
+                writer.println("Average Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.currentAvgSpeedKmh())+ ";;Spawn Rate;" + stats.spawnRate());
                 writer.println("Average Inflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgInFlow()));
                 writer.println("Average Outflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgOutFlow()));
+                writer.println("Peak Traffic (cars);" + stats.peakCarCount());
+                writer.println("Min Avg Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.minAvgSpeedKmh()));
+                writer.println("Total Lane Changes;" + stats.totalLaneChanges());
                 
             } catch (Exception e) {
                 System.err.println("Failed to save CSV: " + e.getMessage());

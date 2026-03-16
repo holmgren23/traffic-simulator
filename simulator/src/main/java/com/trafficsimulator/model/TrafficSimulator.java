@@ -199,6 +199,7 @@ public class TrafficSimulator {
         car.setRoad(to);
         to.setCell(position, car);
         car.setLaneChangeCooldown(5);
+        stats.registerLaneChange();
     }
     
     private boolean spawnCondition(RoadObject cell) {

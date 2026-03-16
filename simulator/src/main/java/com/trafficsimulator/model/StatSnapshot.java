@@ -12,14 +12,17 @@ package com.trafficsimulator.model;
  * @param avgOutFlow         Average number of cars leaving the map per tick
  * @param totalTicks         Total number of simulation ticks elapsed
  * @param totalElapsedTimeMS Total real-world time elapsed in milliseconds
- * @param minSpeed           Minimum allowed car speed (cells/tick)
- * @param maxSpeed           Maximum allowed car speed (cells/tick)
+ * @param minSpeed           Minimum car ideal speed (cells/tick)
+ * @param maxSpeed           Maximum car ideal speed (cells/tick)
  * @param spawnRate          Probability of spawning a car each tick (0–100)
  * @param roadLength         Length of each road segment in cells
  * @param mapType            The type of map layout used in this simulation
+ * @param peakCarCount       Highest number of cars simultaneously on the map
+ * @param minAvgSpeedKmh     Lowest average speed recorded during the simulation, in km/h
+ * @param totalLaneChanges   Total number of lane changes performed by all cars
  */
 public record StatSnapshot(
-    int totalSpawned,
+    long totalSpawned,
     int currentCars,
     int stationaryCars,
     double currentAvgSpeedKmh,
@@ -31,5 +34,8 @@ public record StatSnapshot(
     int maxSpeed,
     int spawnRate,
     int roadLength,
-    MapType mapType
+    MapType mapType,
+    int peakCarCount,
+    double minAvgSpeedKmh,
+    long totalLaneChanges
 ) {}
