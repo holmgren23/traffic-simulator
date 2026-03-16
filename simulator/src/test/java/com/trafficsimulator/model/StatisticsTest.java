@@ -92,8 +92,8 @@ public class StatisticsTest {
     // Verify that peak car count is updated when more cars are added
     @Test
     public void testPeakCarCount_increasesWithMoreCars() {
-        Car car1 = new Car(1, 0, 5);
-        Car car2 = new Car(2, 1, 5);
+        Car car1 = new Car(1, 0, 5, 0.2);
+        Car car2 = new Car(2, 1, 5, 0.2);
 
         stats.update(List.of(car1), 1);
         assertEquals(1, stats.getSnapshot().peakCarCount());
@@ -105,8 +105,8 @@ public class StatisticsTest {
     // Verify that peak car count does not decrease when cars leave
     @Test
     public void testPeakCarCount_doesNotDecrease() {
-        Car car1 = new Car(1, 0, 5);
-        Car car2 = new Car(2, 1, 5);
+        Car car1 = new Car(1, 0, 5, 0.2);
+        Car car2 = new Car(2, 1, 5, 0.2);
 
         stats.update(List.of(car1, car2), 2);
         assertEquals(2, stats.getSnapshot().peakCarCount());
@@ -119,11 +119,11 @@ public class StatisticsTest {
     // Verify that min average speed is tracked correctly
     @Test
     public void testMinAvgSpeed_recordsLowestSpeed() {
-        Car fastCar = new Car(1, 0, 5);
+        Car fastCar = new Car(1, 0, 5, 0.2);
         fastCar.setCurrentSpeed(4);
         stats.update(List.of(fastCar), 1);
 
-        Car slowCar = new Car(2, 0, 5);
+        Car slowCar = new Car(2, 0, 5, 0.2);
         slowCar.setCurrentSpeed(1);
         stats.update(List.of(slowCar), 2);
 

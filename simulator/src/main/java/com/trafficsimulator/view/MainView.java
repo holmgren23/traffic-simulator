@@ -118,6 +118,30 @@ public class MainView extends Application {
         primaryStage.setScene(window);
         primaryStage.show();
     }
+    
+    public void showOfflineRender() {
+        Label title = new Label("Running simulation...");
+        title.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
+        title.setFont(new Font("Arial", 42));
+
+        OfflineView offlineView = new OfflineView();
+
+        VBox card = new VBox(24, title, offlineView);
+        card.setAlignment(Pos.CENTER);
+        card.setStyle(
+            "-fx-background-color: rgba(0, 0, 0, 0.30);" +
+            "-fx-background-radius: 20;" +
+            "-fx-padding: 40;"
+        );
+        card.setMaxWidth(Region.USE_PREF_SIZE);
+        card.setMaxHeight(Region.USE_PREF_SIZE);
+
+        StackPane root = new StackPane(card);
+        root.setStyle("-fx-background-color: rgb(54, 66, 56);");
+        Scene window = new Scene(root, windowWidth, windowHeight);
+        primaryStage.setScene(window);
+        primaryStage.show();
+    }
 
     /**
      * Creates and shows the simulation visuals. Started from

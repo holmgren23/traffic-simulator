@@ -155,8 +155,8 @@ class TrafficSimulatorTest {
     @Test
     void testLaneChange_counterIncreasesWhenCarChangesLane() {
         // Setup two parallel roads where the car can overtake
-        Road slowLane = new Road(200);
-        Road fastLane = new Road(200);
+        Road slowLane = new Road(200, Direction.WEST, 0, 0, 120, 50, 8);
+        Road fastLane = new Road(200, Direction.WEST, 0, 0, 120, 50, 8);
         slowLane.setOvertakeLane(fastLane);
         fastLane.setMergeLane(slowLane);
 
@@ -166,26 +166,26 @@ class TrafficSimulatorTest {
         TrafficSimulator sim = new TrafficSimulator(new Random(seed), map);
 
         // Place a blocking car ahead and a fast car behind it on the slow lane
-        Car blocker = new Car(0, 3, 1);
+        Car blocker = new Car(0, 3, 1, 0.2);
         blocker.setRoad(slowLane);
         blocker.setCurrentSpeed(1);
         slowLane.setCell(3, blocker);
         sim.getCars().add(blocker);
 
-        Car overtaker = new Car(1, 0, 5);
+        Car overtaker = new Car(1, 0, 5, 0.2);
         overtaker.setRoad(slowLane);
         overtaker.setCurrentSpeed(0);
         slowLane.setCell(0, overtaker);
         sim.getCars().add(overtaker);
 
-        int laneChangesBefore = sim.getStats().getSnapshot().totalLaneChanges();
+        long laneChangesBefore = sim.getStats().getSnapshot().totalLaneChanges();
 
         // Run enough ticks to trigger a lane change
         for (int i = 0; i < 10; i++) {
             sim.tickUpdate();
         }
 
-        int laneChangesAfter = sim.getStats().getSnapshot().totalLaneChanges();
+        long laneChangesAfter = sim.getStats().getSnapshot().totalLaneChanges();
         assertTrue(laneChangesAfter > laneChangesBefore, "Lane change counter should increase after cars switch lanes");
     }
 
