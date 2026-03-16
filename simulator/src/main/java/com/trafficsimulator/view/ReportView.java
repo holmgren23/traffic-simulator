@@ -111,10 +111,10 @@ public class ReportView extends VBox {
                 
                 // Data rows
                 writer.println("Total Elapsed Time;" + timeFormatted + ";;Map;" + stats.mapType());
-                writer.println("Total Ticks;" + stats.totalTicks() + ";;Preferred Car Speed;" + (int)HelperMethods.speedToKMH(stats.minSpeed()) + " - " + (int)HelperMethods.speedToKMH(stats.maxSpeed()) + " km/h");
-                writer.println("Total Cars Spawned;" + stats.totalSpawned());
-                writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars()) + ";;Road Length;" + stats.roadLength());
-                writer.println("Average Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.currentAvgSpeedKmh())+ ";;Spawn Probability;" + String.format(Locale.forLanguageTag("sv"), "%.0f%%", stats.spawnProbability() * 100));
+                writer.println("Total Ticks;" + stats.totalTicks() + ";;Preferred Car Speed (km/h);" + (int)HelperMethods.speedToKMH(stats.minSpeed()) + " - " + (int)HelperMethods.speedToKMH(stats.maxSpeed()));
+                writer.println("Total Cars Spawned;" + stats.totalSpawned() + ";;Road Length (cells);" + stats.roadLength());
+                writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars())+ ";;Spawn Probability (%/tick);" + String.format(Locale.forLanguageTag("sv"), "%.0f%%", stats.spawnProbability() * 100));
+                writer.println("Average Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.currentAvgSpeedKmh()));
                 writer.println("Average Inflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgInFlow()));
                 writer.println("Average Outflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgOutFlow()));
                 writer.println("Peak Traffic (cars);" + stats.peakCarCount());
