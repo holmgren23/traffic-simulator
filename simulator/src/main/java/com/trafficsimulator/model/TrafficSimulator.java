@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-import com.trafficsimulator.utility.Constants;
-
 /**
  * The core simulation model. Manages cars, the map, and
  * advances the simulation one tick at a time.
