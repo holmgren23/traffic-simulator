@@ -74,7 +74,8 @@ public class Obstacle implements RoadObject {
     public void calculatePriority(int tickCount) {
         switch (type) {
             case TRAFFIC_LIGHT -> calculateTrafficLight(tickCount); //Single road traffic light
-            case INTERSECTION, EXIT_LANE -> {} //
+            case INTERSECTION -> {}
+            case EXIT_LANE -> {}
         }
     }
 
@@ -84,8 +85,8 @@ public class Obstacle implements RoadObject {
      * @param tickCount Current simulation tick
      */
     private void calculateTrafficLight(int tickCount) {
-        int greenDuration = 20;
-        int redDuration = 20;
+        int greenDuration = 30;
+        int redDuration = 30;
         //This is maths out to a boolean that is true and false equal to greens/reds duration
         int cycleLength = greenDuration + redDuration;
         open = (tickCount % cycleLength) < greenDuration;

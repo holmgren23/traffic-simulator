@@ -21,7 +21,7 @@ public class TrafficSimulator {
     private Statistics stats;
     private double slowProbability = 0;
     private double speedupProbability = 0;
-    private double turnProbability = 0.5;
+    private double turnProbability = 0.9;
 
     /**
      * Creates a simulation with the given settings and map type.
@@ -44,6 +44,7 @@ public class TrafficSimulator {
           case "T Intersection" -> Map.createTIntersection(roadLength);
           case "Autobahn" -> Map.createAutobahn(roadLength);
           case "Intersection Loop" -> Map.createLoop(roadLength);
+          case "Grid of roads" -> Map.CreateGridOfRoads(roadLength);
           default -> Map.createHighway(roadLength); 
         };
 
@@ -145,6 +146,15 @@ public class TrafficSimulator {
 
             int gap = map.gap(road, position);
             speed = Math.min(speed, gap); // Brake
+
+            // Turn clamp
+            if (car.wantsToTurn()) {
+                RoadObject ahead = map.getObjectAhead(road, position);
+
+                if (ahead instanceof ExitLane) {
+                    speed = Math.min(speed, 1);
+                }
+            }
 
             RoadObject ahead = map.getObjectAhead(road, position);
             if (ahead instanceof Obstacle obs && !obs.isOpen() && gap == 0) {
@@ -320,13 +330,25 @@ public class TrafficSimulator {
     private void handleMidRoadObstacles() {
         for (Car car : cars) {
             Road road = car.getRoad();
-            RoadObject obstacle = road.getObstacle(car.getPosition());
-            if (obstacle instanceof ExitLane exit && car.wantsToTurn()) {
-                car.setCurrentSpeed(0);
-                map.transferCar(car, exit);
+            int position = car.getPosition();
+            if (position >= road.getLength()) continue; // skip invalid positions
+            RoadObject obstacle = road.getObstacle(position);
+          
+            if (obstacle instanceof ExitLane exit) {
+                if (exit.tryTurn(car, map)) {
+                    return;
+                }
             }
         }
     }
+
+    //Update conditions for vehicles intent to turn at next turn option.
+    private void updateTurnIntents() {
+        for (Car car : cars) {
+            car.updateTurnIntent(rand, tickCount);
+        }
+    }
+
 
     /**
      * Advances the simulation by one tick. Runs obstacle updates,
@@ -336,10 +358,11 @@ public class TrafficSimulator {
     public void tickUpdate() {
         tickCount++;
         map.updateObstacles(tickCount);
+        updateTurnIntents();
         tryChangeLanes();
         HashMap<Car, Integer> newSpeeds = updateSpeeds();
-        moveCars(newSpeeds);
         handleMidRoadObstacles();
+        moveCars(newSpeeds);
         spawnCar();
         stats.update(cars, nextID);
     }

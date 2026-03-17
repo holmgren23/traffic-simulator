@@ -19,8 +19,19 @@ public class ExitLane extends Obstacle {
     //Override of isOpen. Obstacle opens and closes depening on each indiviual cars intent to turn
     @Override
     public boolean isOpenFor(Car car) {
-        if (car == null) return true;
-        return !car.wantsToTurn();
+        return true;
+    }
+
+    public boolean tryTurn(Car car, Map map) {
+        if (!car.wantsToTurn()) return false;
+
+        if (exitRoad.getCell(exitPosition) != null) {
+            return false;  // destination occupied
+        }
+
+        car.setCurrentSpeed(0);
+        map.transferCar(car, this);
+        return true;
     }
 
     //Getters

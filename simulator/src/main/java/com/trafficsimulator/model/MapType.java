@@ -13,5 +13,7 @@ public enum MapType {
     /** Four roads connected in a clockwise loop via intersections. */
     INTERSECTION_LOOP,
     /** Two-way road with five lanes per direction and speed bonuses. */
-    AUTOBAHN
+    AUTOBAHN,
+    /** A grid network of roads traveling in and out */
+    GRID_OF_ROADS
 }
