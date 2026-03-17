@@ -44,7 +44,7 @@ public class Statistics {
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
         this.spawnProbability = spawnProbability;
-        this.roadLength = roadLength;
+        this.roadLength = HelperMethods.cellsToM(roadLength);
         this.mapType = mapType;
     }
 

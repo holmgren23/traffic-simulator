@@ -10,8 +10,11 @@ import javafx.scene.paint.Color;
 public class Constants {
   // Ticks and time
   public static final int TICK_LENGTH = 100;
-  public static final int TICK_TIME_FACTOR = 10; // use this for more realistic speeds ??
+  public static final double S_IN_TICK = 2.7;
   public static final int PROGRESS_UPDATE_TICKS = 1000;
+  
+  // Lengths
+  public static final double METERS_IN_CELL = 7.5;
   
   // Spawn probability
   public static final int SPAWN_PROBABILITY_MIN = 2;

@@ -42,12 +42,12 @@ public class MenuView extends GridPane {
   private Spinner<Integer> roadLengthControl, ticksToRunControl;
   private ComboBox<String> mapSelector;
   private CheckBox offlineRunCheckBox;
-  private int roadLengthMin = 100;
-  private int roadLengthMax = 10000;
-  private int roadLengthDefault = 200;
-  private int offlineTicksMin = 1000;
-  private int offlineTicksMax = 10000000;
-  private int offlineTicksDefault = 10000;
+  private int roadLengthMin = 5;
+  private int roadLengthMax = 120;
+  private int roadLengthDefault = 15;
+  private int offlineTimeMin = 30;
+  private int offlineTimeMax = 500000;
+  private int offlineTimeDefault = 600;
   private Tooltip minMaxAlert, maxMinAlert;
   
   /**
@@ -146,13 +146,13 @@ public class MenuView extends GridPane {
     ));
     VBox mapSelectorSection = new VBox(Constants.V_GAP, mapSelectorLabel, mapSelector);
     
-    Label roadLengthLabel = new Label("Road length");
+    Label roadLengthLabel = new Label("Road length (100 m)");
     this.roadLengthControl = new Spinner<Integer>();
     this.roadLengthControl.setEditable(true);
     this.roadLengthControl.setValueFactory(
       new SpinnerValueFactory.IntegerSpinnerValueFactory(this.roadLengthMin, this.roadLengthMax, this.roadLengthDefault)
     );
-    Tooltip roadLengthTooltip = new Tooltip("Set the length of the road (in number of cells)");
+    Tooltip roadLengthTooltip = new Tooltip("Set the length of the road (in 100 m increments)");
     roadLengthLabel.setTooltip(roadLengthTooltip);
     this.roadLengthControl.setTooltip(roadLengthTooltip);
     VBox roadLengthSection = new VBox(Constants.V_GAP, roadLengthLabel, roadLengthControl);
@@ -282,14 +282,14 @@ public class MenuView extends GridPane {
     HBox offlineRunSection = new HBox(Constants.V_GAP, offlineRunLabel, offlineRunCheckBox);
     offlineRunSection.setAlignment(Pos.CENTER);
     
-    Label ticksToRunLabel = new Label("Number of ticks to run");
+    Label ticksToRunLabel = new Label("Simulated runtime (min)");
     this.ticksToRunControl = new Spinner<Integer>();
     this.ticksToRunControl.setEditable(true);
     this.ticksToRunControl.setValueFactory(
-      new SpinnerValueFactory.IntegerSpinnerValueFactory(this.offlineTicksMin, this.offlineTicksMax, this.offlineTicksDefault)
+      new SpinnerValueFactory.IntegerSpinnerValueFactory(this.offlineTimeMin, this.offlineTimeMax, this.offlineTimeDefault)
     );
     this.ticksToRunControl.setDisable(true);
-    Tooltip ticksToRunTooltip = new Tooltip("Set the length of the road (in number of cells)");
+    Tooltip ticksToRunTooltip = new Tooltip("Set the duration of the simulation in simulated minutes");
     ticksToRunLabel.setTooltip(ticksToRunTooltip);
     this.ticksToRunControl.setTooltip(ticksToRunTooltip);
     VBox ticksToRunSection = new VBox(Constants.V_GAP, ticksToRunLabel, ticksToRunControl);
@@ -383,7 +383,7 @@ public class MenuView extends GridPane {
       this.offlineRunCheckBox.setSelected(userSettings.runOffline());
       this.ticksToRunControl.setDisable(! userSettings.runOffline());
       this.ticksToRunControl.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
-        this.offlineTicksMin, this.offlineTicksMax, (int)userSettings.ticksToRun())
+        this.offlineTimeMin, this.offlineTimeMax, (int)userSettings.ticksToRun())
       );
     }
   }

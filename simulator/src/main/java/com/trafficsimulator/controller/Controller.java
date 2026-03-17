@@ -53,15 +53,16 @@ public class Controller {
 
     ts = new TrafficSimulator(
       HelperMethods.percentToProbability((int)params.spawnPercent()),
-      (int)params.roadLength(),
+      HelperMethods.oneHundredMToCells(params.roadLength()),
       (int)params.minSpeed(),
       (int)params.maxSpeed(),
       params.mapType()
     );
     
     MainView.setModel(ts);
+    this.stopped = false;
     if (params.runOffline()) {
-      this.ticksTorun = (int)params.ticksToRun();
+      this.ticksTorun = HelperMethods.minToTicks((int)params.ticksToRun());
       mainView.showOfflineRender(this.ticksTorun);
     }
     else {
@@ -84,7 +85,6 @@ public class Controller {
    * From here, all relevant parts of the simulation are updated.
    */
   public void loop() {
-    this.stopped = false;
     this.running = true;
 
     while (! this.stopped) {
