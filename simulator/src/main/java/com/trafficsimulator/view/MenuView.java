@@ -1,10 +1,11 @@
 package com.trafficsimulator.view;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.zip.GZIPInputStream;
-import java.awt.Desktop;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.trafficsimulator.controller.Controller;
 import com.trafficsimulator.utility.Constants;
@@ -13,6 +14,7 @@ import com.trafficsimulator.utility.InputParametersDTO;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,6 +30,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.Node;
 
 /**
  * The menu for user settings
@@ -45,6 +48,7 @@ public class MenuView extends GridPane {
   private int offlineTicksMin = 1000;
   private int offlineTicksMax = 10000000;
   private int offlineTicksDefault = 10000;
+  private Tooltip minMaxAlert, maxMinAlert;
   
   /**
    * Defines styling, creates UI input elements and layout.
@@ -56,8 +60,8 @@ public class MenuView extends GridPane {
     this.setMaxWidth(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setMaxHeight(BASELINE_OFFSET_SAME_AS_HEIGHT);
     this.setStyle("-fx-padding: 5;");
-    this.setHgap(25);
-    this.setVgap(10);
+    this.setHgap(28);
+    this.setVgap(12);
     
     this.setupInputControls();
     this.setupNavBtns();
@@ -176,12 +180,31 @@ public class MenuView extends GridPane {
       "randomized per car between the Min and Max values below."));
     minSpeedSection = new SliderSection("Min", " km/h", 1, 15, 2, v -> HelperMethods.speedToKMH(v), true);
     maxSpeedSection = new SliderSection("Max", " km/h", 1, 15, 6, v -> HelperMethods.speedToKMH(v), true);
-    UnaryNumericOperation limitByMax = v -> v <= maxSpeedSection.getValue() ? Math.round(v) : maxSpeedSection.getSlider().getValue();
-    UnaryNumericOperation limitByMin = v -> v >= minSpeedSection.getValue() ? Math.round(v) : minSpeedSection.getSlider().getValue();
+    UnaryNumericOperation limitByMax = v -> {
+      if (v <= maxSpeedSection.getValue()) {
+        return Math.round(v);
+      }
+      else {
+        this.showTooltipAlert(this.minMaxAlert, this.minSpeedSection);
+        return maxSpeedSection.getSlider().getValue();
+      }
+    };
+    UnaryNumericOperation limitByMin = v -> {
+      if (v >= minSpeedSection.getValue()) {
+        return Math.round(v);
+      }
+      else {
+        this.showTooltipAlert(this.maxMinAlert, this.maxSpeedSection);
+        return minSpeedSection.getSlider().getValue();
+      }
+    };
     minSpeedSection.setBehavior(limitByMax);
     maxSpeedSection.setBehavior(limitByMin);
     minSpeedSection.setTooltip("Set the minimum ideal speed for vehicles in the simulation");
     maxSpeedSection.setTooltip("Set the maximum ideal speed for vehicles in the simulation");
+
+    minMaxAlert = new Tooltip("Min preferred speed must be lower than max preferred speed");
+    maxMinAlert = new Tooltip("Max preferred speed must be higher than min preferred speed");
     
     idealSpeedLabel.setTextFill(Constants.TEXT_COLOR);
     
@@ -207,7 +230,7 @@ public class MenuView extends GridPane {
     this.add(bg, 1, 0, 1, 4);
     bg.toBack();
     GridPane.setHalignment(bg, HPos.CENTER);
-    GridPane.setMargin(bg, new Insets(-3, -1, -3, -1));
+    GridPane.setMargin(bg, new Insets(-10, -10, -10, -10));
     //bg.setTranslateX(-3);
     //bg.setTranslateY(-1);
   }
@@ -297,14 +320,24 @@ public class MenuView extends GridPane {
       "-fx-background-radius: 15;"
     );
     
-    //minSpeedSection.setTranslateX(13);
-    //maxSpeedSection.setTranslateX(13);
-
     this.add(bg, 0, 5, 2, 1);
     bg.toBack();
     GridPane.setHalignment(bg, HPos.CENTER);
-    GridPane.setMargin(bg, new Insets(-9, -7, -10, -7));
+    GridPane.setMargin(bg, new Insets(-10, -12, -12, -12));
     bg.setTranslateX(5);
+  }
+  
+  /**
+   * Show extra tooltip at a parent Node location. Used to alert the user
+   * that min/max speed is limited by each other.
+   * @param tt Tooltip to show
+   * @param parent Node whose position is where the tooltip is shown
+   */
+  private void showTooltipAlert(Tooltip tt, Node parent) {
+    Bounds coords = parent.localToScreen(parent.getBoundsInLocal());
+    tt.show(this, coords.getMinX(), coords.getMinY() - 35);
+    CompletableFuture.delayedExecutor(1500, TimeUnit.MILLISECONDS)
+      .execute(() -> Platform.runLater(() -> tt.hide()));
   }
 
   /**
