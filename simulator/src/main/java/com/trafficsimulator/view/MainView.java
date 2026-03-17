@@ -124,7 +124,7 @@ public class MainView extends Application {
         title.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
         title.setFont(new Font("Arial", 42));
 
-        OfflineView offlineView = new OfflineView(ticksToRun);
+        OfflineView offlineView = new OfflineView(controller, ticksToRun);
 
         VBox card = new VBox(24, title, offlineView);
         card.setAlignment(Pos.CENTER);

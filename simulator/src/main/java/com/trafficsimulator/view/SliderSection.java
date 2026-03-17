@@ -95,7 +95,7 @@ public class SliderSection extends GridPane {
    * @param expr A lambda expression to operate on the slider value
    * before the slider, value and label are changed.
    */
-  public void setBehavior(UnaryNumericOperation expr) {
+  void setBehavior(UnaryNumericOperation expr) {
     this.inputSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
       double rounded = expr.operate(newVal.doubleValue());
       inputSlider.setValue(rounded);
@@ -115,7 +115,7 @@ public class SliderSection extends GridPane {
    * scaling while a simulation is running.
    * @param a Action to run when slider is changed.
    */
-  public void setChangeAction(PassableAction a) {
+  void setChangeAction(PassableAction a) {
     this.changeAction = a;
   }
   
@@ -150,7 +150,7 @@ public class SliderSection extends GridPane {
    * for example logarithmic behavior of the slider.
    * @param expr Lambda expression for scaling the input value.
    */
-  public void setScaling(UnaryNumericOperation expr) {
+  void setScaling(UnaryNumericOperation expr) {
     this.scaler = expr;
   }
   
@@ -158,7 +158,7 @@ public class SliderSection extends GridPane {
    * For direct access to the slider.
    * @return Slider in the SliderSection
    */
-  public Slider getSlider() {
+  Slider getSlider() {
     return this.inputSlider;
   }
   
@@ -166,7 +166,7 @@ public class SliderSection extends GridPane {
    * The user input value.
    * @return The slider value after quantize and scaler.
    */
-  public double getValue() {
+  double getValue() {
     return this.value;
   }
   
@@ -176,7 +176,7 @@ public class SliderSection extends GridPane {
    * scales the label value if applicable.
    * @param value Settings value
    */
-  public void setValue(double value) {
+  void setValue(double value) {
     this.inputSlider.setValue(value);
     double scaledValue = this.scaleValue(value);
     this.value = this.onlyScaleLabel ? value : scaledValue;
@@ -189,7 +189,7 @@ public class SliderSection extends GridPane {
    * value.
    * @param tooltip For slider and labels.
    */
-  public void setTooltip(Tooltip tooltip) {
+  void setTooltip(Tooltip tooltip) {
     this.inputSlider.setTooltip(tooltip);
     this.descriptionLabel.setTooltip(tooltip);
     this.valueLabel.setTooltip(tooltip);
@@ -201,7 +201,7 @@ public class SliderSection extends GridPane {
    * @param text String to show as tooltip for slider and
    * labels.
    */
-  public void setTooltip(String text) {
+  void setTooltip(String text) {
     this.setTooltip(new Tooltip(text));
   }
 }
