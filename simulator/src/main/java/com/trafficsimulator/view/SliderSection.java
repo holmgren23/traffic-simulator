@@ -170,10 +170,17 @@ public class SliderSection extends GridPane {
     return this.value;
   }
   
+  /** 
+   * Allows a value to be set, used for restoring previous
+   * settings after a simulation has finished. Automatically
+   * scales the label value if applicable.
+   * @param value Settings value
+   */
   public void setValue(double value) {
-    this.value = value;
     this.inputSlider.setValue(value);
-    this.valueLabel.setText(this.valueToLabel(this.scaleValue(value)));
+    double scaledValue = this.scaleValue(value);
+    this.value = this.onlyScaleLabel ? value : scaledValue;
+    this.valueLabel.setText(this.valueToLabel(scaledValue));
   }
   
   /**
