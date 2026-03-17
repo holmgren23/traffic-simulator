@@ -23,14 +23,13 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
  * The menu for user settings
  */
 public class MenuView extends GridPane {
-  private final int BTN_ROW = 6;
+  private final int BTN_ROW = 7;
   private Controller controller;
   private SliderSection spawnRateSection, minSpeedSection, maxSpeedSection, timeScalingSection;
   private Spinner<Integer> roadLengthControl, ticksToRunControl;
@@ -240,7 +239,8 @@ public class MenuView extends GridPane {
       spacer(),
       maxSpeedSection,
       spacer(),
-      ticksToRunSection
+      ticksToRunSection,
+      spacer()
     );
     
     this.addColumn(2,
