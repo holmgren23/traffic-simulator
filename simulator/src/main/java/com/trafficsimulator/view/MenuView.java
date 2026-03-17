@@ -261,6 +261,10 @@ public class MenuView extends GridPane {
     );
   }
   
+  /**
+   * Gets previous user settings from the controller, and sets all
+   * input controllers to match
+   */
   private void restoreSettings() {
     InputParametersDTO userSettings = this.controller.getUserSettings();
     if (userSettings != null) {
