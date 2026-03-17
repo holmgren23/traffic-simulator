@@ -323,7 +323,7 @@ public class MenuView extends GridPane {
     this.add(bg, 0, 5, 2, 1);
     bg.toBack();
     GridPane.setHalignment(bg, HPos.CENTER);
-    GridPane.setMargin(bg, new Insets(-10, -12, -12, -12));
+    GridPane.setMargin(bg, new Insets(-8, -10, -10, -10));
     bg.setTranslateX(5);
   }
   
