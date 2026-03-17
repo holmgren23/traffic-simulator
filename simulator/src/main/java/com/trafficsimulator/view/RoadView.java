@@ -162,7 +162,7 @@ public class RoadView extends Canvas implements SubView {
                 if (horizontal) {
                     gc.fillRect(x + 1, y - carThickness, cellSize*0.9, carThickness);
                 } else {
-                    gc.fillRect(x - carThickness, y + 1, carThickness*0.9, cellSize);   
+                    gc.fillRect(x - carThickness, y + 1, carThickness, cellSize);   
                 }
             }
         }
