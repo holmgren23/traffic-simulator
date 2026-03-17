@@ -2,6 +2,8 @@ package com.trafficsimulator.view;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import com.trafficsimulator.model.StatSnapshot;
@@ -92,7 +94,8 @@ public class ReportView extends VBox {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Simulation Report");
-        fileChooser.setInitialFileName("simulation_results.csv");
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+        fileChooser.setInitialFileName(stats.mapType() + "_" + timestamp + ".csv");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         // Show save dialog
         File file = fileChooser.showSaveDialog(this.getScene().getWindow());
@@ -114,9 +117,8 @@ public class ReportView extends VBox {
                 writer.println("Total Ticks;" + stats.totalTicks() + ";;Preferred Car Speed (km/h);" + (int)HelperMethods.speedToKMH(stats.minSpeed()) + " - " + (int)HelperMethods.speedToKMH(stats.maxSpeed()));
                 writer.println("Total Cars Spawned;" + stats.totalSpawned() + ";;Road Length (cells);" + stats.roadLength());
                 writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars())+ ";;Spawn Probability (%/tick);" + String.format(Locale.forLanguageTag("sv"), "%.0f%%", stats.spawnProbability() * 100));
-                writer.println("Total Lane Changes;" + stats.totalLaneChanges());
+                writer.println("Total Lane Changes;" + stats.totalLaneChanges()); 
                 writer.println("Average Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.currentAvgSpeedKmh()));
-                writer.println("Min Avg Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.minAvgSpeedKmh()));
                 writer.println("Average Inflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgInFlow()));
                 writer.println("Average Outflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgOutFlow()));
                 writer.println("Peak Traffic (cars);" + stats.peakCarCount());
