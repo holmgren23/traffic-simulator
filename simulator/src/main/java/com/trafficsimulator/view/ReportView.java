@@ -107,19 +107,19 @@ public class ReportView extends VBox {
 
                 String timeFormatted = String.format("%02d:%02d:%02d", hours, minutes, seconds);
                 // Headers
-                writer.println("Metric;Value;;Settings:");
+                writer.println("Metric;Value;;Settings;Value");
                 
                 // Data rows
                 writer.println("Total Elapsed Time;" + timeFormatted + ";;Map;" + stats.mapType());
                 writer.println("Total Ticks;" + stats.totalTicks() + ";;Preferred Car Speed (km/h);" + (int)HelperMethods.speedToKMH(stats.minSpeed()) + " - " + (int)HelperMethods.speedToKMH(stats.maxSpeed()));
                 writer.println("Total Cars Spawned;" + stats.totalSpawned() + ";;Road Length (cells);" + stats.roadLength());
                 writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars())+ ";;Spawn Probability (%/tick);" + String.format(Locale.forLanguageTag("sv"), "%.0f%%", stats.spawnProbability() * 100));
+                writer.println("Total Lane Changes;" + stats.totalLaneChanges());
                 writer.println("Average Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.currentAvgSpeedKmh()));
+                writer.println("Min Avg Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.minAvgSpeedKmh()));
                 writer.println("Average Inflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgInFlow()));
                 writer.println("Average Outflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgOutFlow()));
                 writer.println("Peak Traffic (cars);" + stats.peakCarCount());
-                writer.println("Min Avg Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.minAvgSpeedKmh()));
-                writer.println("Total Lane Changes;" + stats.totalLaneChanges());
                 
             } catch (Exception e) {
                 System.err.println("Failed to save CSV: " + e.getMessage());
