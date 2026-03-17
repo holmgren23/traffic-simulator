@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 
 import com.trafficsimulator.utility.Constants;
 
@@ -70,6 +71,7 @@ public class SliderSection extends GridPane {
     this.setStyle("-fx-padding: 2;");
     this.setHgap(0);
     this.setVgap(Constants.V_GAP);
+    this.setAlignment(Pos.CENTER);
 
     this.labelUnit = labelUnit;
     double scaledValue = this.scaleValue(initVal);

@@ -224,13 +224,13 @@ public class MenuView extends GridPane {
     );
 
     GridPane.setHalignment(idealSpeedLabel, HPos.CENTER);
-    minSpeedSection.setTranslateX(13);
-    maxSpeedSection.setTranslateX(13);
+    //minSpeedSection.setTranslateX(13);
+    //maxSpeedSection.setTranslateX(13);
 
     this.add(bg, 1, 0, 1, 4);
     bg.toBack();
     GridPane.setHalignment(bg, HPos.CENTER);
-    GridPane.setMargin(bg, new Insets(-10, -10, -10, -10));
+    GridPane.setMargin(bg, new Insets(-8, -5, -8, -5));
     //bg.setTranslateX(-3);
     //bg.setTranslateY(-1);
   }
