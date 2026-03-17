@@ -7,6 +7,8 @@ import java.util.Locale;
 import com.trafficsimulator.model.StatSnapshot;
 import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.utility.Constants;
+import com.trafficsimulator.utility.HelperMethods;
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,8 +17,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 
+/**
+ * Displays the final simulation summary after a run has completed.
+ * Shows key statistics alongside simulation settings, and provides
+ * buttons to export results to CSV, return to the menu, or exit.
+ */
 public class ReportView extends VBox {
 
+    /**
+     * Creates the report screen with statistics and action buttons.
+     * @param mainView Reference to the main window, used to navigate back to the menu
+     * @param ts       The completed simulation to read final results from
+     */
     public ReportView(MainView mainView, TrafficSimulator ts) {
         // Layout and styling
         this.setAlignment(Pos.CENTER);
@@ -70,6 +82,11 @@ public class ReportView extends VBox {
         this.getChildren().addAll(title, contentContainer, buttonContainer);
     }
 
+    /**
+     * Opens a file save dialog and exports the simulation results to a CSV file.
+     * Uses semicolon as delimiter and Swedish locale for decimal formatting (comma separator).
+     * @param ts The simulation whose statistics are exported
+     */
     private void exportToCSV(TrafficSimulator ts) {
         StatSnapshot stats = ts.getStats().getSnapshot();
 
@@ -93,13 +110,16 @@ public class ReportView extends VBox {
                 writer.println("Metric;Value;;Settings:");
                 
                 // Data rows
-                writer.println("Total Elapsed Time;" + timeFormatted + ";;Min Speed;" + stats.minSpeed());
-                writer.println("Total Ticks;" + stats.totalTicks() + ";;Max Speed;" + stats.maxSpeed());
-                writer.println("Total Cars Spawned;" + stats.totalSpawned() + ";;Road Length;" + stats.roadLength());
-                writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars()) + ";; Spawn Rate;" + stats.spawnRate());
+                writer.println("Total Elapsed Time;" + timeFormatted + ";;Map;" + stats.mapType());
+                writer.println("Total Ticks;" + stats.totalTicks() + ";;Preferred Car Speed (km/h);" + (int)HelperMethods.speedToKMH(stats.minSpeed()) + " - " + (int)HelperMethods.speedToKMH(stats.maxSpeed()));
+                writer.println("Total Cars Spawned;" + stats.totalSpawned() + ";;Road Length (cells);" + stats.roadLength());
+                writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars())+ ";;Spawn Probability (%/tick);" + String.format(Locale.forLanguageTag("sv"), "%.0f%%", stats.spawnProbability() * 100));
                 writer.println("Average Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.currentAvgSpeedKmh()));
                 writer.println("Average Inflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgInFlow()));
                 writer.println("Average Outflow (veh/m);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.avgOutFlow()));
+                writer.println("Peak Traffic (cars);" + stats.peakCarCount());
+                writer.println("Min Avg Speed (km/h);" + String.format(Locale.forLanguageTag("sv"), "%.2f", stats.minAvgSpeedKmh()));
+                writer.println("Total Lane Changes;" + stats.totalLaneChanges());
                 
             } catch (Exception e) {
                 System.err.println("Failed to save CSV: " + e.getMessage());

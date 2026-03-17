@@ -39,10 +39,10 @@ public class StatisticsTest {
     @Test
     public void testAverageSpeedAndStationaryCars() {
         // Setup of cars with different speeds
-        Car car1 = new Car(1, 5, 5);
+        Car car1 = new Car(1, 5, 5, 0.5);
         car1.setCurrentSpeed(2); // speed 2
 
-        Car car2 = new Car(2, 0, 5);
+        Car car2 = new Car(2, 0, 5, 0.5);
         car2.setCurrentSpeed(0); // speed 0
 
         List<Car> cars = List.of(car1, car2);
@@ -59,13 +59,13 @@ public class StatisticsTest {
         assertEquals(1, snapshot.stationaryCars()); // should count 1 stationary car
         
         // should be 2 * 30 / 2 = 30.0 km/h average speed, since car 1 has speed 2 and car 2 has speed 0
-        assertEquals(30.0, snapshot.currentAvgSpeedKmh());
+        assertEquals(10.0, snapshot.currentAvgSpeedKmh());
     }
 
     @Test
     public void testFlowRatesOverTime() {
         // Setup: simulate 1 minute of updates with 5 cars spawned and 1 car still on the road
-        Car carOnRoad = new Car(1, 0, 5);
+        Car carOnRoad = new Car(1, 0, 5, 0.2);
         carOnRoad.setCurrentSpeed(5);
         List<Car> cars = List.of(carOnRoad); // so far only 1 car is on the road
 
@@ -87,6 +87,67 @@ public class StatisticsTest {
         
         // If 5 cars have spawned and only 1 is still on the road, then 4 have exited, the average outflow should be 4.0
         assertEquals(4.0, snapshot.avgOutFlow());
+    }
+
+    // Verify that peak car count is updated when more cars are added
+    @Test
+    public void testPeakCarCount_increasesWithMoreCars() {
+        Car car1 = new Car(1, 0, 5, 0.2);
+        Car car2 = new Car(2, 1, 5, 0.2);
+
+        stats.update(List.of(car1), 1);
+        assertEquals(1, stats.getSnapshot().peakCarCount());
+
+        stats.update(List.of(car1, car2), 2);
+        assertEquals(2, stats.getSnapshot().peakCarCount());
+    }
+
+    // Verify that peak car count does not decrease when cars leave
+    @Test
+    public void testPeakCarCount_doesNotDecrease() {
+        Car car1 = new Car(1, 0, 5, 0.2);
+        Car car2 = new Car(2, 1, 5, 0.2);
+
+        stats.update(List.of(car1, car2), 2);
+        assertEquals(2, stats.getSnapshot().peakCarCount());
+
+        // One car leaves, peak should still be 2
+        stats.update(List.of(car1), 2);
+        assertEquals(2, stats.getSnapshot().peakCarCount());
+    }
+
+    // Verify that min average speed is tracked correctly
+    @Test
+    public void testMinAvgSpeed_recordsLowestSpeed() {
+        Car fastCar = new Car(1, 0, 5, 0.2);
+        fastCar.setCurrentSpeed(4);
+        stats.update(List.of(fastCar), 1);
+
+        Car slowCar = new Car(2, 0, 5, 0.2);
+        slowCar.setCurrentSpeed(1);
+        stats.update(List.of(slowCar), 2);
+
+        // Min avg speed should reflect the tick where the slow car was alone (speed 1 → 30 km/h)
+        assertEquals(30.0, stats.getSnapshot().minAvgSpeedKmh());
+    }
+
+    // Verify that min avg speed is zero when no cars are present
+    @Test
+    public void testMinAvgSpeed_isZeroWithNoCars() {
+        stats.update(List.of(), 0);
+        assertEquals(0.0, stats.getSnapshot().minAvgSpeedKmh());
+    }
+
+    // Verify that registerLaneChange increments the total lane change counter
+    @Test
+    public void testRegisterLaneChange_incrementsCounter() {
+        assertEquals(0, stats.getSnapshot().totalLaneChanges());
+
+        stats.registerLaneChange();
+        stats.registerLaneChange();
+        stats.registerLaneChange();
+
+        assertEquals(3, stats.getSnapshot().totalLaneChanges());
     }
 
     @Test

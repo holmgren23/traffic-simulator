@@ -29,7 +29,7 @@ public class ControllerTest {
   @BeforeEach
   public void setUp() {
     map = new Map(MapType.ONE_WAY);
-    map.addRoad(new Road(200));
+    map.addRoad(new Road(200, Road.Direction.EAST, 0, 50, 1000, 50, 8));
     ts = new TrafficSimulator(new Random(), map);
     controller = new Controller(ts);
     t = new Thread(() -> controller.loop());
@@ -63,7 +63,7 @@ public class ControllerTest {
     @BeforeEach
     public void setUp() {
       Map map = new Map(MapType.ONE_WAY);
-      map.addRoad(new Road(200));
+      map.addRoad(new Road(200, Road.Direction.EAST, 0, 50, 1000, 50, 8));
       ts = new TrafficSimulator(new Random(), map);
       controller = new Controller(ts);
       t = new Thread(() -> controller.loop());

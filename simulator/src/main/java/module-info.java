@@ -1,4 +1,5 @@
 module com.trafficsimulator {
+    requires java.desktop;
     requires javafx.fxml;
     requires transitive javafx.graphics;
     requires transitive javafx.controls;

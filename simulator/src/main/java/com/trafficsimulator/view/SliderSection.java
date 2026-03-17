@@ -170,6 +170,12 @@ public class SliderSection extends GridPane {
     return this.value;
   }
   
+  public void setValue(double value) {
+    this.value = value;
+    this.inputSlider.setValue(value);
+    this.valueLabel.setText(this.valueToLabel(this.scaleValue(value)));
+  }
+  
   /**
    * Set a tooltip for all UI elements in the SliderSection.
    * Useful to give a more detailed description of the input

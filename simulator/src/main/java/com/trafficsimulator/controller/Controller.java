@@ -3,6 +3,7 @@ package com.trafficsimulator.controller;
 import com.trafficsimulator.model.TrafficSimulator;
 import com.trafficsimulator.utility.InputParametersDTO;
 import com.trafficsimulator.utility.Constants;
+import com.trafficsimulator.utility.HelperMethods;
 import com.trafficsimulator.view.MainView;
 import com.trafficsimulator.view.SubView;
 
@@ -21,6 +22,7 @@ public class Controller {
   private boolean stopped;
   private int ticksTorun;
   private MainView mainView;
+  private InputParametersDTO userSettings;
   
   /**
    * Creates a controller with a MainView object.
@@ -46,10 +48,11 @@ public class Controller {
    * @param params Data transfer object containing user settings
    */
   public void createSimulation(InputParametersDTO params) {
+    this.userSettings = params;
     this.setTimeScaling(params.timeScalingFactor());
 
     ts = new TrafficSimulator(
-      (int)(params.spawnRate()),
+      HelperMethods.percentToProbability((int)params.spawnPercent()),
       (int)params.roadLength(),
       (int)params.minSpeed(),
       (int)params.maxSpeed(),
@@ -59,8 +62,7 @@ public class Controller {
     MainView.setModel(ts);
     if (params.runOffline()) {
       this.ticksTorun = (int)params.ticksToRun();
-      this.loopOffline();
-      mainView.showSummaryScreen();
+      mainView.showOfflineRender(this.ticksTorun);
     }
     else {
       mainView.showSimulation(params.timeScalingRaw());
@@ -104,10 +106,12 @@ public class Controller {
   /**
    * Loop for when running the simulation withou visuals.
    */
-  private void loopOffline() {
+  public void loopOffline() {
     for (int i = 0; i < this.ticksTorun; i++) {
       ts.tickUpdate();
+      if (i % Constants.PROGRESS_UPDATE_TICKS == 0) { this.updateViews(); }
     }
+    Platform.runLater(() -> mainView.showSummaryScreen());
   }
   
   /**
@@ -203,5 +207,13 @@ public class Controller {
    */
   public void setTimeScaling(double timeScaling){
     this.timeScaling = (timeScaling / 100.0);
+  }
+  
+  /**
+   * Gets the previous user settings, for restoring settings in the menu view
+   * @return A data transfer object containing the previous settings
+   */
+  public InputParametersDTO getUserSettings() {
+    return this.userSettings;
   }
 }

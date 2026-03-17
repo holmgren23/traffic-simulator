@@ -1,6 +1,9 @@
 package com.trafficsimulator.view;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import java.awt.Desktop;
 
 import com.trafficsimulator.controller.Controller;
 import com.trafficsimulator.utility.Constants;
@@ -20,6 +23,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
@@ -32,6 +36,12 @@ public class MenuView extends GridPane {
   private Spinner<Integer> roadLengthControl, ticksToRunControl;
   private ComboBox<String> mapSelector;
   private CheckBox offlineRunCheckBox;
+  private int roadLengthMin = 100;
+  private int roadLengthMax = 10000;
+  private int roadLengthDefault = 200;
+  private int offlineTicksMin = 1000;
+  private int offlineTicksMax = 10000000;
+  private int offlineTicksDefault = 10000;
   
   /**
    * Defines styling, creates UI input elements and layout.
@@ -48,6 +58,7 @@ public class MenuView extends GridPane {
     
     this.setupInputControls();
     this.setupNavBtns();
+    this.restoreSettings();
   }
   
   /**
@@ -79,8 +90,22 @@ public class MenuView extends GridPane {
     exitButton.setTooltip(new Tooltip("Quit the program and return to desktop"));
     exitButton.setPrefWidth(Constants.BTN_WIDTH);
     exitButton.setStyle(Constants.BTN_STYLE_RED);
+    
+    Button helpButton = new Button("Help");
+    helpButton.setOnAction(e -> new Thread( () -> {
+        try {
+          File pdfFile = new File("user manual/user_manual.pdf");
+          Desktop.getDesktop().open(pdfFile);
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      }).start()
+    );
+    helpButton.setTooltip(new Tooltip("Open the user manual PDF file"));
+    helpButton.setPrefWidth(Constants.BTN_WIDTH);
+    helpButton.setStyle(Constants.BTN_STYLE_BLUE);
 
-    HBox btnRow = new HBox(20, startSimButton, exitButton);
+    HBox btnRow = new HBox(20, startSimButton, helpButton, exitButton);
     btnRow.setAlignment(Pos.CENTER);
     this.add(btnRow, 0, this.BTN_ROW, this.getColumnCount(), 1);
   }
@@ -111,25 +136,41 @@ public class MenuView extends GridPane {
     this.roadLengthControl = new Spinner<Integer>();
     this.roadLengthControl.setEditable(true);
     this.roadLengthControl.setValueFactory(
-      new SpinnerValueFactory.IntegerSpinnerValueFactory(100, 10000, 200)
+      new SpinnerValueFactory.IntegerSpinnerValueFactory(this.roadLengthMin, this.roadLengthMax, this.roadLengthDefault)
     );
     Tooltip roadLengthTooltip = new Tooltip("Set the length of the road (in number of cells)");
     roadLengthLabel.setTooltip(roadLengthTooltip);
     this.roadLengthControl.setTooltip(roadLengthTooltip);
     VBox roadLengthSection = new VBox(Constants.V_GAP, roadLengthLabel, roadLengthControl);
     
-    minSpeedSection = new SliderSection("Min speed", " km/h", 1, 15, 2, v -> HelperMethods.speedToKMH(v), true);
-    maxSpeedSection = new SliderSection("Max speed", " km/h", 1, 15, 6, v -> HelperMethods.speedToKMH(v), true);
+    Label idealSpeedLabel = new Label("Preferred car speed");
+    idealSpeedLabel.setTooltip(new Tooltip("All cars in the simulation have a preferred speed, " +
+      "randomized per car between the Min and Max values below."));
+    minSpeedSection = new SliderSection("Min", " km/h", 1, 15, 2, v -> HelperMethods.speedToKMH(v), true);
+    maxSpeedSection = new SliderSection("Max", " km/h", 1, 15, 6, v -> HelperMethods.speedToKMH(v), true);
     UnaryNumericOperation limitByMax = v -> v <= maxSpeedSection.getValue() ? Math.round(v) : maxSpeedSection.getSlider().getValue();
     UnaryNumericOperation limitByMin = v -> v >= minSpeedSection.getValue() ? Math.round(v) : minSpeedSection.getSlider().getValue();
     minSpeedSection.setBehavior(limitByMax);
     maxSpeedSection.setBehavior(limitByMin);
     minSpeedSection.setTooltip("Set the minimum ideal speed for vehicles in the simulation");
     maxSpeedSection.setTooltip("Set the maximum ideal speed for vehicles in the simulation");
+    Region spacer1 = new Region();
+    Region spacer16 = new Region();
+    Region spacer17 = new Region();
+    spacer1.setPrefHeight(2);
+    spacer16.setPrefHeight(16);
+    spacer17.setPrefHeight(16);
+    VBox speedColumn = new VBox(0, spacer1, idealSpeedLabel, spacer16, minSpeedSection, spacer17, maxSpeedSection);
 
-    spawnRateSection = new SliderSection("Spawn rate", 1, Constants.MAX_TICKS_PER_SPAWN, 5);
+    spawnRateSection = new SliderSection(
+      "Spawn chance",
+      " %",
+      Constants.SPAWN_PROBABILITY_MIN,
+      Constants.SPAWN_PROBABILITY_MAX,
+      Constants.SPAWN_PROBABILITY_DEFATULT
+    );
     spawnRateSection.setBehavior(v ->  Math.round(v));
-    spawnRateSection.setTooltip("Set how often a vehicle is spawned (in vehicles per second)");
+    spawnRateSection.setTooltip("The likelihood for a car spawning each tick, in each spawning location");
     
     timeScalingSection = new SliderSection(
       "Time scaling",
@@ -161,7 +202,7 @@ public class MenuView extends GridPane {
     this.ticksToRunControl = new Spinner<Integer>();
     this.ticksToRunControl.setEditable(true);
     this.ticksToRunControl.setValueFactory(
-      new SpinnerValueFactory.IntegerSpinnerValueFactory(1000, 10000000, 10000)
+      new SpinnerValueFactory.IntegerSpinnerValueFactory(this.offlineTicksMin, this.offlineTicksMax, this.offlineTicksDefault)
     );
     this.ticksToRunControl.setDisable(true);
     Tooltip ticksToRunTooltip = new Tooltip("Set the length of the road (in number of cells)");
@@ -172,6 +213,7 @@ public class MenuView extends GridPane {
     Label[] labels = {
       mapSelectorLabel,
       roadLengthLabel,
+      idealSpeedLabel,
       offlineRunLabel,
       ticksToRunLabel
     };
@@ -188,10 +230,8 @@ public class MenuView extends GridPane {
       offlineRunSection
     );
     
+    this.add(speedColumn, 1, 0, 1, 3);
     this.addColumn(1,
-      minSpeedSection,
-      spacer(),
-      maxSpeedSection,
       spacer(),
       ticksToRunSection
     );
@@ -219,5 +259,31 @@ public class MenuView extends GridPane {
       this.offlineRunCheckBox.isSelected(),
       this.ticksToRunControl.getValue()
     );
+  }
+  
+  private void restoreSettings() {
+    InputParametersDTO userSettings = this.controller.getUserSettings();
+    if (userSettings != null) {
+      this.mapSelector.setValue(userSettings.mapType());
+      this.roadLengthControl.setDisable(
+        ! Constants.MAP_HAS_ADJUSTABLE_ROAD_LENGTH.get(this.mapSelector.getValue())
+      );
+      this.roadLengthControl.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
+        this.roadLengthMin, this.roadLengthMax, userSettings.roadLength())
+      );
+
+      this.minSpeedSection.setValue(userSettings.minSpeed());
+      this.maxSpeedSection.setValue(userSettings.maxSpeed());
+
+      this.spawnRateSection.setValue(userSettings.spawnPercent());
+      this.timeScalingSection.setDisable(userSettings.runOffline());
+      this.timeScalingSection.setValue(userSettings.timeScalingRaw());
+
+      this.offlineRunCheckBox.setSelected(userSettings.runOffline());
+      this.ticksToRunControl.setDisable(! userSettings.runOffline());
+      this.ticksToRunControl.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
+        this.offlineTicksMin, this.offlineTicksMax, (int)userSettings.ticksToRun())
+      );
+    }
   }
 }

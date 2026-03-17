@@ -26,6 +26,7 @@ public class MainView extends Application {
     private static Controller controller;
     private static TrafficSimulator ts;
     private static Stage primaryStage;
+    private String title = "Traffic Simulator";
 
     /**
      * Creates a main view with the given width and height
@@ -81,7 +82,7 @@ public class MainView extends Application {
     @Override
     public void start(Stage primaryStage) {
         MainView.primaryStage = primaryStage;
-        primaryStage.setTitle("Traffic Simulator");
+        primaryStage.setTitle(this.title);
 
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         windowWidth = (int)screenBounds.getWidth();
@@ -97,7 +98,7 @@ public class MainView extends Application {
     public void showMenu() {
         MenuView menuView = new MenuView(controller);
 
-        Label title = new Label("Trafficsimulator");
+        Label title = new Label(this.title);
         title.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
         title.setFont(new Font("Arial", 42));
 
@@ -110,6 +111,35 @@ public class MainView extends Application {
         );
         card.setMaxWidth(Region.USE_PREF_SIZE);
         card.setMaxHeight(Region.USE_PREF_SIZE);
+
+        StackPane root = new StackPane(card);
+        root.setStyle("-fx-background-color: rgb(54, 66, 56);");
+        Scene window = new Scene(root, windowWidth, windowHeight);
+        primaryStage.setScene(window);
+        primaryStage.show();
+    }
+    
+    public void showOfflineRender(int ticksToRun) {
+        Label title = new Label("Running simulation...");
+        title.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
+        title.setFont(new Font("Arial", 42));
+
+        OfflineView offlineView = new OfflineView(ticksToRun);
+
+        VBox card = new VBox(24, title, offlineView);
+        card.setAlignment(Pos.CENTER);
+        card.setStyle(
+            "-fx-background-color: rgba(0, 0, 0, 0.30);" +
+            "-fx-background-radius: 20;" +
+            "-fx-padding: 40;"
+        );
+        card.setMaxWidth(Region.USE_PREF_SIZE);
+        card.setMaxHeight(Region.USE_PREF_SIZE);
+        
+        controller.setSubViews(offlineView);
+        Thread simThread = new Thread(() -> controller.loopOffline());
+        simThread.setDaemon(true);
+        simThread.start();
 
         StackPane root = new StackPane(card);
         root.setStyle("-fx-background-color: rgb(54, 66, 56);");
