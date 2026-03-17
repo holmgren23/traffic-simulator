@@ -85,7 +85,7 @@ public class MenuView extends GridPane {
     startSimButton.setPrefWidth(Constants.BTN_WIDTH);
     startSimButton.setStyle(Constants.BTN_STYLE_GREEN);
 
-    Button exitButton = new Button("Exit");
+    Button exitButton = new Button(Constants.BTN_TEXT_EXIT);
     exitButton.setOnAction(e -> Platform.exit());
     exitButton.setTooltip(new Tooltip("Quit the program and return to desktop"));
     exitButton.setPrefWidth(Constants.BTN_WIDTH);
@@ -154,6 +154,7 @@ public class MenuView extends GridPane {
     maxSpeedSection.setBehavior(limitByMin);
     minSpeedSection.setTooltip("Set the minimum ideal speed for vehicles in the simulation");
     maxSpeedSection.setTooltip("Set the maximum ideal speed for vehicles in the simulation");
+    /*
     Region spacer1 = new Region();
     Region spacer16 = new Region();
     Region spacer17 = new Region();
@@ -161,6 +162,7 @@ public class MenuView extends GridPane {
     spacer16.setPrefHeight(16);
     spacer17.setPrefHeight(16);
     VBox speedColumn = new VBox(0, spacer1, idealSpeedLabel, spacer16, minSpeedSection, spacer17, maxSpeedSection);
+    */
 
     spawnRateSection = new SliderSection(
       "Spawn chance",
@@ -223,6 +225,7 @@ public class MenuView extends GridPane {
     
     // Columns from the left
     this.addColumn(0, 
+      spacer(),
       mapSelectorSection,
       spacer(),
       roadLengthSection,
@@ -230,13 +233,18 @@ public class MenuView extends GridPane {
       offlineRunSection
     );
     
-    this.add(speedColumn, 1, 0, 1, 3);
+    //this.add(speedColumn, 1, 0, 1, 3);
     this.addColumn(1,
+      idealSpeedLabel,
+      minSpeedSection,
+      spacer(),
+      maxSpeedSection,
       spacer(),
       ticksToRunSection
     );
     
     this.addColumn(2,
+      spacer(),
       spawnRateSection,
       spacer(),
       timeScalingSection

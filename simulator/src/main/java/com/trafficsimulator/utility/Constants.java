@@ -23,6 +23,8 @@ public class Constants {
   public static final int TIME_SCALING_MIN_PERCENTAGE = 30;
   public static final int TIME_SCALING_DEFAULT_PERCENTAGE = 100;
 
+  //Button labels
+  public static final String BTN_TEXT_EXIT = "Exit";
   // Styling
   public static final Color TEXT_COLOR = Color.SILVER;
   public static final int V_GAP = 12;

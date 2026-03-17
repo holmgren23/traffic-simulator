@@ -71,7 +71,7 @@ public class ReportView extends VBox {
         exportBtn.setStyle(Constants.BTN_STYLE_BLUE);
         exportBtn.setOnAction(e -> exportToCSV(ts));
 
-        Button exitBtn = new Button("Exit Program");
+        Button exitBtn = new Button(Constants.BTN_TEXT_EXIT);
         exitBtn.setPrefWidth(Constants.BTN_WIDTH);
         exitBtn.setStyle(Constants.BTN_STYLE_RED);
         exitBtn.setOnAction(e -> javafx.application.Platform.exit());
