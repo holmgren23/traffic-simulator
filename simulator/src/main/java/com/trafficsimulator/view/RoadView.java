@@ -72,6 +72,7 @@ public class RoadView extends Canvas implements SubView {
 
                 if (!areParallel(a, b)) continue;
                 if (!areAdjacent(a, b)) continue;
+                if (a.getDirection() == Direction.NORTH || a.getDirection() == Direction.SOUTH) continue;
 
                 double lineY = ((a.getStartY() + b.getStartY()) / 2.0) * scaleY();
                 double x1 = Math.min(a.getStartX(), b.getStartX()) * scaleX();
