@@ -28,6 +28,7 @@ public class Statistics {
     private int peakCarCount = 0;
     private double minAvgSpeed = Double.MAX_VALUE;
     private long totalLaneChanges = 0;
+    private long startTime;
 
     /** Creates an empty Statistics object with no simulation settings. */
     public Statistics() {}
@@ -46,6 +47,7 @@ public class Statistics {
         this.spawnProbability = spawnProbability;
         this.roadLength = HelperMethods.cellsToM(roadLength);
         this.mapType = mapType;
+        this.startTime = System.currentTimeMillis();
     }
 
     /**
@@ -141,7 +143,7 @@ public class Statistics {
         
         return String.format(
             "--- FINAL REPORT ---\n" +
-            "Time Elapsed: %02d:%02d:%02d\n" +
+            "Simulated Time: %02d:%02d:%02d\n" +
             "Total Cars Spawned: %d\n" +
             "Total Cars Exited: %d\n" +
             "Average Speed: %.2f km/h\n" +
@@ -168,13 +170,23 @@ public class Statistics {
             "Road Length: %s" +
             " \n" +
             " \n" +
-            " \n",
+            "Runtime: %s \n",
             mapType,
             (int)HelperMethods.speedToKMH(minSpeed),
             (int)HelperMethods.speedToKMH(maxSpeed),
             HelperMethods.probabilityToPercent(spawnProbability),
-            HelperMethods.roadLengthToString(mapType, roadLength)
+            HelperMethods.roadLengthToString(mapType, roadLength),
+            this.getRuntime()
         );
     }
 
+    private String getRuntime() {
+        long t = (System.currentTimeMillis() - this.startTime) / 1000;
+        return String.format(
+            "%02d:%02d:%02d",
+            (int)(t / 3600),
+            (int)((t % 3600) / 60),
+            (int)(t % 60)
+        );
+    }
 }

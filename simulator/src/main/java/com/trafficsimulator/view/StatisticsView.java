@@ -83,7 +83,7 @@ public class StatisticsView extends VBox implements SubView {
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;
 
-        String timeString = String.format("Time Elapsed: %02d:%02d:%02d", hours, minutes, seconds);
+        String timeString = String.format("Simulated Time: %02d:%02d:%02d", hours, minutes, seconds);
 
         timeElapsed.setText(timeString);
         totalCarsLabel.setText("Total cars spawned: " + stats.totalSpawned());

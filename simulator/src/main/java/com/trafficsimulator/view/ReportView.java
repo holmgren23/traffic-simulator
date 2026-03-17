@@ -113,7 +113,7 @@ public class ReportView extends VBox {
                 writer.println("Metric;Value;;Settings;Value");
                 
                 // Data rows
-                writer.println("Total Elapsed Time;" + timeFormatted + ";;Map;" + stats.mapType());
+                writer.println("Total Simulated Time;" + timeFormatted + ";;Map;" + stats.mapType());
                 writer.println("Total Ticks;" + stats.totalTicks() + ";;Preferred Car Speed (km/h);" + (int)HelperMethods.speedToKMH(stats.minSpeed()) + " - " + (int)HelperMethods.speedToKMH(stats.maxSpeed()));
                 writer.println("Total Cars Spawned;" + stats.totalSpawned() + ";;Road Length (cells);" + HelperMethods.roadLengthToString(stats.mapType(), stats.roadLength()));
                 writer.println("Total Cars Exited;" + (stats.totalSpawned() - stats.currentCars())+ ";;Spawn Probability (%/tick);" + String.format(Locale.forLanguageTag("sv"), "%.0f%%", stats.spawnProbability() * 100));
