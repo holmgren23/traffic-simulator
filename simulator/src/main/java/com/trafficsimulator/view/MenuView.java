@@ -187,7 +187,7 @@ public class MenuView extends GridPane {
     
     Region bg = new Region();
     bg.setStyle(
-      "-fx-background-color: rgb(54, 66, 56);" +
+      "-fx-background-color: rgb(54, 66, 56, 0.6);" +
       "-fx-background-radius: 15;"
     );
     
@@ -290,6 +290,21 @@ public class MenuView extends GridPane {
       ticksToRunSection,
       spacer()
     );
+
+    Region bg = new Region();
+    bg.setStyle(
+      "-fx-background-color: rgb(54, 66, 56, 0.6);" +
+      "-fx-background-radius: 15;"
+    );
+    
+    //minSpeedSection.setTranslateX(13);
+    //maxSpeedSection.setTranslateX(13);
+
+    this.add(bg, 0, 5, 2, 1);
+    bg.toBack();
+    GridPane.setHalignment(bg, HPos.CENTER);
+    GridPane.setMargin(bg, new Insets(-9, -7, -10, -7));
+    bg.setTranslateX(5);
   }
 
   /**
