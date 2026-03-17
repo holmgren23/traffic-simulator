@@ -160,7 +160,7 @@ public class RoadView extends Canvas implements SubView {
                 gc.setFill(car.getColor());
                 double carThickness = road.getLaneWidth() * Math.min(scaleX(), scaleY()) * 0.8;
                 if (horizontal) {
-                    gc.fillRect(x + 1, y - carThickness, cellSize, carThickness);
+                    gc.fillRect(x + 1, y - carThickness, cellSize*0.9, carThickness);
                 } else {
                     gc.fillRect(x - carThickness, y + 1, carThickness, cellSize);   
                 }
