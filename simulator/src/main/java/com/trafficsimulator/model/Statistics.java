@@ -24,7 +24,7 @@ public class Statistics {
     private int currentCarCount = 0;
     private int minSpeed, maxSpeed, roadLength;
     private double spawnProbability;
-    private MapType mapType;
+    private String mapType;
     private int peakCarCount = 0;
     private double minAvgSpeed = Double.MAX_VALUE;
     private long totalLaneChanges = 0;
@@ -40,7 +40,7 @@ public class Statistics {
      * @param roadLength Length of each road segment in cells
      * @param mapType    The map layout used in current simulation
      */
-    public Statistics(int minSpeed, int maxSpeed, double spawnProbability, int roadLength, MapType mapType) {
+    public Statistics(int minSpeed, int maxSpeed, double spawnProbability, int roadLength, String mapType) {
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
         this.spawnProbability = spawnProbability;
@@ -164,12 +164,16 @@ public class Statistics {
             "--- SETTINGS ---\n"+
             "Map: %s\n" +
             "Preferred Car Speed: %d-%d km/h\n" +
-            "Spawn Probability: %.0f%%/tick\n" +
-            "Road Length: %d" +
+            "Spawn Probability: %d%%/tick\n" +
+            "Road Length: %s" +
             " \n" +
             " \n" +
             " \n",
-            mapType, (int)HelperMethods.speedToKMH(minSpeed), (int)HelperMethods.speedToKMH(maxSpeed), spawnProbability * 100, roadLength
+            mapType,
+            (int)HelperMethods.speedToKMH(minSpeed),
+            (int)HelperMethods.speedToKMH(maxSpeed),
+            HelperMethods.probabilityToPercent(spawnProbability),
+            HelperMethods.roadLengthToString(mapType, roadLength)
         );
     }
 

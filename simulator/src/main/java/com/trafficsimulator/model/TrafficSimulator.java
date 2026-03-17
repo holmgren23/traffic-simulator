@@ -17,6 +17,7 @@ public class TrafficSimulator {
     private int nextID;
     private Random rand;
     private Statistics stats;
+    private String mapType;
     private double slowProbability = 0;
     private double speedupProbability = 0;
     private double turnProbability = 0.9;
@@ -35,6 +36,7 @@ public class TrafficSimulator {
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
         this.roadLength = roadLength;
+        this.mapType = mapType;
 
         Map selectedMap = switch (mapType){
           case "Highway" -> Map.createHighway(roadLength);
@@ -72,7 +74,7 @@ public class TrafficSimulator {
         cars = new ArrayList<>();
         tickCount = 0;
         nextID = 0;
-        stats = new Statistics(minSpeed, maxSpeed, spawnProbability, roadLength, map.getType());
+        stats = new Statistics(minSpeed, maxSpeed, spawnProbability, roadLength, mapType);
     }
 
     /**
@@ -395,6 +397,6 @@ public class TrafficSimulator {
         cars = new ArrayList<>();
         tickCount = 0;
         nextID = 0;
-        stats = new Statistics(minSpeed, maxSpeed, spawnProbability, roadLength, map.getType());
+        stats = new Statistics(minSpeed, maxSpeed, spawnProbability, roadLength, mapType);
     }
 }
