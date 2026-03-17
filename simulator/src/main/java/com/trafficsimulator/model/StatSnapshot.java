@@ -34,7 +34,7 @@ public record StatSnapshot(
     int maxSpeed,
     double spawnProbability,
     int roadLength,
-    MapType mapType,
+    String mapType,
     int peakCarCount,
     double minAvgSpeedKmh,
     long totalLaneChanges

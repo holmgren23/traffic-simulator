@@ -1,5 +1,7 @@
 package com.trafficsimulator.utility;
 
+import com.trafficsimulator.model.MapType;
+
 /**
  * A collection of static methods used by multiple packages.
  */
@@ -41,5 +43,9 @@ private static final int SPEED_MULTIPLIER = 10; // Assuming 1 unit of speed equa
    */
   public static double percentToProbability(int percent) {
     return percent / 100.0;
+  }
+  
+  public static String roadLengthToString(String map, int roadLength) {
+    return Constants.MAP_HAS_ADJUSTABLE_ROAD_LENGTH.get(map.toString()) ? Integer.toString(roadLength) : "N/A";
   }
 }
