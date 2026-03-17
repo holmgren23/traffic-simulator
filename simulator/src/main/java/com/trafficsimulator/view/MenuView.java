@@ -3,6 +3,7 @@ package com.trafficsimulator.view;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.zip.GZIPInputStream;
 import java.awt.Desktop;
 
 import com.trafficsimulator.controller.Controller;
@@ -12,6 +13,8 @@ import com.trafficsimulator.utility.InputParametersDTO;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -23,6 +26,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
@@ -114,6 +118,13 @@ public class MenuView extends GridPane {
    * and a layout for these.
    */
   private void setupInputControls() {
+    this.setupMapSection();
+    this.setupSpeedSection();
+    this.setupMiscSection();
+    this.setupOfflineSection();
+  }
+  
+  private void setupMapSection() {
     Label mapSelectorLabel = new Label("Select map");
     String[] maps = Arrays.copyOf(
       Constants.MAP_HAS_ADJUSTABLE_ROAD_LENGTH.keySet().toArray(),
@@ -142,6 +153,24 @@ public class MenuView extends GridPane {
     this.roadLengthControl.setTooltip(roadLengthTooltip);
     VBox roadLengthSection = new VBox(Constants.V_GAP, roadLengthLabel, roadLengthControl);
     
+    Label[] labels = {
+      mapSelectorLabel,
+      roadLengthLabel
+    };
+    for (Label l : labels) {
+      l.setTextFill(Constants.TEXT_COLOR);
+    }
+
+    // Add to leftmost column
+    this.addColumn(0, 
+      spacer(),
+      mapSelectorSection,
+      spacer(),
+      roadLengthSection
+    );
+  }
+  
+  private void setupSpeedSection() {  
     Label idealSpeedLabel = new Label("Preferred car speed");
     idealSpeedLabel.setTooltip(new Tooltip("All cars in the simulation have a preferred speed, " +
       "randomized per car between the Min and Max values below."));
@@ -153,7 +182,37 @@ public class MenuView extends GridPane {
     maxSpeedSection.setBehavior(limitByMin);
     minSpeedSection.setTooltip("Set the minimum ideal speed for vehicles in the simulation");
     maxSpeedSection.setTooltip("Set the maximum ideal speed for vehicles in the simulation");
+    
+    idealSpeedLabel.setTextFill(Constants.TEXT_COLOR);
+    
+    Region bg = new Region();
+    bg.setStyle(
+      "-fx-background-color: rgb(54, 66, 56);" +
+      "-fx-background-radius: 15;"
+    );
+    
+    // Add to middle column
+    this.addColumn(1,
+      idealSpeedLabel,
+      minSpeedSection,
+      spacer(),
+      maxSpeedSection,
+      spacer()
+    );
 
+    GridPane.setHalignment(idealSpeedLabel, HPos.CENTER);
+    minSpeedSection.setTranslateX(13);
+    maxSpeedSection.setTranslateX(13);
+
+    this.add(bg, 1, 0, 1, 4);
+    bg.toBack();
+    GridPane.setHalignment(bg, HPos.CENTER);
+    GridPane.setMargin(bg, new Insets(-3, -1, -3, -1));
+    //bg.setTranslateX(-3);
+    //bg.setTranslateY(-1);
+  }
+
+  private void setupMiscSection() {
     spawnRateSection = new SliderSection(
       "Spawn chance",
       " %",
@@ -181,6 +240,16 @@ public class MenuView extends GridPane {
     timeScalingSection.setBehavior(v -> v);
     timeScalingSection.setTooltip("Set the playback speed of the simulation");
     
+    // Add to rightmost column
+    this.addColumn(2,
+      spacer(),
+      spawnRateSection,
+      spacer(),
+      timeScalingSection
+    );
+  }
+    
+  private void setupOfflineSection() {
     Label offlineRunLabel = new Label("Run simulation\noffline (no visuals)");
     this.offlineRunCheckBox = new CheckBox();
     this.offlineRunCheckBox.setOnAction(e -> {
@@ -203,9 +272,6 @@ public class MenuView extends GridPane {
     VBox ticksToRunSection = new VBox(Constants.V_GAP, ticksToRunLabel, ticksToRunControl);
     
     Label[] labels = {
-      mapSelectorLabel,
-      roadLengthLabel,
-      idealSpeedLabel,
       offlineRunLabel,
       ticksToRunLabel
     };
@@ -213,32 +279,16 @@ public class MenuView extends GridPane {
       l.setTextFill(Constants.TEXT_COLOR);
     }
     
-    // Columns from the left
+    // Add to leftmost column
     this.addColumn(0, 
-      spacer(),
-      mapSelectorSection,
-      spacer(),
-      roadLengthSection,
       spacer(),
       offlineRunSection
     );
-    
-    //this.add(speedColumn, 1, 0, 1, 3);
+
+    // Add to middle column
     this.addColumn(1,
-      idealSpeedLabel,
-      minSpeedSection,
-      spacer(),
-      maxSpeedSection,
-      spacer(),
       ticksToRunSection,
       spacer()
-    );
-    
-    this.addColumn(2,
-      spacer(),
-      spawnRateSection,
-      spacer(),
-      timeScalingSection
     );
   }
 
