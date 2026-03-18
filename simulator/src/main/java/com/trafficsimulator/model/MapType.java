@@ -15,5 +15,7 @@ public enum MapType {
     /** Two-way road with five lanes per direction and speed bonuses. */
     AUTOBAHN,
     /** A grid network of roads traveling in and out */
-    GRID_OF_ROADS
+    GRID_OF_ROADS,
+
+    GRID_OF_ROADS2
 }

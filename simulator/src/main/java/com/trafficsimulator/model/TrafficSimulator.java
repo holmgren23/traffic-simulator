@@ -45,6 +45,7 @@ public class TrafficSimulator {
           case "Autobahn" -> Map.createAutobahn(roadLength);
           case "Intersection Loop" -> Map.createLoop(roadLength);
           case "Grid of roads" -> Map.CreateGridOfRoads(roadLength);
+          case "Grid of roads 2" -> Map.CreateGridOfRoads2(roadLength);
           default -> Map.createHighway(roadLength); 
         };
 

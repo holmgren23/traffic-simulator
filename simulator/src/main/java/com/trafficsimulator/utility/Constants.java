@@ -51,6 +51,7 @@ public class Constants {
     "One way street", true,
     "T Intersection", false,
     "Autobahn", true,
-    "Grid of roads", false
+    "Grid of roads", false,
+    "Grid of roads 2", false
   );
 }
