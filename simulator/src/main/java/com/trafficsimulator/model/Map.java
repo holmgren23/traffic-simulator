@@ -481,7 +481,7 @@ public class Map {
         map.addObstacle(new Intersection(roadLengthVmid - 1, horizontal2, entrenceCellV3, clearance, horizontal2, entrenceCellV3), vertical3);
         map.addObstacle(new Intersection(roadLengthVmid - 1, horizontal2, entrenceCellV4, clearance, horizontal2, entrenceCellV4), vertical4);
         map.addObstacle(new Intersection(roadLengthVbot - 1, horizontal3, entrenceCellV5, clearance, horizontal3, entrenceCellV5), vertical5);
-        map.addObstacle(new Intersection(roadLengthVedge - 1, horizontal3, entrenceCellV6, redLightDistance, horizontal3, entrenceCellV6), vertical6);
+        map.addObstacle(new Intersection(roadLengthVedge - 1, horizontal3, entrenceCellV6, clearance, horizontal3, entrenceCellV6), vertical6);
         
         //Exit cells on horizontal roads to vertical roads
         int exitCellH1V2 = roadLength * 2 / 3;
