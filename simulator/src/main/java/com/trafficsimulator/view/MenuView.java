@@ -43,7 +43,7 @@ public class MenuView extends GridPane {
   private ComboBox<String> mapSelector;
   private CheckBox offlineRunCheckBox;
   private int roadLengthMin = 5;
-  private int roadLengthMax = 120;
+  private int roadLengthMax = 1200;
   private int roadLengthDefault = 15;
   private int offlineTimeMin = 30;
   private int offlineTimeMax = 500000;

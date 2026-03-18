@@ -148,11 +148,12 @@ public class Statistics {
             "Total Cars Exited: %d\n" +
             "Average Speed: %.2f km/h\n" +
             "InFlow: %.2f veh/min\n" +
-            "OutFlow: %.2f veh/min",
+            "OutFlow: %.2f veh/min\n" +
+            "Peak traffic: %d cars\n",
 
             totalSeconds / 3600, (totalSeconds % 3600) / 60, totalSeconds % 60,
             s.totalSpawned(), totalCarsExited,
-            s.currentAvgSpeedKmh(), s.avgInFlow(), s.avgOutFlow()
+            s.currentAvgSpeedKmh(), s.avgInFlow(), s.avgOutFlow(), s.peakCarCount()
         );
     }
     
@@ -168,6 +169,7 @@ public class Statistics {
             "Preferred Car Speed: %d-%d km/h\n" +
             "Spawn Probability: %d%%/tick\n" +
             "Road Length: %s" +
+            " \n" +
             " \n" +
             " \n" +
             "Runtime: %s \n",
