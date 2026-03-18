@@ -6,6 +6,7 @@ package com.trafficsimulator.utility;
 public class HelperMethods {
 private static final int SPEED_MULTIPLIER = 10;
 private static final int SECS_IN_MIN = 60;
+private static final int MS_IN_S = 1000;
 
   /**
    * Converts a number of ticks to the number of seconds
@@ -15,6 +16,10 @@ private static final int SECS_IN_MIN = 60;
    */
   public static int ticksToSec(long ticks) {
     return (int) (ticks * Constants.S_IN_TICK);
+  }
+  
+  public static long ticksToMs(long ticks) {
+    return (long) (ticksToSec(ticks) * MS_IN_S);
   }
   
   /**
