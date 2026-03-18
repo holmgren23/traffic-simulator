@@ -68,7 +68,7 @@ public class TransportView extends GridPane {
     this.add(buttonRow, 0, 1);
     this.add(timeScalingSection, 0, 0);
     GridPane.setHalignment(timeScalingSection, HPos.CENTER);
-    GridPane.setMargin(timeScalingSection, new Insets(0,0,0,80));
+    GridPane.setMargin(timeScalingSection, new Insets(0,0,0,0));
   }
   
   /**
