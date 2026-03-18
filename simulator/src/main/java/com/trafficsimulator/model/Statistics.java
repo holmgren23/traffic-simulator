@@ -60,7 +60,7 @@ public class Statistics {
     public void update(List<Car> cars, int totalSpawned) {
 
         totalTicks++;
-        totalElapsedTimeMS += Constants.TICK_LENGTH;
+        totalElapsedTimeMS += HelperMethods.ticksToMs(1);
         this.currentCarCount = cars.size();
         this.totalCarsSpawned = totalSpawned;
         this.totalCarsExited = totalSpawned - this.currentCarCount;
