@@ -261,6 +261,9 @@ public class Map {
         map.getRoads().get(1).setSpawnRoad(false);
         map.getRoads().get(2).setSpawnRoad(false);
 
+        map.getRoads().get(1).setSpeedBonus(1);
+        map.getRoads().get(2).setSpeedBonus(1);
+
         return map;
     }
 
