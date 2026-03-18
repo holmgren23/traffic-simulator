@@ -433,7 +433,6 @@ public class Map {
         int width = roadLength * CELL_SIZE; //Window width
         int height = width * 3 / 5; //Windows heigt
         int clearance = 5; //Clearance distance for all intersections
-        int redLightDistance = -2; //Distance from intersection to traffic light
 
         //Y start point for horizontal roads
         int yHorizontal1 = height / 4;
@@ -461,13 +460,13 @@ public class Map {
         Road horizontal3 = new Road(roadLength, Direction.EAST, 0, yHorizontal3, width, yHorizontal3, laneWidth);
 
         //Vertical roads
-        Road vertical1 = new Road(roadLengthV1, Direction.SOUTH, xVertical1, 0, xVertical1, yHorizontal1, laneWidth);
-        Road vertical2 = new Road(roadLengthV1, Direction.NORTH, xVertical2, yHorizontal1, xVertical2, 0, laneWidth);
-        Road vertical3 = new Road(roadLengthVmid, Direction.SOUTH, xVertical3, yHorizontal1, xVertical3, yHorizontal2, laneWidth);
-        Road vertical4 = new Road(roadLengthVmid, Direction.SOUTH, xVertical4, yHorizontal1, xVertical4, yHorizontal2, laneWidth);
-        Road vertical5 = new Road(roadLengthVbot, Direction.SOUTH, xVertical5, yHorizontal2, xVertical5, yHorizontal3, laneWidth);
-        Road vertical6 = new Road(roadLengthVedge, Direction.NORTH, xVertical6, height, xVertical6, yHorizontal3, laneWidth);
-        Road vertical7 = new Road(roadLengthVedge, Direction.SOUTH, xVertical7, yHorizontal3, xVertical7, height, laneWidth);
+        Road vertical1 = new Road(roadLengthV1, Direction.SOUTH, xVertical1, 0, xVertical1, yHorizontal1 - laneWidth / 2, laneWidth);
+        Road vertical2 = new Road(roadLengthV1, Direction.NORTH, xVertical2, yHorizontal1, xVertical2, 0  - laneWidth / 2, laneWidth);
+        Road vertical3 = new Road(roadLengthVmid, Direction.SOUTH, xVertical3, yHorizontal1, xVertical3, yHorizontal2  - laneWidth / 2, laneWidth);
+        Road vertical4 = new Road(roadLengthVmid, Direction.SOUTH, xVertical4, yHorizontal1, xVertical4, yHorizontal2  - laneWidth / 2, laneWidth);
+        Road vertical5 = new Road(roadLengthVbot, Direction.SOUTH, xVertical5, yHorizontal2, xVertical5, yHorizontal3  - laneWidth / 2, laneWidth);
+        Road vertical6 = new Road(roadLengthVedge, Direction.NORTH, xVertical6, height, xVertical6, yHorizontal3  - laneWidth / 2, laneWidth);
+        Road vertical7 = new Road(roadLengthVedge, Direction.SOUTH, xVertical7, yHorizontal3, xVertical7, height  - laneWidth / 2, laneWidth);
 
         //Enterance cell for intersecting roads to enter onto main road
         int entrenceCellV1 = roadLength / 3;
@@ -554,13 +553,13 @@ public class Map {
         Road horizontal3 = new Road(roadLength, Direction.EAST, 0, yHorizontal3, width, yHorizontal3, laneWidth);
 
         //Vertical roads
-        Road vertical1 = new Road(roadLengthV1, Direction.SOUTH, xVertical1, 0, xVertical1, yHorizontal1, laneWidth);
-        Road vertical2 = new Road(roadLengthV1, Direction.NORTH, xVertical2, yHorizontal1, xVertical2, 0, laneWidth);
-        Road vertical3 = new Road(roadLengthVmid, Direction.SOUTH, xVertical3, yHorizontal1, xVertical3, yHorizontal2, laneWidth);
-        Road vertical4 = new Road(roadLengthVmid, Direction.SOUTH, xVertical4, yHorizontal1, xVertical4, yHorizontal2, laneWidth);
-        Road vertical5 = new Road(roadLengthVbot, Direction.SOUTH, xVertical5, yHorizontal2, xVertical5, yHorizontal3, laneWidth);
-        Road vertical6 = new Road(roadLengthVedge, Direction.NORTH, xVertical6, height, xVertical6, yHorizontal3, laneWidth);
-        Road vertical7 = new Road(roadLengthVedge, Direction.SOUTH, xVertical7, yHorizontal3, xVertical7, height, laneWidth);
+        Road vertical1 = new Road(roadLengthV1, Direction.SOUTH, xVertical1, 0, xVertical1, yHorizontal1  - laneWidth / 2, laneWidth);
+        Road vertical2 = new Road(roadLengthV1, Direction.NORTH, xVertical2, yHorizontal1, xVertical2, 0  - laneWidth / 2, laneWidth);
+        Road vertical3 = new Road(roadLengthVmid, Direction.SOUTH, xVertical3, yHorizontal1, xVertical3, yHorizontal2  - laneWidth / 2, laneWidth);
+        Road vertical4 = new Road(roadLengthVmid, Direction.SOUTH, xVertical4, yHorizontal1, xVertical4, yHorizontal2  - laneWidth / 2, laneWidth);
+        Road vertical5 = new Road(roadLengthVbot, Direction.SOUTH, xVertical5, yHorizontal2, xVertical5, yHorizontal3  - laneWidth / 2, laneWidth);
+        Road vertical6 = new Road(roadLengthVedge, Direction.NORTH, xVertical6, height, xVertical6, yHorizontal3  - laneWidth / 2, laneWidth);
+        Road vertical7 = new Road(roadLengthVedge, Direction.SOUTH, xVertical7, yHorizontal3, xVertical7, height  - laneWidth / 2, laneWidth);
 
         //Enterance cell for intersecting roads to enter onto main road
         int entrenceCellV1 = roadLength / 3;
