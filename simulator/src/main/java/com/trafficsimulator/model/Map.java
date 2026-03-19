@@ -428,8 +428,8 @@ public class Map {
 
     /**
      * Creates the map "Grid of roads", with multiple intersections and
-     * exit turns, also a traffic light
-     * @param roadLength
+     * exit turns, with no traffic lights.
+     * @param roadLength not yet applicable for this map
      * @return Map with grid of roads properties
      */
     public static Map CreateGridOfRoads(int roadLength) {
@@ -524,6 +524,12 @@ public class Map {
         return map;
     }
 
+    /**
+     * Creates the map "Grid of roads 2", with multiple intersections and
+     * exit turns, also a traffic light to show difference to "Grid of roads".
+     * @param roadLength not yet applicable for this map
+     * @return Map with grid of roads properties
+     */
         public static Map CreateGridOfRoads2(int roadLength) {
         Map map = new Map(MapType.GRID_OF_ROADS2);
         roadLength = 500; //Road length
