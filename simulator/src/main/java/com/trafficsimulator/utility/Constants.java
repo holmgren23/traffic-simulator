@@ -6,6 +6,15 @@ import javafx.scene.paint.Color;
 
 /**
  * Constant values needed by multiple packages
+ * These are used to get consistency in the model's statistics
+ * and the user input in the view package.
+ * The categories included here are:
+ * 
+ * Ticks and time
+ * Lengths
+ * Spawn probability
+ * Time scaling value
+ * Maps
  */
 public class Constants {
   // Ticks and time

@@ -26,6 +26,7 @@ public class Map {
     }
 
     /**
+     * Add road to map
      * @param road Road to add to this map
      */
     public void addRoad(Road road) {
@@ -425,7 +426,12 @@ public class Map {
         return map;
     }
 
-    //Grid of roads with multiple intersections and exit turns, also a traffic light
+    /**
+     * Creates the map "Grid of roads", with multiple intersections and
+     * exit turns, also a traffic light
+     * @param roadLength
+     * @return Map with grid of roads properties
+     */
     public static Map CreateGridOfRoads(int roadLength) {
         Map map = new Map(MapType.GRID_OF_ROADS);
         roadLength = 500; //Road length

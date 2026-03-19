@@ -2,7 +2,6 @@ package com.trafficsimulator.model;
 
 import java.util.List;
 
-import com.trafficsimulator.utility.Constants;
 import com.trafficsimulator.utility.HelperMethods;
 
 /**
@@ -180,6 +179,10 @@ public class Statistics {
         );
     }
 
+    /**
+     * Calculates the current runtime in ms, and puts it into a formatted string.
+     * @return Formatted string with a representation of the current runtime
+     */
     private String getRuntime() {
         long t = (System.currentTimeMillis() - this.startTime) / 1000;
         return String.format(

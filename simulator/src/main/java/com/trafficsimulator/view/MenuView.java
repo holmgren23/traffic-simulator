@@ -128,6 +128,9 @@ public class MenuView extends GridPane {
     this.setupOfflineSection();
   }
   
+  /**
+   * Definition of UI elemtents for settings regarding maps.
+   */
   private void setupMapSection() {
     Label mapSelectorLabel = new Label("Select map");
     String[] maps = Arrays.copyOf(
@@ -174,6 +177,10 @@ public class MenuView extends GridPane {
     );
   }
   
+  /**
+   * Definition of UI elements for settings regarding min/max
+   * preferred speed when a car spawns.
+   */
   private void setupSpeedSection() {  
     Label idealSpeedLabel = new Label("Preferred car speed");
     idealSpeedLabel.setTooltip(new Tooltip("All cars in the simulation have a preferred speed, " +
@@ -235,6 +242,10 @@ public class MenuView extends GridPane {
     //bg.setTranslateY(-1);
   }
 
+  /**
+   * Definition of UI elements for settings regarding spawn chance and
+   * time scaling.
+   */
   private void setupMiscSection() {
     spawnRateSection = new SliderSection(
       "Spawn chance",
@@ -272,6 +283,10 @@ public class MenuView extends GridPane {
     );
   }
     
+  /**
+   * Definition of UI elements for settings regarding offline simulation
+   * (simulation without visuals).
+   */
   private void setupOfflineSection() {
     Label offlineRunLabel = new Label("Run simulation\noffline (no visuals)");
     this.offlineRunCheckBox = new CheckBox();

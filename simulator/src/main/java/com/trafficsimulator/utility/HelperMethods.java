@@ -18,6 +18,12 @@ private static final int MS_IN_S = 1000;
     return (int) (ticks * Constants.S_IN_TICK);
   }
   
+  /**
+   * Converts a number of ticks to the time in milliseconds
+   * they represent.
+   * @param ticks Time in ticks
+   * @return Time in milliseconds
+   */
   public static long ticksToMs(long ticks) {
     return (long) (ticksToSec(ticks) * MS_IN_S);
   }

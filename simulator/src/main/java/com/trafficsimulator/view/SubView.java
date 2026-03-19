@@ -7,5 +7,9 @@ package com.trafficsimulator.view;
  */
 public interface SubView {
 
+  /**
+   * Used to update the view from the controller, while
+   * a simulation is running.
+   */
   public void update();
 }

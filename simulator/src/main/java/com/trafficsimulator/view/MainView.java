@@ -119,6 +119,11 @@ public class MainView extends Application {
         primaryStage.show();
     }
     
+    /**
+     * Creates a view showing a progress bar of the simulation, that
+     * is used for running simulations without graphics.
+     * @param ticksToRun The number of ticks to run the simulation.
+     */
     public void showOfflineRender(int ticksToRun) {
         Label title = new Label("Running simulation...");
         title.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold;");
