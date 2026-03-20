@@ -9,12 +9,21 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 
+/**
+ * Renders the road network and all road objects (vehicles, obstacles)
+ * onto a JavaFX canvas, scaled to fit the window.
+ */
 public class RoadView extends Canvas implements SubView {
     protected final Map map;
     private final double windowWidth;
     private final double windowHeight;
 
-    //RoadView constructor that takes the window size to scale the render towards
+    /**
+     * Creates a RoadView scaled to the given window dimensions.
+     * @param ts The simulation model to render
+     * @param windowWidth Width of the render canvas in pixels
+     * @param windowHeight Height of the render canvas in pixels
+     */
     public RoadView(TrafficSimulator ts, double windowWidth, double windowHeight) {
         super(windowWidth, windowHeight);
         this.map = ts.getMap();
@@ -22,10 +31,16 @@ public class RoadView extends Canvas implements SubView {
         this.windowWidth = windowWidth;
     }
 
-    //X and Y scalars for the map to be rendered
+    /**
+     * Returns the horizontal scale factor from map units to pixels.
+     */
     private double scaleX() {
         return windowWidth / map.getMapWidth();
     }
+
+    /**
+     * Returns the vertical scale factor from map units to pixels.
+     */
     private double scaleY() {
         return windowHeight / map.getMapHeight();
     }
@@ -42,7 +57,12 @@ public class RoadView extends Canvas implements SubView {
         drawDividers(gc);
     }
 
-    //Draws the road
+    /**
+     * Draws the black road rectangle for a single road segment,
+     * oriented horizontally or vertically based on its direction.
+     * @param gc The graphics context to draw on
+     * @param road The road segment to draw
+     */
     private void drawRoad(GraphicsContext gc, Road road) {
         double x1 = road.getStartX() * scaleX();
         double y1 = road.getStartY() * scaleY();
@@ -63,6 +83,12 @@ public class RoadView extends Canvas implements SubView {
 
     }
 
+    /**
+     * Draws lane dividers between adjacent parallel roads.
+     * Roads traveling in the same direction get a dashed white line;
+     * opposite directions get a solid white line.
+     * @param gc The graphics context to draw on
+     */
     private void drawDividers(GraphicsContext gc) {
         ArrayList<Road> roads = map.getRoads();
         for (int i = 0; i < roads.size(); i++) {
@@ -97,6 +123,12 @@ public class RoadView extends Canvas implements SubView {
         }
     }
 
+    /**
+     * Returns true if two roads are parallel and share the same start/end coordinates
+     * on their shared axis (i.e. they run side by side).
+     * @param a First road
+     * @param b Second road
+     */
     private boolean areParallel(Road a, Road b) {
         boolean bothHorizontal = (a.getDirection() == Direction.EAST || a.getDirection() == Direction.WEST)
                             && (b.getDirection() == Direction.EAST || b.getDirection() == Direction.WEST);
@@ -112,6 +144,12 @@ public class RoadView extends Canvas implements SubView {
         return false;
     }
 
+    /**
+     * Returns true if no other road lies between roads {@code a} and {@code b}
+     * on the Y axis, meaning they are directly adjacent lanes.
+     * @param a First road
+     * @param b Second road
+     */
     private boolean areAdjacent(Road a, Road b) {
         if (Math.abs(a.getStartY() - b.getStartY()) > 20) return false;
         
@@ -125,7 +163,12 @@ public class RoadView extends Canvas implements SubView {
         return true;
     }
 
-    //Draws cars and obstacles
+    /**
+     * Draws all vehicles and obstacles occupying cells on the given road.
+     * Each cell is mapped to a pixel position based on the road's direction and scale.
+     * @param gc The graphics context to draw on
+     * @param road The road whose objects should be drawn
+     */
     private void drawRoadObjects(GraphicsContext gc, Road road) {
         int cells = road.getLength();
         double x1 = road.getStartX() * scaleX();
@@ -169,7 +212,16 @@ public class RoadView extends Canvas implements SubView {
         }
     }
 
-    //Holder for how to draw the different obstacles
+    /**
+     * Draws a single obstacle at the given canvas position.
+     * Rendering varies by obstacle type — traffic lights show a pole and colored signal.
+     * @param gc The graphics context to draw on
+     * @param obs The obstacle to render
+     * @param x Left edge of the cell in pixels
+     * @param y Top edge of the cell in pixels
+     * @param cellSize Size of one road cell in pixels
+     * @param horizontal True if the road runs horizontally, false if vertically
+     */
     public void drawObstacle(GraphicsContext gc, Obstacle obs, double x, double y, double cellSize, boolean horizontal) {
         double poleWidth = cellSize * 0.4;
         double poleHeight = cellSize * 3;
