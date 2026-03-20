@@ -3,12 +3,17 @@
 \usepackage[utf8]{inputenc}
 
 \usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage[normalem]{ulem}
 
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18} 
+
+\newcommand{\pag}{\par\vspace{0.5em}}
 
 \title{
     \textbf{Traffic Simulator} \\ [0.4 em]
@@ -26,150 +31,355 @@
 \pagebreak
 \pagenumbering{arabic} 
 
-\section{About}
+\section{Introduction}
 
-This document describes how to use
-Traffic Simulator %%
-. The software was developed as part of the course
-System- och programvaruutveckling (DT117G) at Örebro University.
+\subsection{About}
+
+This document gives an in-depth explanation of how to use the software
+Traffic Simulator.
+The software is written in Java 17 and was developed as a project for the
+course System- och programvaruutveckling (DT117G) at Örebro University.
+
+\subsection{Overview}
+
+Traffic Simulator is a software for simulating traffic scenarios,
+of which there are several to choose from (scenarios are called maps in
+Traffic Simulator). The simulator features a visual representation of
+the simulation, to let the user review things like traffic flow in
+"real time", that is, as the simulation runs.
+
+The simulation can be sped up/down, paused, stopped or
+reset at any time.
+Additionally, Traffic Simulator has settings for configuring different
+simulation parameters before the simulation starts. These include settings
+for traffic inflow, the preferred speed of vehicles and for some maps, the
+length of the road.
+
+Useful statistics are shown during the simulation. These are updated in
+"real time" and include the current number of vehicles in the simulation,
+average speed and inflow/outflow of vehicles.
+When the simulation is stopped, a statistics summary is presented, with
+the option to export to a CSV file for further processing.
+
+There is also an option to run simulations without visuals. Instead, 
+the statistics summary is shown as soon as the host computer has finished
+the simulation. This can be useful to run multiple simulations quickly
+and compare their statistics after the fact.
+
+\pagebreak
 
 \section{Simulation}
 
 This section describes the everything related to the simulation mode, from
-the inner workings of the simulation engine to its visual represation
+the inner workings of the simulation engine to its visual represantion
 and available user controls.
 
-\subsection{Simulation engine}
+\subsection{Simulation Engine}
 
-Traffic Simulator %%
-uses a simulation model based on the Nagel-Schreckenberger
-traffic simulation model. The model uses discrete time, and hence
-moves in textbf{steps} or textbf{ticks}.
+Traffic Simulator uses a simulation model based on the Nagel-Schreckenberg
+model. This uses discrete time, and hence the simulation moves in
+\textbf{steps} or \textbf{ticks}.
+
+Roads are divided into discrete cells, and every car in the
+simulation moves zero or more cells each tick. Each car has a preferred
+speed, and tries to move accordingly. The preferred speed is randomised
+at spawn time
+for each car between the min and max values as set in the settings menu.
+
+To make the simulator behave like traffic, each car looks ahead and adjusts
+its speed accordingly: if no obstacle (including other vehicles) is seen,
+the car tries to keep its preferred speed, otherwise it slows down
+or stops to avoid collisions.
+
+The scale of the model translates to the real world as follows:
+
+\begin{itemize}
+    \item One cell represents 7.5 m (meters), as proposed by the
+        Nagel-Schreckenberg model.
+    \item One tick represents 2.7 s (seconds).
+    \item A speed of 1 cell/tick then corresponds to 10 km/h in the
+        real world.
+\end{itemize}
+
+\subsection{Simulation Visuals}
+
+While the visual elements of Traffic Simulator are (hopefully)
+rather self explanatory, here is a rundown of the basics.
+
+\begin{table}[h]
+    \begin{center}
+        \begin{tabularx}{\textwidth}{m{1.5cm} p{0.4\textwidth} m{1.5cm} p{0.4\textwidth}}
+            \includegraphics[height=35px]{images/road.png} & Piece of road &
+            \includegraphics[height=35px]{images/intersect.png} & Intersection \\
+            \includegraphics[height=35px]{images/car.png} & Car on a road &
+            \includegraphics[height=35px]{images/traffic-light.png} & Traffic light \\
+        \end{tabularx}
+    \end{center}
+\end{table}
+
+\pagebreak
+
+\subsection{Maps} \label{maps}
+
+Maps are models of particular traffic scenarios.
+The following maps are implemented:
+
+\renewcommand{\arraystretch}{1.5}
+\begin{longtable}{m{0.4\textwidth} m{0.6\textwidth}}
+    \includegraphics[width=0.4\textwidth]{images/map-one-way.png} &
+    \textbf{One way street}: A simple one way street with a traffic
+    light. \\
+
+    \includegraphics[width=0.4\textwidth]{images/map-t.png} &
+    \textbf{T Intersection}: A one way street with a connecting
+    one way street in the middle. \\
+
+    \includegraphics[width=0.4\textwidth]{images/map-highway.png} &
+    \textbf{Highway}: A highway with two lanes in each
+    direction. Overtakes are implemented, to allow faster driving
+    vehicles to pass slower driving ones. \\
+
+    \includegraphics[width=0.4\textwidth]{images/map-autobahn.png} &
+    \textbf{Autobahn}: A large highway with five lanes
+    in each direction. Supports overtakes in all lanes, and
+    outer lanes has an extra speed up, to ensure more realistic
+    behavior and keep the overtaking car from getting stuck
+    in the outer lane. \\
+
+    \includegraphics[width=0.4\textwidth]{images/map-grid.png} &
+    \textbf{Grid of roads}: A network of roads and intersecions.
+    Available in two versions, where the second one has traffic
+    lights at two of the intersections. \\
+\end{longtable}
+\renewcommand{\arraystretch}{1.0}
+
+\pagebreak
+
+\subsection{Live Statistics} \label{live_stats}
+
+A running simulation shows live statistics.
+Below is a brief explanation of what these include.
+
+\begin{center}
+    \includegraphics[width=\textwidth]{images/live-stats.png}
+\end{center}
+
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{p{0.45\textwidth} p{0.45\textwidth}}
+        \textbf{Simulated time} from when the simulation started.
+            \textit{(27x faster than actual time at 100\% time scaling)}. \pag
+        \textbf{Total cars spawned} during the simulation. \pag
+        The number of currently \textbf{stationary cars}. \pag
+        The number of \textbf{current cars} in the simulation. &
+        Current \textbf{average speed}. \pag
+        Current \textbf{inflow} and \textbf{outflow} of cars,
+            respectively. \textit{Shown in vehicles per simulated minute.} \\
+\end{tabular}
+\renewcommand{\arraystretch}{1.0}
+
+\subsection{Playback Controls}
+
+These are the controls available when running a simulation
+with visuals.
+
+\begin{center}
+    \includegraphics[width=\textwidth]{images/transport.png}
+\end{center}
+
+\begin{enumerate}
+    \item[] Top to bottom, left to right:
+    \item \textbf{Time scaling} can be adjusted while the simulation is
+        running. This will speed up/slow down the simulation; that
+        is, the simulated time will run fast or slower.
+        \textit{Tip: pressing + or - on the computer's keyboard
+        will increment/decrement this control!}
+    \item \textbf{Pause}/\textbf{Resume} the simulation (and the visuals).
+        \textit{Tip: The simulation can also be paused using the
+        space bar key!}
+    \item \textbf{Reset} simulation. This will abort the running simulation
+        and start a new one with the same settings (even if paused).
+        \textit{Tip: The simulation can also be reset using the
+         backspace key!}
+    \item \textbf{Stop} the simulation and show statistics summary.
+        \textit{Tip: The simulation can also be stopped using the
+        escape key!}
+\end{enumerate}
 
 \subsection{Offline Simulation}
 
 Traffic Simulator allows for running simulations without any visuals. This
-is much faster than running simulations "real time". Such a feature can be
+is much faster than running simulations in "real time", and can be
 useful for running very long simulations or multiple simulations quickly.
-The statistics summary is still shown and can be exported to a CSV file.
+The statistics summary is still shown and the results can be exported to
+a CSV file.
 
-\subsection{Simulation Visuals}
+When running a simulation in offline mode, the graphical interface shows a
+progress bar and a button for cancelling the simulation.
 
-\begin{table}[h]
-    \begin{center}
-        \begin{tabular}{c p{0.8\textwidth}}
-            \textit{car image} & A simulated car \\
-            \textit{road image} & A piece of the road \\
-            \textit{traffic light image} & Traffic light \\
-        \end{tabular}
-    \end{center}
-\end{table}
+\begin{center}
+    \includegraphics[width=\textwidth]{images/offline-running.png}
+\end{center}
 
-\subsection{Maps} \label{maps}
-
-The following maps are implemented*
-
-\begin{itemize}
-    \item \textbf{One way street}: A simple one way street. The first
-        map made for this simulator.
-    \item \textbf{T Intersection}: A one way street with a connecting
-        one way street in the middle.
-    \item \textbf{Highway}: Simple highway with two lanes in each
-        direction. Overtakes are implemented, to allow faster driving
-        vehicles to pass slower driving ones.
-    \item \textbf{Autobahn}: A large highway with five lanes
-        in each direction. Supports overtakes in all lanes, and
-        outer lanes has an extra speed up, to ensure the overtaking
-        car does not get stuck in the outer lane.
-\end{itemize}
-
-*more maps will be added in the future, as well as the possibility to create
-custom maps. %%
-
-\subsection{Live Statistics} \label{live_stats}
-
-\begin{enumerate}
-    \item \textbf{Simulated time} from when the simulation started.
-    \item \textbf{Total cars spawned} during the simulation.
-    \item The number of currently \textbf{stationary cars}.
-    \item The current \textbf{number of cars} in the simulation.
-    \item Current \textbf{average speed}.
-    \item Current \textbf{inflow} and \textbf{outflow} of cars,
-        respectively. Shown in vehicles per simulated minute.
-\end{enumerate}
-
-\subsection{Playback Controls}
-
-These are the controls available when showing the visuals of a running
-simulation.
-
-%% Insert image of transport controls
-
-\begin{enumerate}
-    \item \textbf{Pause}/\textbf{Resume} the simulation (and the visuals).
-    \item \textbf{Reset} simulation. This will abort the running simulation
-        and start a new one (even if paused) with the same settings.
-    \item \textbf{Stop} the simulation and show statistics summary.
-    \item \textbf{Time scaling} can be adjusted while the simulation is
-        running.
-\end{enumerate}
+\pagebreak
 
 \section{Settings Menu}
 
-Traffic simulator %%
-allows for a number of user settings before starting a simulation.
-How to use them is described below.
+Traffic simulator allows for a number of user settings before starting
+a simulation. How to use them is described below.
 
-%% Insert image of the settings menu, with numbers for each setting
+Besides starting a new simulation, the menu lets the user exit the program
+or quickly open this document in their systems default PDF reader.
 
-\begin{enumerate}
-    \item \textbf{Map selector}
-        Select the map, or scenario, to run a simulation on
-        (see section \ref{maps} on page \pageref{maps}).
-    \item \textbf{Road length}
-        Set the number of cells in the main road.
-        Only applicable to certain maps. Also note the scaling of vehicles
-        may be very small for large values.
-    \item \textbf{Offline simulation toggle}
-        Allows for running simulations without visuals, and get the
-        statistics summary at the end. Useful for large simulations since
-        it greatly speeds up the simulation time.
-    \item \textbf{Min speed}
-        Set the minimum ideal speed on vehicles.
-    \item \textbf{Max speed}
-        Set the maximum ideal speed on vehicles.
-    \item \textbf{Number of ticks}
-        Only active when running offline simulations. This decides for how
-        long the simulation will run.
-    \item \textbf{Spawn rate}
-        Set the chance of a vehicle spawning each tick.
-    \item \textbf{Time scaling}
-        Set the initial time scaling for the simulation. Not active for
-        offline mode.
-    \item \textbf{Start} simulation
-        Start a new simulation with the current settings.
-    \item \textbf{Help}
-        Open this document in your default PDF viewer.
-    \item \textbf{Exit} program
-        Quit to desktop.
-\end{enumerate}
+\subsection{Settings}
+
+Here follows a list of the avabilable settings in the settings menu.
+
+\begin{center}
+    \includegraphics[height=2.5cm]{images/map-selector.png}
+\end{center}
+
+The \textbf{map selector} is used to select the map, or scenario,
+to run a simulation on (see section \ref{maps} on page \pageref{maps}).
+
+\hfill\break
+
+\begin{center}
+    \includegraphics[height=2.5cm]{images/road-length.png}
+\end{center}
+
+\textbf{Road length} decides the number of cells in the main road.
+\textit{Only applicable to certain maps.} Also note the visual
+rendering of vehicles may appear very small for large values.
+
+\hfill\break
+
+\begin{center}
+    \includegraphics[height=6.5cm]{images/preferred.png}
+\end{center}
+
+The \textbf{preferred car speed} is randomised when a new car is spawned.
+This settings allows for adjusting the range within which the
+randomisation happens, that is, the minimum and maximum
+preferred speed for simulated cars.
+
+\hfill\break
+
+\begin{center}
+    \includegraphics[height=2.5cm]{images/spawn-chance.png}
+\end{center}
+
+\textbf{Spawn chance} decides how likely it is that a new car spawns
+each tick.
+
+\hfill\break
+
+\begin{center}
+    \includegraphics[height=2.5cm]{images/time-scaling.png}
+\end{center}
+
+Set the initial \textbf{time scaling} for the simulation. Can be
+    adjusted while the simulation is running. \textit{Not active for
+    offline mode.}
+
+\hfill\break
+
+\begin{center}
+    \includegraphics[height=2.2cm]{images/offline-mode.png}
+\end{center}
+
+The \textbf{run simulation offline} toggle
+    allows for running simulations without visuals, and get the
+    statistics summary at the end. Useful for large simulations since
+    it greatly speeds up the simulation time.
+
+\textbf{Simulated runtime}
+    is only active when running offline simulations. This decides for how
+    long the simulation will run, in simulated minutes.
+
+\hfill\break
+
+\subsection{Navigation Buttons}
+
+\begin{center}
+    \includegraphics[width=\textwidth]{images/menu-btns.png}
+\end{center}
+
+From the left: \pag
+
+\textbf{Start} a new simulation with the current settings. \pag
+
+\textbf{Help} opens this document in your default PDF viewer. \pag
+
+\textbf{Exit} program to desktop.
+
+\pagebreak
 
 \section{Statistics Page}
 
-A brief description of the Statistics Page shown after each simulation.
+When a simulation is stopped (or completed/cancelled if run in
+offline mode), a summary of the simulation statistics is shown.
 
 \subsection{Statistics Summary}
 
-For explanations of 1-6, see \ref{live_stats} (page \pageref{live_stats}).
+The statistics summary shows a summary of the simulation and is
+similar to the live statistics discussed in section \ref{live_stats}
+(page \pageref{live_stats}), but with a few differences:
+
+\begin{center}
+    \includegraphics[width=\textwidth]{images/final-stats.png}
+\end{center}
+
+\textbf{Total cars exited} is shown, and refers to the number
+of cars that have exited the simulation by driving out of the
+simulated area. \pag
+
+\textbf{Average speed}, \textbf{InFlow} and \textbf{InFlow} now
+shows the average for the whole simulation. \pag
+
+\textbf{Peak traffic} is the maximum number of current cars
+(cars simultaneously inside the simulation) at any one time during
+the simulation. \pag
+
+\textbf{Runtime} is the total (real world) time for which the simulation
+was running. Unlike simulated time, this is not affected by time
+scaling and is also shown after running a simulation in offline mode. \pag
+
+Also, the \textbf{settings} used for the simulation are shown.
 
 \subsection{Navigation Buttons}
+
+From the statistics summary, the user can either exit the program or
+return the the menu for running another simulation. There is also
+an option to export the statistcs summary to a CSV file.
+
+\begin{center}
+    \includegraphics[width=\textwidth]{images/report-btns.png}
+\end{center}
 
 \begin{enumerate}
     \item \textbf{Back to Menu} shows the settings menu, where a new simulation
         can be started.
-    \item \textbf{Export to CSV} lets you export simulation statistics to a CSV
-        file, for further processing or importing to a spreadsheet.
-    \item \textbf{Exit Program} quits to desktop.
+    \item \textbf{Export to CSV} lets the simulation statistics summary be
+        exported
+        to a CSV file, for further processing or importing to a spreadsheet.
+    \item \textbf{Exit} program to desktop.
 \end{enumerate}
+
+\subsection{Export Statistics to CSV}
+
+A useful feature of Traffic Simulator is the option to export the
+statistics summary of a simulation after it has run. This can then
+be imported into a spreadsheet program or data analysis software
+for comparing multiple simulations with slightly different settings,
+or any kind of further processing.
+
+
+When pressing the button to export to a CSV file, a file dialog
+is shown, where a location and file name for the CSV file can be selected,
+as shown below.
+
+\begin{center}
+    \includegraphics[width=\textwidth]{images/export.png}
+\end{center}
 
 \end{document}
