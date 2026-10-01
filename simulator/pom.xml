@@ -57,7 +57,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.trafficsimulator.App</mainClass>
+                            <mainClass>com.trafficsimulator.startup.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,7 +1,19 @@
+# Build output
 simulator/target/
+target/
+
+# IDE / editor
+.vscode/
+.idea/
+*.iml
+.DS_Store
+
+# Local scripts
 simulator/mktestfiles.sh
-.vscode/settings.json
-simulator/target/classes/module-info.class
+
+# LaTeX build files
 *.aux
 *.log
 *.toc
+*.out
+*.synctex.gz
