@@ -64,8 +64,6 @@ simulator/src/main/java/com/trafficsimulator/
 
 ## My contributions
 
-<!-- TODO: Edit this so it matches what you did. Suggestions based on the commit history: -->
-
 - Overtaking logic and the highway and autobahn maps
 - Map selection and restructuring how maps are built (`Map`, `MapType`)
 - Time scaling slider
@@ -74,6 +72,4 @@ simulator/src/main/java/com/trafficsimulator/
 
 ## Team
 
-<!-- TODO: Add your teammates' names (and GitHub profiles if they want). -->
-
-Developed together with: NAME, NAME, NAME.
+Developed together with Joel, Kevin and Patrik.
