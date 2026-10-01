@@ -4,7 +4,7 @@ A desktop traffic simulation built in Java and JavaFX. It models cars on differe
 [Nagel–Schreckenberg model](https://en.wikipedia.org/wiki/Nagel%E2%80%93Schreckenberg_model), visualizes the
 traffic in real time and collects statistics that can be exported to CSV.
 
-Built as a group project (5 students) at Örebro University, spring 2026.
+Built as a group project (4 students) at Örebro University, spring 2026.
 
 ![Simulation running](user%20manual/images/simulation.png)
 
@@ -76,4 +76,4 @@ simulator/src/main/java/com/trafficsimulator/
 
 <!-- TODO: Add your teammates' names (and GitHub profiles if they want). -->
 
-Developed together with: NAME, NAME, NAME, NAME.
+Developed together with: NAME, NAME, NAME.
